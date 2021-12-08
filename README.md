@@ -19,13 +19,12 @@
   </ol>
 </details>
 
-## *See [Project Board](https://trello.com/b/m1UGNsQm/amaranth-project-catwalk) for current project status.*
+## *See [Project Board](https://github.com/Ideal-Media-Solutions-LLC/buskr) for current project status.*
 
 ## About The Project
 
 
 ### Built With
-
 
 ## Usage
 
