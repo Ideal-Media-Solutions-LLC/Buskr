@@ -19,7 +19,7 @@
   </ol>
 </details>
 
-## *See [Project Board](https://github.com/Ideal-Media-Solutions-LLC/buskr) for current project status.*
+## *See [Project Board](https://trello.com/b/K4bikU5V/sprint-board) for current project status.*
 
 ## About The Project
 
