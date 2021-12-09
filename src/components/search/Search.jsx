@@ -1,5 +1,4 @@
 import React from "react";
-import { Fragment } from "react";
 import SearchSection from "./SearchSection.jsx";
 const Search = (props) => {
   return (
@@ -8,7 +7,7 @@ const Search = (props) => {
       {/*
       <ResultSection ></ResultSection> */}
     </div>
-  )
+  );
 
-}
+};
 export default Search;

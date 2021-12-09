@@ -1,12 +1,10 @@
+import React from "react";
+
 const SearchSection = () => {
   return (
-    <>
-      <div>from search section</div>
-    </>
-  )
-}
-
-
+    <div>from search section</div>
+  );
+};
 
 
 
