@@ -1,11 +1,14 @@
 import React from "react";
-import { Fragment } from "react"
-export default Search = (props) => {
+import { Fragment } from "react";
+import SearchSection from "./SearchSection.jsx";
+const Search = (props) => {
   return (
-    <React.Fragment>
-      {/* <SearchSection ></SearchSection>
+    <div id="searchContainer">
+      <SearchSection ></SearchSection>
+      {/*
       <ResultSection ></ResultSection> */}
-    </React.Fragment>
+    </div>
   )
 
 }
+export default Search;
