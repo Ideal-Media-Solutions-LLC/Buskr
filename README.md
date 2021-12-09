@@ -19,13 +19,12 @@
   </ol>
 </details>
 
-## *See [Project Board](https://trello.com/b/m1UGNsQm/amaranth-project-catwalk) for current project status.*
+## *See [Project Board](https://trello.com/b/K4bikU5V/sprint-board) for current project status.*
 
 ## About The Project
 
 
 ### Built With
-
 
 ## Usage
 
