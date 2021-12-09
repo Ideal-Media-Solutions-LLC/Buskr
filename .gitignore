@@ -32,6 +32,8 @@ pids
 *.seed
 *.pid.lock
 
+.next
+
 # Optional caches
 .npm
 .eslintcache
