@@ -1,0 +1,11 @@
+.hamburgerIconLogoContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.loginButton {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}

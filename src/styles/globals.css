@@ -14,3 +14,11 @@ a {
 * {
   box-sizing: border-box;
 }
+
+.master-container {
+  display: flex;
+  flex-direction: column;
+  width: 375px;
+  height: 812px;
+  /* background-color: black; */
+}
