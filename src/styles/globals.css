@@ -1,7 +1,10 @@
 :root {
   --buskr-gray: #777777;
+  --buskr-orange: #ff9767;
+  --buskr-browple: #5f4c4c;
+  --buskr-yellow: #ffd66c;
+  --buskr-pink: #ff7585;
 }
-
 
 html,
 body {
