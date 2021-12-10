@@ -1,6 +1,5 @@
 import React from 'react';
-import SearchSection from './SearchSection';
-
+import SearchSection from './SearchSection.jsx';
 const Search = (props) => {
   return (
     <div id='searchContainer'>
@@ -9,5 +8,6 @@ const Search = (props) => {
       <ResultSection ></ResultSection> */}
     </div>
   );
+
 };
 export default Search;
