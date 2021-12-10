@@ -1,9 +1,8 @@
-import React from "react";
-import { Fragment } from "react";
-import SearchSection from "./SearchSection.jsx";
+import React from 'react';
+import SearchSection from './SearchSection.jsx';
 const Search = (props) => {
   return (
-    <div id="searchContainer">
+    <div id='searchContainer'>
       <SearchSection ></SearchSection>
       {/*
       <ResultSection ></ResultSection> */}

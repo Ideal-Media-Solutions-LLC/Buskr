@@ -1,0 +1,22 @@
+name: lint
+
+on: pull_request
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    container: node:14
+
+    steps:
+      - uses: actions/checkout@v2-beta
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 14
+          registry-url: https://registry.npmjs.org/
+          cache: yarn
+      - name: Install dependencies
+        run: yarn
+      - name: Run linter
+        run: yarn lint
