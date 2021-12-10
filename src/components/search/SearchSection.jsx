@@ -3,12 +3,12 @@ import styles from '../../styles/Search.module.css';
 import { Input, DatePicker } from 'antd';
 import 'antd/dist/antd.css';
 const SearchSection = (props) => {
-  // const [searchTerm, setSearchTerm] = useState('');
-  // const [searchLocation, setSearchLocation] = useState({});
-  // const [searchDate, setSearchDate] = useState('');
-  // const onSearchTermChange = (e) => {
-  //   setSearchTerm(e.target.value);
-  // };
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchLocation, setSearchLocation] = useState({});
+  const [searchDate, setSearchDate] = useState('');
+  const onSearchTermChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
   const dummyTags = ["Starting soon", "Today", "Tomorrow", "Near you", "Dancers", " Clowns", "Magicians", "Artists"];
   const onDateChange = (date, dateString) => {
     if (date !== null) {
@@ -21,7 +21,7 @@ const SearchSection = (props) => {
       <h1>Find Your Next Performer:</h1>
       <div id={styles.searchForm}>
         <div className={styles.searchBar}>
-          <input className={styles.searchInput} placeholder="Search by event name" />
+          <input className={styles.searchInput} onChange={onSearchTermChange} placeholder="Search by event name" />
           <button className={styles.insideBtn} >🔍</button>
         </div>
         <div className={styles.searchBar}>
