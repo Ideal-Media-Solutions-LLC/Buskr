@@ -23,7 +23,9 @@ rules:
   arrow-body-style: off
   arrow-parens: off
   func-names: warn
-  func-style: off
+  func-style:
+  - warn
+  - expression
   max-len: warn
   no-bitwise: off
   no-cond-assign:
