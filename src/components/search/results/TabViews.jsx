@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import EventList from './EventList.jsx';
 import { BsListUl, BsMap, BsCalendar3Week } from 'react-icons/bs';
+import EventList from './EventList';
 import styles from '../../../styles/resultList.module.css';
 
 const TabViews = () => {
@@ -12,9 +12,21 @@ const TabViews = () => {
   return (
     <div className={styles.tabsContainer}>
       <div className={styles.roundedTabs}>
-        <button className={view === 1 ? styles.activeTabs : styles.tabs} onClick={() => changeView(1)}><BsListUl /></button>
-        <button className={view === 2 ? styles.activeTabs : styles.tabs} onClick={() => changeView(2)}><BsMap /></button>
-        <button className={view === 3 ? styles.activeTabs : styles.tabs} onClick={() => changeView(3)}><BsCalendar3Week /></button>
+        <button
+          className={view === 1 ? styles.activeTabs : styles.tabs}
+          onClick={() => changeView(1)}>
+          <BsListUl />
+        </button>
+        <button
+          className={view === 2 ? styles.activeTabs : styles.tabs}
+          onClick={() => changeView(2)}>
+          <BsMap />
+        </button>
+        <button
+          className={view === 3 ? styles.activeTabs : styles.tabs}
+          onClick={() => changeView(3)}>
+          <BsCalendar3Week />
+        </button>
       </div>
       <div className={styles.tabsContent}>
         <div className={view === 1 ? styles.activeContent : styles.content}>

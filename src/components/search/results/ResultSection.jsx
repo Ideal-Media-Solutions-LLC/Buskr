@@ -1,5 +1,5 @@
 import React from 'react';
-import TabViews from './TabViews.jsx';
+import TabViews from './TabViews';
 
 const ResultSection = () => {
   return (

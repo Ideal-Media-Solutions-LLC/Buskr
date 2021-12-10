@@ -13,7 +13,11 @@ const EventItem = () => {
         <div>Location</div>
       </div>
       <div className="eventItemPhoto">
-        <img className={styles.eventItemImage} src="https://freerangestock.com/thumbnail/115648/music-notes-.jpg" alt="event image" />
+        <img
+          className={styles.eventItemImage}
+          src="https://freerangestock.com/thumbnail/115648/music-notes-.jpg"
+          alt="event image"
+        />
         <div className="optional-button"></div>
       </div>
     </div>

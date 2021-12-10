@@ -1,5 +1,5 @@
 import React from 'react';
-import EventItem from './EventItem.jsx';
+import EventItem from './EventItem';
 
 const EventList = () => {
   return (
