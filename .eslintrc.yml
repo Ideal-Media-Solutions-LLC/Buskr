@@ -1,0 +1,60 @@
+extends:
+- airbnb-base
+- next
+
+env:
+  browser: true
+  es2021: true
+  es6: true
+  jest: true
+
+globals:
+  google: readonly
+  module: readonly
+  process: readonly
+
+parserOptions:
+  ecmaVersion: 8
+  sourceType: module
+  ecmaFeatures:
+    jsx: true
+
+rules:
+  arrow-body-style: off
+  arrow-parens: off
+  func-names: warn
+  func-style: off
+  max-len: warn
+  no-bitwise: off
+  no-cond-assign:
+  - warn
+  - except-parens
+  no-confusing-arrow: off
+  no-console:
+  - warn
+  - allow:
+    - warn
+    - error
+  no-mixed-operators: off
+  no-nested-ternary: off
+  no-plusplus: warn
+  no-restricted-syntax: off
+  no-shadow: off
+  no-undef: warn
+  no-unused-vars: warn
+  no-use-before-define:
+  - warn
+  - functions: false
+    classes: false
+  object-curly-newline: off
+  prefer-destructuring: off
+  quote-props: off
+
+  import/no-named-as-default: off
+  import/no-named-as-default-member: off
+
+  react/no-array-index-key: off
+  react/prop-types: off
+  react/react-in-jsx-scope: error
+
+  '@next/next/no-img-element': off
