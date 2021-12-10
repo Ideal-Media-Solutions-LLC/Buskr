@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 const CalendarView = () => {
   // const router = useRouter();
   // const { id } = router.query;
-  const [ date, setDate ] = useState( new Date() );
+  const [date, setDate] = useState(new Date());
 
   // useEffect(async () => {
   //   const result = await axios.get(`/api/events/${id}`);
@@ -18,7 +18,7 @@ const CalendarView = () => {
       <Calendar
         onChange={setDate}
         value={date}
-      /> 
+      />
       <p>
         <span className='bold'>Selected Date:</span>{' '}
         {date.toDateString()}

@@ -1,6 +1,6 @@
 import React from 'react';
-const SearchSection = () => {
 
+const SearchSection = () => {
   return (
     <div>from search section</div>
   );
