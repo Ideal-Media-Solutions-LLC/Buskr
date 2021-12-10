@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <div>
       {/* <Search /> */}
-      {/* <Profile profileData={profileData}/> */}
+      <Profile profileData={profileData}/>
     </div>
   );
 }
