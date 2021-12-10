@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import styles from '../../styles/Search.module.css';
 import { Input, DatePicker } from 'antd';
 import { FaSearch, FaMapMarkerAlt } from 'react-icons/fa';
+import styles from '../../styles/Search.module.css';
 import 'antd/dist/antd.css';
 
 const SearchSection = (props) => {
-  const dummyTags = ["Starting soon", "Tomorrow", "Near you", "Dancers", "Clowns", "Magicians"];
+  const dummyTags = ['Starting soon', 'Tomorrow', 'Near you', 'Dancers", Clowns', 'Magicians'];
   const [searchTerm, setSearchTerm] = useState('');
   const [searchLocation, setSearchLocation] = useState('');
   const [searchDate, setSearchDate] = useState('');
@@ -18,7 +18,7 @@ const SearchSection = (props) => {
   };
   const onDateChange = (date, dateString) => {
     if (date !== null) {
-      console.log(date._d, dateString);
+      //console.log(date._d, dateString);
       setSearchDate(dateString);
     }
   };
@@ -29,19 +29,17 @@ const SearchSection = (props) => {
     //   date:searchDate
     // }})
     alert(searchTerm + searchLocation + searchDate);
-
   };
 
   const onTagClick = (e) => {
-  //   let tagName = e.target.innerHTML;
-  //   if(tagName === 'Starting soon') {
-  //     let currentDate = new Date.now();
-  //     setSearchDate(currentDate)
-  //     onSearchSubmit()
-  //     axios.get("/search",)
-  //   } else if {}
+    //   let tagName = e.target.innerHTML;
+    //   if(tagName === 'Starting soon') {
+    //     let currentDate = new Date.now();
+    //     setSearchDate(currentDate)
+    //     onSearchSubmit()
+    //     axios.get("/search",)
+    //   } else if {}
   };
-
 
   return (
     <div id={styles.searchContainer}>
