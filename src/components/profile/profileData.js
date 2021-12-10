@@ -1,4 +1,4 @@
-let profileData = {
+const profileData = {
   id: 4815,
   name: 'Belle Knott',
   bio: 'I am a singer-songwriter from St. Louis. I love to play the guitar and share my music with people of all ages',
@@ -6,7 +6,7 @@ let profileData = {
   tipsLinks: {
     venmo: 'username',
     paypal: 'username',
-    cashapp: 'username'
+    cashapp: 'username',
   },
 //   events: [
 //     {

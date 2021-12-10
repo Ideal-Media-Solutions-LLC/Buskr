@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from '../../styles/Profile.module.css';
 
-const Profile = ({profileData}) => {
+const Profile = ({ profileData }) => {
   return (
     <div className={styles.profileContainer}>
       <div className={styles.title}>{profileData.name}</div>
