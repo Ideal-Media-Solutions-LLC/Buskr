@@ -54,6 +54,7 @@ rules:
   prefer-destructuring: warn
   quote-props:
   - error
+  - as-needed
   - unnecessary: true
 
   react/no-array-index-key: off
