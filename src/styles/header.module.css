@@ -1,0 +1,34 @@
+.hamburgerIconLogoContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid lightgray;
+  padding: 0px 0px 20px 0px;
+}
+
+.loginButton {
+  padding-top: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  font-size: 13px;
+  font-weight: bold;
+  color: var(--buskr-gray)
+}
+
+.hamburger {
+  height: 17px;
+  width: auto;
+  background-color: black;
+}
+
+.icon {
+  height: 30px;
+  width: auto;
+}
+
+.logo {
+  height: 20px;
+  width: auto;
+}
