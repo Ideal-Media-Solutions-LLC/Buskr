@@ -1,0 +1,101 @@
+#searchContainer {
+  display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: flex-start;
+}
+.searchBar {
+
+  margin:2px 0px;
+  width:95%;
+  border:1px solid #d9d9d9;
+}
+.searchInput{
+  position: absolute;
+  padding-left:30px;
+  width:85vw;
+  background-color:transparent;
+  border:0;
+}
+.insideBtn{
+
+  position: relative;
+  background-color:transparent;
+  color:#d9d9d9;
+  border:0;
+}
+#searchForm {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width:100%;
+}
+#searchBtn{
+  background-color: #F77484;
+  border-radius: 8px;
+  border-style: none;
+  box-sizing: border-box;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: inline-block;
+  font-family: "Haas Grot Text R Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 25px;
+  font-weight: 500;
+  height: 40px;
+  line-height: 20px;
+  list-style: none;
+  margin: 20px 0 0 0;
+  outline: none;
+  padding: 10px 120px;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  transition: color 100ms;
+  vertical-align: baseline;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+#searchBtn:hover,
+#searchBtn:focus {
+  background-color: #f57c8a;
+}
+#tagContainer {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: baseline;
+  width:100%
+}
+.searchTag {
+  background-color: #5C4C4C;
+  border-radius: 12px;
+  border-style: none;
+  box-sizing: border-box;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 15px;
+  font-weight: 500;
+  height: 40px;
+  line-height: 20px;
+  list-style: none;
+  margin: 15px 0 0 0;
+  outline: none;
+  padding: 10px 15px;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  transition: color 100ms;
+  vertical-align: baseline;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+
+}
+.searchTag:focus{
+  background-color: #4e3c3c;
+
+}
