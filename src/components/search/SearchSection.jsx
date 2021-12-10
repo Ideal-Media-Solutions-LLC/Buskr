@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import styles from '../../styles/Search.module.css';
 import { Input, DatePicker } from 'antd';
+import { FaSearch, FaMapMarkerAlt } from 'react-icons/fa';
 import 'antd/dist/antd.css';
+
 const SearchSection = (props) => {
-  const dummyTags = ["Starting soon", "Today", "Tomorrow", "Near you", "Dancers", " Clowns", "Magicians", "Artists"];
+  const dummyTags = ["Starting soon", "Tomorrow", "Near you", "Dancers", "Clowns", "Magicians"];
   const [searchTerm, setSearchTerm] = useState('');
   const [searchLocation, setSearchLocation] = useState('');
   const [searchDate, setSearchDate] = useState('');
@@ -13,23 +15,33 @@ const SearchSection = (props) => {
   };
   const onSearchLocationChange = (e) => {
     setSearchLocation(e.target.value);
-  }
-
+  };
   const onDateChange = (date, dateString) => {
     if (date !== null) {
       console.log(date._d, dateString);
-      setSearchDate(date._d);
+      setSearchDate(dateString);
     }
   };
   const onSearchSubmit = () => {
-    // axios.get("/search",{params:{
+    // axios.get('/search', {params:{
     //   name:searchTerm,
     //   location:searchLocation,
     //   date:searchDate
-    // }} )
-    alert(searchTerm + searchLocation + searchDate)
+    // }})
+    alert(searchTerm + searchLocation + searchDate);
 
-  }
+  };
+
+  const onTagClick = (e) => {
+  //   let tagName = e.target.innerHTML;
+  //   if(tagName === 'Starting soon') {
+  //     let currentDate = new Date.now();
+  //     setSearchDate(currentDate)
+  //     onSearchSubmit()
+  //     axios.get("/search",)
+  //   } else if {}
+
+    };
 
 
   return (
@@ -41,14 +53,14 @@ const SearchSection = (props) => {
             onChange={onSearchTermChange}
             placeholder="Search by event name"
           />
-          <button className={styles.insideBtn} >🔍</button>
+          <button className={styles.insideBtn}><FaSearch /></button>
         </div>
         <div className={styles.searchBar}>
           <input className={styles.searchInput}
             onChange={onSearchLocationChange}
             placeholder="Search by location"
           />
-          <button className={styles.insideBtn} >📍</button>
+          <button className={styles.insideBtn}><FaMapMarkerAlt /></button>
         </div>
         {/* <br/>
         <Input.Search allowClear style={{ width: '95%' }} placeholder="Search by event name" />
@@ -60,7 +72,7 @@ const SearchSection = (props) => {
       </div>
       <div id={styles.tagContainer}>
         {dummyTags.map((tag, index) => {
-          return <button className={styles.searchTag} key={index} color="#5C4C4C">{tag}</button>;
+          return <button className={styles.searchTag} key={index} onClick={onTagClick} color="#5C4C4C" >{tag}</button>;
         })}
       </div>
     </div>
