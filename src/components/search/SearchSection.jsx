@@ -40,8 +40,7 @@ const SearchSection = (props) => {
   //     onSearchSubmit()
   //     axios.get("/search",)
   //   } else if {}
-
-    };
+  };
 
 
   return (
