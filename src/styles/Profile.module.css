@@ -1,0 +1,47 @@
+.profileContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  color: var(--buskr-browple);
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.profileImage {
+  width: auto;
+  height: 200px;
+  background-color: lightgrey;
+  margin: 10px 0px 10px 0px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.profileBio {
+  margin-bottom: 30px;
+  color: var(--buskr-gray);
+  font-size: 14px;
+}
+
+.eventCardsContainer {
+  display: flex;
+  border: 1px solid lightgrey;
+  height: 200px;
+  padding: 10px 10px 10px 10px;
+  color: var(--buskr-gray);
+  font-style: italic;
+  font-size: 14px;
+}
+
+.tipsContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.tipIcon {
+  margin: 0px 5px 0px 5px;
+  background-color: white;
+  border-radius: 5px;
+}

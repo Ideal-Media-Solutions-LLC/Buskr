@@ -1,9 +1,10 @@
 :root {
   --buskr-gray: #777777;
   --buskr-orange: #ff9767;
-  --buskr-browple: #5f4c4c;
+  --buskr-purple: #5f4c4c;
   --buskr-yellow: #ffd66c;
   --buskr-pink: #ff7585;
+  --buskr-white: white;
 }
 
 html,
@@ -34,4 +35,15 @@ a {
   height: 812px;
   background-color: white;
   padding: 20px 20px 20px 20px;
+}
+
+.master-button {
+  border: none;
+  background-color: var(--buskr-pink);
+  padding: 15px 15px 15px 15px;
+  margin: 20px 0px 20px 0px;
+  border-radius: 10px;
+  color: white;
+  font-size: 17px;
+  font-weight: bold;
 }
