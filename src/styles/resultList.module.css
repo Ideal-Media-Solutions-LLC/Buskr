@@ -8,8 +8,8 @@
 }
 
 .tabs {
-  color: rebeccapurple;
-  background-color: lightslategray;
+  color: var(--buskr-gray);
+  background-color: #c2c2c2;
   flex: 1;
   padding: 0.5em;
   border: none;
@@ -30,15 +30,15 @@
 }
 
 .tabsContent {
-  background-color: whitesmoke;
+  border: var(--buskr-gray) solid 1px;
 }
 
 .content {
-  color: blue;
+  color: var(--buskr-gray);
 }
 
 .activeContent {
-  color: fuchsia;
+  color: var(--buskr-gray);
 }
 
 .eventItemImage {

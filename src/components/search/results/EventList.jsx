@@ -4,7 +4,8 @@ import EventItem from './EventItem.jsx';
 const EventList = () => {
   return (
     <div className="event-list-Container">
-      {/* {[].map(
+      {/* will refactor when I have a sample data
+      {[].map(
         (event) => { */}
       <EventItem />;
       {/* }
