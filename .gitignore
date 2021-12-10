@@ -4,7 +4,7 @@
 
 # User-specific
 .vscode
-*.env
+.env.local
 
 # Module management
 node_modules/
