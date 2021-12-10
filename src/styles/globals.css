@@ -1,5 +1,11 @@
+:root {
+  --buskr-gray: #777777;
+}
+
+
 html,
 body {
+
   display: flex;
   justify-content: center;
   padding: 0;
