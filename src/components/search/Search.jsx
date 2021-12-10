@@ -8,7 +8,7 @@ const Search = (props) => {
       {/*
       <ResultSection ></ResultSection> */}
     </div>
-  )
+  );
 
-}
+};
 export default Search;
