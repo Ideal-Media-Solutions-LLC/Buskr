@@ -78,6 +78,4 @@ const SearchSection = (props) => {
   );
 };
 
-
-
 export default SearchSection;
