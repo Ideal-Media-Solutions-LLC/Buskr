@@ -1,6 +1,6 @@
 import React from 'react';
-import SearchSection from './SearchSection.jsx';
-import ResultSection from './results/ResultSection.jsx';
+import SearchSection from './SearchSection';
+import ResultSection from './results/ResultSection';
 
 const Search = (props) => {
   return (
@@ -9,6 +9,5 @@ const Search = (props) => {
       <ResultSection />
     </div>
   );
-
 };
 export default Search;
