@@ -1,0 +1,46 @@
+.tabsContainer {
+  border: black;
+}
+
+.roundedTabs {
+  display: flex;
+  flex-direction: row;
+}
+
+.tabs {
+  color: var(--buskr-gray);
+  background-color: #c2c2c2;
+  flex: 1;
+  padding: 0.5em;
+  border: none;
+  margin: 0.1em;
+  border-top-left-radius: 33%;
+  border-top-right-radius: 33%;
+}
+
+.activeTabs {
+  color: white;
+  background-color: salmon;
+  flex: 1;
+  padding: 0.5em;
+  border: none;
+  margin: 0.1em;
+  border-top-left-radius: 33%;
+  border-top-right-radius: 33%;
+}
+
+.tabsContent {
+  border: var(--buskr-gray) solid 1px;
+}
+
+.content {
+  color: var(--buskr-gray);
+}
+
+.activeContent {
+  color: var(--buskr-gray);
+}
+
+.eventItemImage {
+  max-width: 25vw;
+}
