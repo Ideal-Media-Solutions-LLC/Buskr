@@ -1,6 +1,6 @@
 import React from 'react';
 import SearchSection from './SearchSection.jsx';
-import ResultSection from './test/ResultSection.jsx';
+import ResultSection from './results/ResultSection.jsx';
 
 const Search = (props) => {
   return (
