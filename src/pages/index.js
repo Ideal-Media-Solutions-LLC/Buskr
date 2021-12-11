@@ -7,7 +7,7 @@ import profileData from '../components/profile/profileData';
 export default function Home() {
   return (
     <div>
-      {/* <Search /> */}
+      <Search />;
       <Profile profileData={profileData}/>
     </div>
   );
