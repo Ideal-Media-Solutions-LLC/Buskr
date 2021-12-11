@@ -3,16 +3,6 @@ import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
 import Image from 'next/image';
 import styles from '../../styles/map.module.css';
 
-const containerStyle = {
-  width: '100%',
-  height: '100%',
-};
-
-const center = {
-  lng: -90.06911208674771,
-  lat: 29.954767355989652,
-};
-
 const InfoBox = function InfoBox(props) {
   const { feature } = props;
   const buskerName = feature.getProperty('buskerName');
@@ -31,7 +21,7 @@ const InfoBox = function InfoBox(props) {
   );
 };
 
-const Map = function Map() {
+const Map = function Map({containerStyle, center, withInfoBoxes}) {
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
@@ -69,7 +59,7 @@ const Map = function Map() {
 
   // style={{ width: '100vw', height: '100vh' }}>
   return isLoaded ? (
-    <div className={styles.mapContainer} style={{ height: '100vh' }}>
+    <div className={styles.mapContainer}>
       <GoogleMap
         mapContainerStyle={containerStyle}
         center={center}
@@ -77,7 +67,7 @@ const Map = function Map() {
         onLoad={onLoad}
         options={{ mapId: 'c4f800a3ac3629c2' }}
       >
-        {infoFeature && <InfoBox feature={infoFeature} />}
+        {withInfoBoxes && infoFeature && <InfoBox feature={infoFeature} />}
       </GoogleMap>
     </div>
   ) : null;
