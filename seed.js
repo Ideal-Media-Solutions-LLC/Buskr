@@ -95,18 +95,22 @@ const createEvent = async function createEvent(buskerId) {
     [coords(), words(), sentences(), starts, ends, buskerId],
   );
   const promises = [generate(number(maxPhotos), () => insertPhoto(id))];
-  const tags = [];
+  const used = [];
   for (let i = 0; i < number(maxTags); i += 1) {
     const tag = number(tags.length - 1);
-    if (!tags.includes(tag)) {
-      tags.push(tag);
+    if (!used[tag]) {
+      used[tag] = true;
       promises.push(
-        'UPDATE tag SET popularity = POPULARITY + 1 WHERE id = $',
-        [tag],
+        db.query(
+          'UPDATE tag SET popularity = POPULARITY + 1 WHERE id = $1',
+          [tag + 1],
+        ),
       );
       promises.push(
-        'INSERT INTO event_tag (event_id, tag_id) VALUES ($1, $2)',
-        [id, tag],
+        db.query(
+          'INSERT INTO event_tag (event_id, tag_id) VALUES ($1, $2)',
+          [id, tag + 1],
+        ),
       );
     }
   }
