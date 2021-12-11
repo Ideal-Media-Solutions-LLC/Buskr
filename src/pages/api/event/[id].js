@@ -1,4 +1,5 @@
 import db from '../../../db';
+import middleware from '../../../middleware';
 import { reverseLookup } from '../../../geocode';
 
 /**
@@ -6,6 +7,8 @@ import { reverseLookup } from '../../../geocode';
  * @param {import('http').ServerResponse} res
  */
 export default async function handler(req, res) {
+  await middleware(req, res);
+
   const { id, from, to, limit, offset } = req.query;
 
   const nId = Number(id);
