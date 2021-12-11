@@ -149,7 +149,7 @@ export default async function handler(req, res) {
 
   if (getLocation) {
     await Promise.all(rows.map(async (row) => {
-      row.properties.location = await reverseLookup(row.properties.id, row.geometry.coordinates).catch((e) => console.error(e.response.data));
+      row.properties.location = await reverseLookup(row.properties.id, row.geometry.coordinates);
     }));
   }
 
