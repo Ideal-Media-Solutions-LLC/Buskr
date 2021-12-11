@@ -26,10 +26,20 @@
   object-fit: cover;
 }
 
-.mapContainer {
+.infoboxName {
   font-weight: bold;
 }
 
-.infoboxName {
+.mapContainer {
   font-weight: bold;
+  /* height: 100vh; */
+}
+
+.mapViewContainer {
+  height: 100vh;
+}
+
+.googleMap {
+  height: 100%;
+  width: 100%;
 }
