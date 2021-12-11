@@ -16,22 +16,14 @@ const center = {
 const InfoBox = function InfoBox(props) {
   const { feature } = props;
   const buskerName = feature.getProperty('buskerName');
-  const eventName = feature.getProperty('eventName');
-  const eventPicture = feature.getProperty('eventPicture');
-  const eventDate = feature.getProperty('eventDate');
-  const eventDescription = feature.getProperty('eventDescription');
+  const name = feature.getProperty('name');
+  const photos = feature.getProperty('photos');
+  const starts = feature.getProperty('starts');
+  const description = feature.getProperty('description');
   return (
     <article id={styles.infobox}>
-      <figure >
-          <Image
-          // className={styles.infoboxImage}
-          width='100px'
-          height='100px'
-          src={eventPicture}
-          alt={eventName}
-          />
-          </figure>
-          <figcaption>{`${eventName}\n${buskerName}`}</figcaption>
+          <img className={styles.infoPhoto} src={photos[0]} />
+          <div className={styles.infoDetails}>{`${name}\n${buskerName}`}</div>
     </article>
   );
 };
@@ -69,12 +61,12 @@ const Map = function Map() {
     map.data.addListener('click', ({ feature }) => {
       setInfoFeature(feature);
     });
-    map.data.loadGeoJson('/sampleEvents.json', { idPropertyName: 'storeid' });
+    map.data.loadGeoJson('/sample_events.json', { idPropertyName: 'storeid' });
   }, []);
 
   // style={{ width: '100vw', height: '100vh' }}>
   return isLoaded ? (
-    <div style={{ height: '100vh' }}>
+    <div className={styles.mapContainer} style={{ height: '100vh' }}>
       <GoogleMap
         mapContainerStyle={containerStyle}
         center={center}
