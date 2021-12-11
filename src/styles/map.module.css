@@ -1,4 +1,4 @@
-#infobox {
+.infobox {
   position: absolute;
   width: 95%;
   display: flex;
@@ -6,15 +6,16 @@
   justify-content: flex-start;
   align-items: stretch;
   background-color: white;
-  border-radius: 5px;
+  border-radius: 10px;
   left: 2.5%;
   bottom: 10px;
-  font-weight: bold;
+  /* font-weight: bold; */
   height: 200px;
+  box-shadow: 2px 2px 10px var(--buskr-lightgray);
 };
 
 .infoDetails {
-
+  font-weight: bold;
 }
 
 .infoPhoto {
@@ -25,11 +26,10 @@
   object-fit: cover;
 }
 
-
-.infoboxContainer {
-  /* background-color: white;
-  opacity: 100%; */
+.mapContainer {
+  font-weight: bold;
 }
 
-.mapContainer {
+.infoboxName {
+  font-weight: bold;
 }

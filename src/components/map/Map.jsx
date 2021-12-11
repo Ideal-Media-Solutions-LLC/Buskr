@@ -21,9 +21,12 @@ const InfoBox = function InfoBox(props) {
   const starts = feature.getProperty('starts');
   const description = feature.getProperty('description');
   return (
-    <article id={styles.infobox}>
+    <article className={styles.infobox}>
           <img className={styles.infoPhoto} src={photos[0]} />
-          <div className={styles.infoDetails}>{`${name}\n${buskerName}`}</div>
+          <div className={styles.infoDetails}>
+            <div className={styles.infoBoxName}>{name}</div>
+            <div className={styles.infoBoxBuskerName}>{buskerName}</div>
+          </div>
     </article>
   );
 };
