@@ -5,12 +5,12 @@ const Profile = ({ profileData }) => {
   return (
     <div className={styles.profileContainer}>
       <div className='master-title'>{profileData.name}</div>
-      <img className={styles.profileImage} src={profileData.photo}/>
+      <img className={styles.profileImage} src={profileData.photo} alt='profile-image'/>
       <div className={styles.profileBio}>{profileData.bio}</div>
       <div className={styles.tipsContainer}>
-        <img className ={styles.tipIcon} src='/imgs/tip-paypal-40px.png'/>
-        <img className ={styles.tipIcon} src='/imgs/tip-cashapp-40px.png'/>
-        <img className ={styles.tipIcon} src='/imgs/tip-venmo-40px.png'/>
+        <img className ={styles.tipIcon} src='/imgs/tip-paypal-40px.png' alt='paypal'/>
+        <img className ={styles.tipIcon} src='/imgs/tip-cashapp-40px.png' alt='cashapp'/>
+        <img className ={styles.tipIcon} src='/imgs/tip-venmo-40px.png' alt ='venmo'/>
 
       </div>
       <button className='master-button' type='text'>Add Event</button>
