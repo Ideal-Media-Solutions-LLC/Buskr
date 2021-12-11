@@ -1,15 +1,17 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import EventItem from './EventItem';
+import SearchContext from '../SearchContext';
 
 const EventList = () => {
+  const resultList = useContext(SearchContext);
+
   return (
     <div className="event-list-Container">
-      {/* will refactor when I have a sample data
-      {[].map(
-        (event) => { */}
-      <EventItem />;
-      {/* }
-      )} */}
+      {resultList.map(
+        (event) => {
+          return <EventItem key={event.properties.id} event={event} />;
+        },
+      )}
     </div>
   );
 };
