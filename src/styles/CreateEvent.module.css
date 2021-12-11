@@ -17,6 +17,15 @@
   font-size: 13px;
 }
 
+.descriptionField {
+  padding: 10px 10px 10px 10px;
+  margin: 5px 0px 5px 0px;
+  border-radius: 4px;
+  border: 1px solid var(--buskr-lightgray);
+  font-size: 13px;
+  height: 150px;
+}
+
 .mapContainer {
   display: flex;
   justify-content: center;
@@ -66,4 +75,46 @@
 
 .conflictButtonProceed {
   background-color: var(--buskr-purple);
+}
+
+.eventUploadContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 100%;
+  /* PLEASE MAKE THIS DYNAMIC THX */
+  height: 715px;
+}
+
+.uploadImageButton {
+  border: none;
+  background-color: var(--buskr-pink);
+  padding: 15px 15px 15px 15px;
+  margin-top: 15px;
+  border-radius: 10px;
+  font-size: 17px;
+  font-weight: bold;
+  color: white;
+  width: 150px;
+}
+
+.validationWarning, .smallTitle, .tagSubtext {
+  font-size: 13px;
+  margin-left: 5px;
+  color: var(--buskr-purple)
+}
+
+.validationWarning {
+  color: var(--buskr-pink);
+  /* visibility: hidden; */
+}
+
+.tagsDescription {
+  display: flex;
+  flex-direction: row;
+}
+
+.tagSubtext {
+  color: var(--buskr-gray);
+  padding-left: 3px;
 }

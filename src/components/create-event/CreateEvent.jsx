@@ -35,10 +35,34 @@ const CreateEvent2 = () => (
   </div>
 );
 
+const CreateEvent3 = () => (
+  <div className={styles.eventUploadContainer}>
+    <div className={styles.formAndButtonContainer}>
+      <div className='master-title'>Create Event</div>
+      <form className={styles.formContainer}>
+        <div className={styles.smallTitle}> Event Name: </div>
+        <div className={styles.validationWarning}> Please enter an event name </div>
+          <input type='search' className={styles.masterSearchBar} placeholder='Enter Event Name'></input>
+        <div className={styles.smallTitle}> Description: </div>
+        <div className={styles.validationWarning}> Please enter a description </div>
+          <textarea type='search' className={styles.descriptionField}placeholder='Enter Description'></textarea>
+        <div className={styles.tagsDescription}>
+          <div className={styles.smallTitle}> Tags </div>
+          <div className={styles.tagSubtext}> (OPTIONAL - Separated By Comma)  </div>
+        </div>
+          <input type='search' className={styles.masterSearchBar}placeholder='Add Tags (separated by comma)'></input>
+      </form>
+      <button type='text' className={styles.uploadImageButton}>Upload Image</button>
+    </div>
+    <button type='text' className='master-button'> Add My Event </button>
+  </div>
+);
+
 const CreateEvent = () => {
   return (
     // <CreateEvent1 />
-    <CreateEvent2 />
+    // <CreateEvent2 />
+    <CreateEvent3 />
   );
 };
 
