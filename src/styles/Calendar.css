@@ -113,16 +113,15 @@ body {
   color: var(--buskr-browple);
   background: none;
 }
-<<<<<<< HEAD
+/*div for the indicator*/
 .notification {
   position: absolute;
-  top: 0px;
-  right: 0px;
-=======
+  top: 8px;
+  right: 8px;
+}
 /* days the belong to the previous/next month */
 .react-calendar__month-view__days__day--neighboringMonth {
   color: var(--dark-gray);
->>>>>>> c59efc140e0cd75c02327487dca865f928fad16c
 }
 .react-calendar__tile:disabled {
   background-color:white;
@@ -131,13 +130,7 @@ body {
 .react-calendar__tile:enabled:hover {
   color: var(--buskr-pink);
 }
-<<<<<<< HEAD
-
-/* hover over color */
-.react-calendar__tile:enabled:hover,
-=======
 /* selected date */
->>>>>>> c59efc140e0cd75c02327487dca865f928fad16c
 .react-calendar__tile:enabled:focus {
   color: white;
 }
