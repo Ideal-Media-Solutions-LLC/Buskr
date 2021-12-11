@@ -67,7 +67,6 @@ const SearchSection = () => {
         <Input.Search allowClear style={{ width: '95%' }} placeholder="search by location" /> */}
 
         <div id={styles.datePicker}></div>
-
         <button id={styles.searchBtn} onClick={onSearchSubmit}>Search</button>
       </div>
       <div id={styles.tagContainer}>
