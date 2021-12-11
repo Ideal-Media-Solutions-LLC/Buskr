@@ -49,6 +49,7 @@ export default async function handler(req, res) {
     LEFT JOIN photo ON event_photo.photo_id = photo.id
     LEFT JOIN event_tag ON event_tag.event_id = event.id
     LEFT JOIN tag ON event_tag.tag_id = tag.id
+    WHERE event.ends >= now()
     GROUP BY event.id
     ORDER BY starts ASC
   )

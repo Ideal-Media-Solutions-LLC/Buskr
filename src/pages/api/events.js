@@ -102,7 +102,7 @@ export default async function handler(req, res) {
         getLocation = true;
       } else if (feature === 'photos') {
         photosQuery = `
-          'photos', coalesce(array_agg(photo.url) FILTER (WHERE photo.url IS NOT NULL), '{}'),
+          'photos', coalesce(array_agg(DISTINCT photo.url) FILTER (WHERE photo.url IS NOT NULL), '{}'),
         `;
         photosJoin = `
           LEFT JOIN event_photo ON event_photo.event_id = event.id
@@ -110,7 +110,7 @@ export default async function handler(req, res) {
         `;
       } else if (feature === 'tags') {
         tagsQuery = `
-          'tags', coalesce(array_agg(tag.name) FILTER (WHERE tag.name IS NOT NULL), '{}'),
+          'tags', coalesce(array_agg(DISTINCT tag.name) FILTER (WHERE tag.name IS NOT NULL), '{}'),
         `;
         tagsJoin = `
           LEFT JOIN event_tag ON event_tag.event_id = event.id

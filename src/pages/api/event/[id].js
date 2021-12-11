@@ -9,7 +9,7 @@ import { reverseLookup } from '../../../geocode';
 export default async function handler(req, res) {
   await middleware(req, res);
 
-  const { id, from, to, limit, offset } = req.query;
+  const { id, limit, offset } = req.query;
 
   const nId = Number(id);
   if (Number.isNaN(nId)) {
@@ -20,29 +20,6 @@ export default async function handler(req, res) {
 
   const clauses = [];
   const args = [nId];
-  const wheres = ['event.id = $1'];
-
-  if (from !== undefined) {
-    const timestamp = Date.parse(from);
-    if (Number.isNaN(timestamp)) {
-      res.statusCode = 400;
-      res.end('invalid date');
-      return;
-    }
-    args.push(new Date(timestamp));
-    wheres.push(`starts >= $${args.length}`);
-  }
-
-  if (to !== undefined) {
-    const timestamp = Date.parse(to);
-    if (Number.isNaN(timestamp)) {
-      res.statusCode = 400;
-      res.end('invalid date');
-      return;
-    }
-    args.push(new Date(timestamp));
-    wheres.push(`ends <= $${args.length}`);
-  }
 
   if (limit !== undefined) {
     const nLimit = Number(limit);
@@ -96,7 +73,7 @@ export default async function handler(req, res) {
   LEFT JOIN event_tag ON event_tag.event_id = event.id
   LEFT JOIN tag ON event_tag.tag_id = tag.id
   JOIN busker ON busker.id = event.busker_id
-  WHERE ${wheres.join('AND')}
+  WHERE event.id = $1
   GROUP BY event.id, busker.id
   ORDER BY starts ASC
   ${clauses.join('\n')}
