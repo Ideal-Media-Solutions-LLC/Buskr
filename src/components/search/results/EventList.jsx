@@ -6,7 +6,7 @@ const EventList = () => {
   const resultList = useContext(SearchContext);
 
   return (
-    <div className="event-list-Container">
+    <div className="eventListContainer">
       {resultList.map(
         (event) => {
           return <EventItem key={event.properties.id} event={event} />;
