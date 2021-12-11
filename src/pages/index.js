@@ -8,8 +8,8 @@ import CreateEvent from '../components/create-event/CreateEvent';
 export default function Home() {
   return (
     <div>
-      {/* <Search /> */}
-      <Profile profileId={1}/>
+      <Search />
+      {/* <Profile profileId={1}/> */}
       {/* <CreateEvent/> */}
     </div>
   );
