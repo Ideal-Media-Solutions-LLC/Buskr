@@ -9,7 +9,6 @@
   },
   "dependencies": {
     "@react-google-maps/api": "^2.7.0",
-    "antd": "^4.17.3",
     "axios": "^0.21.0",
     "express": "^4.15.0",
     "moment": "^2.29.1",
