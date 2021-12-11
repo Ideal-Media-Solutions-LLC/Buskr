@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-// import { DatePicker } from 'antd';
 import { FaSearch, FaMapMarkerAlt } from 'react-icons/fa';
+import AutoComplete from './Autocomplete';
 import styles from '../../styles/Search.module.css';
-// import 'antd/dist/antd.css';
 
 const SearchSection = () => {
   const dummyTags = ['Starting soon', 'Tomorrow', 'Near you', 'Dancers", Clowns', 'Magicians'];
@@ -45,12 +44,15 @@ const SearchSection = () => {
   return (
     <div id={styles.searchContainer}>
       <h1>Find Your Next Performer:</h1>
+
       <div id={styles.searchForm}>
-        <div className={styles.searchBar}>
-          <input className={styles.searchInput}
+        <div className={styles.searchBar} id={styles.upperSearchBar}>
+        <AutoComplete className={styles.searchInput} suggestions={['aa', 'abc', 'abbba', 'asdaa', 'asddaa', 'ddsdef', 'iasdasgh']} />
+          {/* <input className={styles.searchInput}
             onChange={onSearchTermChange}
             placeholder="Search by event name"
-          />
+          /> */}
+
           <button className={styles.insideBtn}><FaSearch /></button>
         </div>
         <div className={styles.searchBar}>
@@ -65,7 +67,6 @@ const SearchSection = () => {
         <Input.Search allowClear style={{ width: '95%' }} placeholder="search by location" /> */}
 
         <div id={styles.datePicker}></div>
-        {/* <DatePicker onChange={onDateChange} style={{ width: '95%' }} /> */}
         <button id={styles.searchBtn} onClick={onSearchSubmit}>Search</button>
       </div>
       <div id={styles.tagContainer}>

@@ -9,8 +9,8 @@ export default function Home() {
   return (
     <div>
       <Search />
-      {/* <Profile profileData={profileData}/>
-      <CreateEvent/> */}
+      {/* <Profile profileData={profileData}/> */}
+      {/* <CreateEvent/> */}
     </div>
   );
 }
