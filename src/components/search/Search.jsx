@@ -1,12 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import SearchSection from './SearchSection';
 import ResultSection from './results/ResultSection';
+import SearchContext from './SearchContext';
+import data from './test/sampleData';
 
 const Search = (props) => {
+  const [results, setResults] = useState(data);
+
   return (
     <div id='searchContainer'>
-      <SearchSection></SearchSection>
-      <ResultSection />
+      <SearchContext.Provider value={results}>
+        <SearchSection></SearchSection>
+        <ResultSection />
+      </SearchContext.Provider>
     </div>
   );
 };
