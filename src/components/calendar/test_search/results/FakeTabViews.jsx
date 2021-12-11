@@ -30,7 +30,7 @@ const FakeTabViews = () => {
       </div>
       <div className={styles.tabsContent}>
         <div className={view === 1 ? styles.activeContent : styles.content}>
-          {view === 1 ? <EventList /> : <></>}
+          {/* {view === 1 ? <EventList /> : <></>} */}
         </div>
         <div className={view === 2 ? styles.activeContent : styles.content}>
           {view === 2 ? 'Map' : <></>}
