@@ -7,13 +7,13 @@ const EventItem = (props) => {
   const time = moment.tz(props.event.properties.starts, zone).format('ddd, MMM D [@] h:mA z');
   const location = `${props.event.properties.location.sublocality}, ${props.event.properties.location.administrative_area_level_1}`;
 
-  // work on click busker name will lead to profile
-  const clickBusker = (e) => {
+  // work on click event will lead to event detail page (stretch goal)
+  const clickEvent = (e) => {
     console.log(e.target.id);
   };
 
   return (
-    <div className={styles.eventItemContainer}>
+    <div className={styles.eventItemContainer} onClick={(e) => clickEvent(e)}>
       <div className={styles.eventItemContainerNoPadding}>
         <div className={styles.eventItemInfo}>
           <div className={styles.eventItemTime}>
@@ -22,7 +22,7 @@ const EventItem = (props) => {
           <div className={styles.eventItemName}>
             {props.event.properties.name}
           </div>
-          <div className={styles.eventItemBusker} id="busker" onClick={(e) => clickBusker(e)}>
+          <div className={styles.eventItemBusker}>
             {props.event.properties.buskerName}
           </div>
           <div className={styles.eventItemLocation}>
