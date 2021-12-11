@@ -1,4 +1,5 @@
 import db from '../../db';
+import { reverseLookup } from '../../geocode';
 
 /**
  * @param {import('http').IncomingMessage} req
@@ -144,7 +145,13 @@ export default async function handler(req, res) {
     ORDER BY ${orderBy} ASC
     ${clauses.join('\n    ')}
   `;
-  console.error(query, args);
   const { rows } = await db.query(query, args);
+
+  if (getLocation) {
+    await Promise.all(rows.map(async (row) => {
+      row.properties.location = await reverseLookup(row.properties.id, row.geometry.coordinates).catch((e) => console.error(e.response.data));
+    }));
+  }
+
   res.status(200).json(rows);
 }
