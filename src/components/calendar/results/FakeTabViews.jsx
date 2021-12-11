@@ -9,7 +9,6 @@ const FakeTabViews = () => {
   const changeView = (index) => {
     setView(index);
   };
-
   return (
     <div className={styles.tabsContainer}>
       <div className={styles.roundedTabs}>
