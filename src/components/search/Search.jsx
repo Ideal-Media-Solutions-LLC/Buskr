@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import SearchSection from './SearchSection';
 import ResultSection from './results/ResultSection';
 import SearchContext from './SearchContext';
-import data from './test/sampleData';
+import data from './results/sampleData';
 
 const Search = (props) => {
   const [results, setResults] = useState(data);
