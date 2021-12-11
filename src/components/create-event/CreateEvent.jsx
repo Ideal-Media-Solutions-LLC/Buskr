@@ -1,7 +1,17 @@
 import React from 'react';
 import styles from '../../styles/CreateEvent.module.css';
+import Map from '../map/Map';
+
+const center = {
+  lng: -90.06911208674771,
+  lat: 29.954767355989652,
+};
 
 const CreateEvent1 = () => {
+  const mapContainerStyle = {
+    height: '300px',
+    width: 'auto'
+  }
   return (
     <div className={styles.createEventContainer}>
       <div className='master-title'>Create Event</div>
@@ -11,8 +21,8 @@ const CreateEvent1 = () => {
         <input type='search' placeholder='Enter End Time' className={styles.masterSearchBar}></input>
         <input type='search' placeholder='Current Location' className={styles.masterSearchBar}></input>
       </form>
-      <div className={styles.mapContainer}>
-        Map goes here
+      <div className='mapContainer'>
+        <Map center={center} containerStyle={mapContainerStyle} withInfoBoxes={false}/>
       </div>
       <button className='master-button' text='Next'>
         Next
@@ -60,9 +70,9 @@ const CreateEvent3 = () => (
 
 const CreateEvent = () => {
   return (
-    // <CreateEvent1 />
+    <CreateEvent1 />
     // <CreateEvent2 />
-    <CreateEvent3 />
+    // <CreateEvent3 />
   );
 };
 
