@@ -1,16 +1,14 @@
 import axios from 'axios';
 import { createClient } from 'redis';
 
-const expireAfterSeconds = 60 * 60 * 24;
+const { CACHE_EXPIRY_SECS: expiry, CACHE_URL: url } = process.env;
 
 const request = axios.create({
   baseURL: 'https://maps.googleapis.com/maps/api/geocode',
   method: 'GET',
 });
 
-const cache = createClient({
-  url: process.env.CACHE_URL,
-});
+const cache = createClient({ url });
 
 export const lookup = function lookup() {};
 
@@ -19,7 +17,7 @@ export const reverseLookup = async function reverseLookup(id, [lng, lat]) {
     await cache.connect();
   }
   const key = `loc:${id}`;
-  const cached = await cache.get(key, 'EX', expireAfterSeconds);
+  const cached = await cache.get(key, 'EX', expiry);
   if (cached) {
     return JSON.parse(cached);
   }
@@ -37,7 +35,7 @@ export const reverseLookup = async function reverseLookup(id, [lng, lat]) {
     location.address = `${street_number} ${route}`;
   }
 
-  await cache.setEx(key, expireAfterSeconds, JSON.stringify(location));
+  await cache.setEx(key, expiry, JSON.stringify(location));
 
   return location;
 };

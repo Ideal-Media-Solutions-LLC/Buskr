@@ -2,10 +2,10 @@
     "defaultEnv": "local",
     "local": {
         "driver": "pg",
-        "user": { "ENV": "PGUSER" },
-        "password": { "ENV": "PGPASSWORD" },
-        "host": { "ENV": "PGHOST" },
-        "database": { "ENV": "PGDATABASE" },
-        "port": { "ENV": "PGPORT" }
+        "user": { "ENV": "RDS_USERNAME" },
+        "password": { "ENV": "RDS_PASSWORD" },
+        "host": { "ENV": "RDS_HOSTNAME" },
+        "database": { "ENV": "RDS_DB_NAME" },
+        "port": { "ENV": "RDS_PORT" }
     }
 }

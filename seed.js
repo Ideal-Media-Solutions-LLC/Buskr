@@ -10,19 +10,19 @@ const {
 } = require('faker');
 
 const {
-  PGUSER,
-  PGPASSWORD,
-  PGHOST,
-  PGDATABASE,
-  PGPORT,
+  RDS_USERNAME,
+  RDS_PASSWORD,
+  RDS_HOSTNAME,
+  RDS_DB_NAME,
+  RDS_PORT,
 } = process.env;
 
 const db = new Client({
-  user: PGUSER,
-  password: PGPASSWORD,
-  host: PGHOST,
-  database: PGDATABASE,
-  port: PGPORT,
+  user: RDS_USERNAME,
+  password: RDS_PASSWORD,
+  host: RDS_HOSTNAME,
+  database: RDS_DB_NAME,
+  port: RDS_PORT,
 });
 
 const args = process.argv;
