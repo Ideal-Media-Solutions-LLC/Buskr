@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaSearch, FaMapMarkerAlt, FaRegCalendar } from 'react-icons/fa';
 import DatePicker from 'react-datepicker';
 import AutoComplete from './Autocomplete';
@@ -11,6 +11,12 @@ const SearchSection = () => {
   const [searchLocation, setSearchLocation] = useState('');
   const [searchDate, setSearchDate] = useState('');
 
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) =>
+        console.log(position.coords.latitude, position.coords.longitude));
+    }
+  }, []);
   const onSearchTermChange = (e) => {
     setSearchTerm(e.target.value);
   };
@@ -73,7 +79,7 @@ const SearchSection = () => {
 
           <DatePicker wrapperClassName={styles.datePicker} selected={searchDate}
             onChange={onDateChange}
-            placeholderText= 'Select Date Here'></DatePicker></div>
+            placeholderText='Select Date Here'></DatePicker></div>
         <button id={styles.searchBtn} className="master-button" onClick={onSearchSubmit}>Search</button>
       </div>
       <div id={styles.tagContainer}>
