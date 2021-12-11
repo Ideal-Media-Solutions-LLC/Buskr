@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { BsListUl, BsMap, BsCalendar3Week } from 'react-icons/bs';
-import EventList from '../../search/results/EventList';
-import CalendarView from '../CalendarView';
-import styles from '../../../styles/resultList.module.css';
+import EventList from '../../../search/results/EventList';
+import CalendarView from '../../CalendarView';
+import styles from '../../../../styles/resultList.module.css';
 
 const FakeTabViews = () => {
   const [view, setView] = useState(1);

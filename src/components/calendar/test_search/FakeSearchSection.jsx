@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FaSearch, FaMapMarkerAlt } from 'react-icons/fa';
-import AutoComplete from '../search/Autocomplete';
-import styles from '../../styles/Search.module.css';
+import AutoComplete from '../../search/Autocomplete';
+import styles from '../../../styles/Search.module.css';
 
 const FakeSearchSection = () => {
   const dummyTags = ['Starting soon', 'Tomorrow', 'Near you', 'Dancers", Clowns', 'Magicians'];
