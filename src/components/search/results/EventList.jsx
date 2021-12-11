@@ -8,9 +8,9 @@ const EventList = () => {
   return (
     <div className="eventListContainer">
       {resultList.map(
-        (event) => {
-          return <EventItem key={event.properties.id} event={event} />;
-        },
+        (event) => (
+           <EventItem key={event.properties.id} event={event} />
+        ),
       )}
     </div>
   );
