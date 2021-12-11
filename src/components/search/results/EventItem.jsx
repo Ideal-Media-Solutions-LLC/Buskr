@@ -1,15 +1,18 @@
 import React from 'react';
+// import moment from 'moment';
+import moment from 'moment-timezone';
 import styles from '../../../styles/resultList.module.css';
 
 const EventItem = (props) => {
-  const time = props.event.properties.starts;
-  const location = ` ${props.event.properties.location.address}, ${props.event.properties.location.neighborhood} ${props.event.properties.location.administrative_area_level_1}`;
+  const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const time = moment.tz(props.event.properties.starts, zone).format('ddd, MMM D [@] h:mA z');
+  const location = `${props.event.properties.location.sublocality}, ${props.event.properties.location.administrative_area_level_1}`;
 
   return (
-    <div className="event-item-container">
-      <div className="event-item-info">
-        <div className="event-item-time">
-          {time}
+    <div className="eventItemContainer">
+      <div className="eventItemInfo">
+        <div className="eventItemTime">
+          {time.toUpperCase()}
         </div>
         <div>{props.event.properties.name}</div>
         <div>{props.event.properties.buskerName}</div>
@@ -21,7 +24,7 @@ const EventItem = (props) => {
           src={props.event.properties.photos[0]}
           alt="event image"
         />
-        <div className="optional-button"></div>
+        <div className="optionalButton"></div>
       </div>
     </div>
   );
