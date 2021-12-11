@@ -1,0 +1,31 @@
+.createEventContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.formContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.masterSearchBar {
+  padding: 10px 10px 10px 10px;
+  margin: 5px 0px 5px 0px;
+  border-radius: 4px;
+  border: 1px solid var(--buskr-lightgray);
+  font-size: 13px;
+}
+
+.mapContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+  width: auto;
+  margin: 5px 0px 0px 0px;
+  border-radius: 5px;
+  border: 1px solid var(--buskr-lightgray);
+  font-size: 13px;
+  color: var(--buskr-gray)
+}
