@@ -1,5 +1,5 @@
 .tabsContainer {
-  margin-top: 2em;
+  margin-top: 18px;
 }
 
 .roundedTabs {
@@ -36,7 +36,7 @@
 .tabsContent {
   border: var(--buskr-lightgray) solid 1px;
   border-top: none;
-  max-height: 300px;
+  max-height: 315px;
   overflow: auto;
 }
 
