@@ -10,8 +10,8 @@ const center = {
 const CreateEvent1 = () => {
   const mapContainerStyle = {
     height: '300px',
-    width: 'auto'
-  }
+    width: 'auto',
+  };
   return (
     <div className={styles.createEventContainer}>
       <div className='master-title'>Create Event</div>

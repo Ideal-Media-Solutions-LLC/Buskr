@@ -21,7 +21,7 @@ const InfoBox = function InfoBox(props) {
   );
 };
 
-const Map = function Map({containerStyle, center, withInfoBoxes}) {
+const Map = function Map({ containerStyle, center, withInfoBoxes }) {
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
