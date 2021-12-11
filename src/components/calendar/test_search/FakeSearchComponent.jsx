@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import FakeSearchSection from './FakeSearchSection';
 import FakeResultSection from './results/FakeResultSection';
+
 const dummySearchData = [
   {
     "type":"Feature",
     "geometry": {
       "type":"Point",
-      "coordinates":[-90.04911208674771,29.954767355989652]
+      "coordinates":[-90.04911208674771,29.954767355989652],
     },
     "properties": {
       "id":1,
@@ -26,7 +27,7 @@ const dummySearchData = [
         "country":"US",
         "postal_code":"70119",
         "postal_code_suffix":"3303",
-        "address":"1218 N Broad St"
+        "address":"1218 N Broad St",
       }
     }
   },
