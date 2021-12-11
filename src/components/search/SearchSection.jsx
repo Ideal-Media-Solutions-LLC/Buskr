@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { DatePicker } from 'antd';
+// import { DatePicker } from 'antd';
 import { FaSearch, FaMapMarkerAlt } from 'react-icons/fa';
 import styles from '../../styles/Search.module.css';
-import 'antd/dist/antd.css';
+// import 'antd/dist/antd.css';
 
 const SearchSection = () => {
   const dummyTags = ['Starting soon', 'Tomorrow', 'Near you', 'Dancers", Clowns', 'Magicians'];
@@ -65,7 +65,7 @@ const SearchSection = () => {
         <Input.Search allowClear style={{ width: '95%' }} placeholder="search by location" /> */}
 
         <div id={styles.datePicker}></div>
-        <DatePicker onChange={onDateChange} style={{ width: '95%' }} />
+        {/* <DatePicker onChange={onDateChange} style={{ width: '95%' }} /> */}
         <button id={styles.searchBtn} onClick={onSearchSubmit}>Search</button>
       </div>
       <div id={styles.tagContainer}>
