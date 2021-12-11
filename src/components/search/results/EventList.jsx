@@ -7,7 +7,7 @@ const EventList = () => {
       {/* will refactor when I have a sample data
       {[].map(
         (event) => { */}
-      <EventItem />;
+      <EventItem />
       {/* }
       )} */}
     </div>
