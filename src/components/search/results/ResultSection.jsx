@@ -3,7 +3,7 @@ import TabViews from './TabViews';
 
 const ResultSection = () => {
   return (
-    <div className="result-container">
+    <div className="resultContainer">
       <TabViews />
     </div>
   );
