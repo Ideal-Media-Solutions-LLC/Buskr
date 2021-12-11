@@ -1,6 +1,7 @@
 import React from 'react';
 import '../styles/globals.css';
-import Header from '../components/header';
+import '../styles/Calendar.css';
+import Header from '../components/Header';
 
 const MyApp = ({ Component, pageProps }) => {
   return (

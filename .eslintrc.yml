@@ -27,9 +27,6 @@ rules:
   func-style:
   - warn
   - expression
-  max-len:
-  - error
-  - code: 100
   no-bitwise: off
   no-cond-assign:
   - warn
