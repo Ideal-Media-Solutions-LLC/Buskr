@@ -6,7 +6,6 @@
         "password": { "ENV": "PGPASSWORD" },
         "host": { "ENV": "PGHOST" },
         "database": { "ENV": "PGDATABASE" },
-        "port": { "ENV": "PGPORT" },
-        "ssl":  { "ENV": "PGSSL" }
+        "port": { "ENV": "PGPORT" }
     }
 }
