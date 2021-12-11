@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Input, DatePicker } from 'antd';
+import { DatePicker } from 'antd';
 import { FaSearch, FaMapMarkerAlt } from 'react-icons/fa';
 import styles from '../../styles/Search.module.css';
 import 'antd/dist/antd.css';
 
-const SearchSection = (props) => {
+const SearchSection = () => {
   const dummyTags = ['Starting soon', 'Tomorrow', 'Near you', 'Dancers", Clowns', 'Magicians'];
   const [searchTerm, setSearchTerm] = useState('');
   const [searchLocation, setSearchLocation] = useState('');
@@ -18,7 +18,7 @@ const SearchSection = (props) => {
   };
   const onDateChange = (date, dateString) => {
     if (date !== null) {
-      //console.log(date._d, dateString);
+      // console.log(date._d, dateString);
       setSearchDate(dateString);
     }
   };
@@ -28,10 +28,11 @@ const SearchSection = (props) => {
     //   location:searchLocation,
     //   date:searchDate
     // }})
-    alert(searchTerm + searchLocation + searchDate);
+    console.log(searchTerm + searchLocation + searchDate);
   };
 
   const onTagClick = (e) => {
+    console.log(e.target.innerHTML);
     //   let tagName = e.target.innerHTML;
     //   if(tagName === 'Starting soon') {
     //     let currentDate = new Date.now();
