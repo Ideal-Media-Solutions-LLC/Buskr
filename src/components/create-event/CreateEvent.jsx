@@ -1,13 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from '../../styles/CreateEvent.module.css';
 import Map from '../map/Map';
 
-const center = {
-  lng: -90.06911208674771,
-  lat: 29.954767355989652,
-};
+// const center = {
+//   lng: -90.06911208674771,
+//   lat: 29.954767355989652,
+// };
 
-const CreateEvent1 = () => {
+const CreateEvent1 = ({ center, setDate }) => {
   const mapContainerStyle = {
     height: '300px',
     width: 'auto',
@@ -16,7 +16,7 @@ const CreateEvent1 = () => {
     <div className={styles.createEventContainer}>
       <div className='master-title'>Create Event</div>
       <form className={styles.formContainer}>
-        <input type='search' placeholder='Enter Event Date' className={styles.masterSearchBar}></input>
+        <input onChange={setDate} type='search' placeholder='MM/DD/YYYY' className={styles.masterSearchBar}></input>
         <input type='search' placeholder='Enter Start Time' className={styles.masterSearchBar}></input>
         <input type='search' placeholder='Enter End Time' className={styles.masterSearchBar}></input>
         <input type='search' placeholder='Current Location' className={styles.masterSearchBar}></input>
@@ -68,9 +68,35 @@ const CreateEvent3 = () => (
   </div>
 );
 
-const CreateEvent = () => {
+// const dummyEventInfo = {
+//   name: '',
+//   description: '',
+//   image: '',
+//   date: '',
+//   start: '',
+//   end: '',
+//   loc: '',
+//   tags: ''
+// }
+
+const CreateEvent = ({ center }) => {
+  const [eventInfo, setEventInfo] = useState();
+  const [name, setEventName] = useState();
+  const [description, setEventDescription] = useState();
+  const [image, setEventImage] = useState();
+  const [date, setEventDate] = useState();
+  const [start, setEventStart] = useState();
+  const [end, setEventEnd] = useState();
+  const [loc, setEventLoc] = useState();
+  const [tags, setEventTags] = useState();
+
+  const setDate = (e) => {
+    e.preventDefault();
+    console.log(e.target.value);
+  };
+
   return (
-    <CreateEvent1 />
+    <CreateEvent1 center={center} setDate={setDate}/>
     // <CreateEvent2 />
     // <CreateEvent3 />
   );
