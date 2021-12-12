@@ -1,5 +1,5 @@
 .tabsContainer {
-  margin-top: 2em;
+  margin-top: 1em;
 }
 
 .roundedTabs {
@@ -21,6 +21,10 @@
   font-size: 15px;
 }
 
+.tabs button {
+  padding-top: 5px;
+}
+
 .activeTabs {
   color: white;
   background-color: var(--buskr-pink);
@@ -36,7 +40,8 @@
 .tabsContent {
   border: var(--buskr-lightgray) solid 1px;
   border-top: none;
-  max-height: 300px;
+  height: 320px;
+  border-radius: 0px 0px 8px 8px;
   overflow: auto;
 }
 
