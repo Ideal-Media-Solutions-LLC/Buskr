@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from '../../styles/CreateEvent.module.css';
 import Map from '../map/Map';
 
@@ -7,24 +7,27 @@ import Map from '../map/Map';
 //   lat: 29.954767355989652,
 // };
 
-const CreateEvent1 = ({ center, setDate }) => {
+const CreateEvent1 = ({
+  center, handleDate, handleEndTime, handleStartTime, handleLocation, handleNext,
+}) => {
   const mapContainerStyle = {
     height: '300px',
     width: 'auto',
   };
+
   return (
     <div className={styles.createEventContainer}>
       <div className='master-title'>Create Event</div>
       <form className={styles.formContainer}>
-        <input onChange={setDate} type='search' placeholder='MM/DD/YYYY' className={styles.masterSearchBar}></input>
-        <input type='search' placeholder='Enter Start Time' className={styles.masterSearchBar}></input>
-        <input type='search' placeholder='Enter End Time' className={styles.masterSearchBar}></input>
-        <input type='search' placeholder='Current Location' className={styles.masterSearchBar}></input>
+        <input onChange={handleDate} type='search' placeholder='MM/DD/YYYY' className={styles.masterSearchBar}></input>
+        <input onChange={handleStartTime} type='search' placeholder='Enter Start Time' className={styles.masterSearchBar}></input>
+        <input onChange={handleEndTime} type='search' placeholder='Enter End Time' className={styles.masterSearchBar}></input>
+        <input onChange={handleLocation}type='search' placeholder='Current Location' className={styles.masterSearchBar}></input>
       </form>
       <div className='mapContainer'>
         <Map center={center} containerStyle={mapContainerStyle} withInfoBoxes={false}/>
       </div>
-      <button className='master-button' text='Next'>
+      <button onClick={handleNext} className='master-button' text='Next'>
         Next
       </button>
     </div>
@@ -45,26 +48,28 @@ const CreateEvent2 = () => (
   </div>
 );
 
-const CreateEvent3 = () => (
+const CreateEvent3 = ({
+  handleName, handleDescription, handleTags, handleImage, handleAddMyEvent,
+}) => (
   <div className={styles.eventUploadContainer}>
     <div className={styles.formAndButtonContainer}>
       <div className='master-title'>Create Event</div>
       <form className={styles.formContainer}>
         <div className={styles.smallTitle}> Event Name: </div>
         <div className={styles.validationWarning}> Please enter an event name </div>
-          <input type='search' className={styles.masterSearchBar} placeholder='Enter Event Name'></input>
+          <input onChange={handleName} type='search' className={styles.masterSearchBar} placeholder='Enter Event Name'></input>
         <div className={styles.smallTitle}> Description: </div>
         <div className={styles.validationWarning}> Please enter a description </div>
-          <textarea type='search' className={styles.descriptionField}placeholder='Enter Description'></textarea>
+          <textarea onChange={handleDescription} type='search' className={styles.descriptionField}placeholder='Enter Description'></textarea>
         <div className={styles.tagsDescription}>
           <div className={styles.smallTitle}> Tags </div>
           <div className={styles.tagSubtext}> (OPTIONAL - Separated By Comma)  </div>
         </div>
-          <input type='search' className={styles.masterSearchBar}placeholder='Add Tags (separated by comma)'></input>
+          <input onChange={handleTags} type='search' className={styles.masterSearchBar}placeholder='Add Tags (separated by comma)'></input>
       </form>
-      <button type='text' className={styles.uploadImageButton}>Upload Image</button>
+      <button onClick={handleImage} type='text' className={styles.uploadImageButton}>Upload Image</button>
     </div>
-    <button type='text' className='master-button'> Add My Event </button>
+    <button onClick={handleAddMyEvent} type='text' className='master-button'> Add My Event </button>
   </div>
 );
 
@@ -80,7 +85,7 @@ const CreateEvent3 = () => (
 // }
 
 const CreateEvent = ({ center }) => {
-  const [eventInfo, setEventInfo] = useState();
+  const [createPage, setCreatePage] = useState(1);
   const [name, setEventName] = useState();
   const [description, setEventDescription] = useState();
   const [image, setEventImage] = useState();
@@ -90,16 +95,84 @@ const CreateEvent = ({ center }) => {
   const [loc, setEventLoc] = useState();
   const [tags, setEventTags] = useState();
 
-  const setDate = (e) => {
+  useEffect(() => {
+    setEventLoc(center);
+  }, [center]);
+
+  const handleDate = (e) => {
     e.preventDefault();
-    console.log(e.target.value);
+    setEventDate(e.target.value);
   };
 
-  return (
-    <CreateEvent1 center={center} setDate={setDate}/>
-    // <CreateEvent2 />
-    // <CreateEvent3 />
-  );
+  const handleStartTime = (e) => {
+    e.preventDefault();
+    setEventStart(e.target.value);
+  };
+
+  const handleEndTime = (e) => {
+    e.preventDefault();
+    setEventEnd(e.target.value);
+  };
+
+  const handleLocation = (e) => {
+    e.preventDefault();
+    setEventLoc(e.target.value);
+  };
+
+  const handleName = (e) => {
+    e.preventDefault();
+    console.log(e.target.value);
+    setEventName(e.target.value);
+  };
+
+  const handleDescription = (e) => {
+    e.preventDefault();
+    console.log(e.target.value);
+    setEventDescription(e.target.value);
+  };
+
+  const handleNext = () => {
+    if (date && start && end && loc) {
+      setCreatePage(3);
+    }
+  };
+
+  const handleAddMyEvent = () => {
+    console.log('ADD MY EVENT CLICKED!');
+  };
+
+  const handleImage = () => {
+    console.log('Upload Image button was clicked!');
+  };
+
+  if (createPage === 1) {
+    return (
+      <CreateEvent1
+        center={center}
+        handleDate={handleDate}
+        handleStartTime={handleStartTime}
+        handleEndTime={handleEndTime}
+        handleLocation={handleLocation}
+        handleNext={handleNext}
+      />
+    );
+  }
+  if (createPage === 2) {
+    return (
+      <CreateEvent2 />
+    );
+  }
+  if (createPage === 3) {
+    return (
+      <CreateEvent3
+        handleName={handleName}
+        handleDescription={handleDescription}
+        handleImage={handleImage}
+        handleAddMyEvent={handleAddMyEvent}
+      />
+    );
+  }
+  return <div></div>;
 };
 
 export default CreateEvent;
