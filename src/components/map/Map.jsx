@@ -28,19 +28,16 @@ const MapWithLessStuff = function MapWithLessStuff({ containerStyle, center }) {
     version: 3,
   });
 
-  // const [position, setPosition] = useState(center);
-  // const [visible, setVisible] = useState(false);
-
   const onLoad = React.useCallback((/** @type {google.maps.Map} */ map) => {
-    // const pin = new google.maps.Marker({
-    //   position: center,
-    //   map,
-    //   draggable: true,
-    // }).setMap(map);
+    const pin = new google.maps.Marker({
+      position: center,
+      map,
+      draggable: true,
+    }).setMap(map);
 
-    // map.addListener('drag', () => {
-    //   console.log(pin.getPosition());
-    // });
+    pin.addListener('drag', (mapsMouseEvent) => {
+      console.log('Drag me');
+    });
   }, []);
 
   // style={{ width: '100vw', height: '100vh' }}>
