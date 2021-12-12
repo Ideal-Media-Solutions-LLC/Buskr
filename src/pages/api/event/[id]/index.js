@@ -1,45 +1,23 @@
-import db from '../../../db';
-import middleware from '../../../middleware';
-import { reverseLookup } from '../../../geocode';
+import { db, getLocations, handler } from '../../../../endpoint';
 
 /**
  * @param {import('http').IncomingMessage} req
  * @param {import('http').ServerResponse} res
  */
-export default async function handler(req, res) {
-  await middleware(req, res);
-
-  const { id, limit, offset } = req.query;
-
-  const nId = Number(id);
-  if (Number.isNaN(nId)) {
-    res.statusCode = 400;
-    res.end('invalid id');
-    return;
-  }
-
+const GET = async function GET(req, res) {
+  const id = req.intParam('id');
+  const limit = req.intParam('limit', null);
+  const offset = req.intParam('offset', null);
   const clauses = [];
-  const args = [nId];
+  const args = [id];
 
-  if (limit !== undefined) {
-    const nLimit = Number(limit);
-    if (Number.isNaN(nLimit)) {
-      res.statusCode = 400;
-      res.end('invalid limit');
-      return;
-    }
-    args.push(nLimit);
+  if (limit !== null) {
+    args.push(limit);
     clauses.push(`LIMIT $${args.length}`);
   }
 
-  if (offset !== undefined) {
-    const nOffset = Number(offset);
-    if (Number.isNaN(nOffset)) {
-      res.statusCode = 400;
-      res.end('invalid offset');
-      return;
-    }
-    args.push(nOffset);
+  if (offset !== null) {
+    args.push(offset);
     clauses.push(`OFFSET $${args.length}`);
   }
 
@@ -79,10 +57,8 @@ export default async function handler(req, res) {
   ${clauses.join('\n')}
   `;
   const { rows } = await db.query(query, args);
-
-  await Promise.all(rows.map(async (row) => {
-    row.properties.location = await reverseLookup(row.properties.id, row.geometry.coordinates);
-  }));
-
+  await getLocations(rows);
   res.status(200).json(rows);
-}
+};
+
+export default handler({ GET });

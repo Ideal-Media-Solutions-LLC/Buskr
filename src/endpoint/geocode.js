@@ -10,9 +10,9 @@ const request = axios.create({
 
 const cache = createClient({ url });
 
-export const lookup = function lookup() {};
+export const geocode = function geocode() {};
 
-export const reverseLookup = async function reverseLookup(id, [lng, lat]) {
+export const reverseGeocode = async function reverseGeocode(id, [lng, lat]) {
   if (!cache.isOpen) {
     await cache.connect();
   }
@@ -22,10 +22,14 @@ export const reverseLookup = async function reverseLookup(id, [lng, lat]) {
     return JSON.parse(cached);
   }
 
-  const { data: { results: [{ address_components }] } } = await
+  const { data: { results: [address] } } = await
   request(`json?key=${process.env.GEOCODE_API_KEY}&latlng=${lat},${lng}`);
 
-  const condensed = Object.values(address_components)
+  if (address === undefined) {
+    return {};
+  }
+
+  const condensed = Object.values(address.address_components)
     .map(({ short_name, types: [type] }) => [type, short_name]);
   const location = Object.fromEntries(condensed);
   const { street_number, route } = location;
@@ -38,4 +42,10 @@ export const reverseLookup = async function reverseLookup(id, [lng, lat]) {
   await cache.setEx(key, expiry, JSON.stringify(location));
 
   return location;
+};
+
+export const getLocations = async function getLocations(rows) {
+  return Promise.all(rows.map(async (row) => {
+    row.properties.location = await reverseGeocode(row.properties.id, row.geometry.coordinates);
+  }));
 };
