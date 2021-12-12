@@ -40,7 +40,7 @@
 .tabsContent {
   border: var(--buskr-lightgray) solid 1px;
   border-top: none;
-  height: 320px;
+  height: 330px;
   border-radius: 0px 0px 8px 8px;
   overflow: auto;
 }
