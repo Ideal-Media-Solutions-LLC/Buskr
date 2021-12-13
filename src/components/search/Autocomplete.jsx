@@ -47,6 +47,7 @@ const AutoComplete = ({ suggestions }) => {
     <>
       <input
         className={styles.autocompleteInput}
+        placeholder='Seach for "Clown"'
         type="text"
         onChange={onChange}
         value={input}
