@@ -2,7 +2,7 @@ name: Deploy to development environment
 on:
   push:
     branches:
-    - api
+    - main
 
 jobs:
   build:
