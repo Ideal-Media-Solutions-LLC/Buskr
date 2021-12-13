@@ -23,7 +23,7 @@ export const reverseGeocode = async function reverseGeocode(id, [lng, lat]) {
   }
 
   const { data: { results: [address] } } = await
-  request(`json?key=${process.env.GEOCODE_API_KEY}&latlng=${lat},${lng}`);
+  request(`json?key=${process.env.GOOGLE_KEY}&latlng=${lat},${lng}`);
 
   if (address === undefined) {
     return {};
