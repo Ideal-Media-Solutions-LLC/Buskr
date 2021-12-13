@@ -24,6 +24,7 @@ const InfoBox = function InfoBox(props) {
 * @param {Object} props
 * @param {React.CSSProperties} props.containerStyle
 * @param {google.maps.LatLngLiteral} props.center
+* @param {'view' | 'create'} props.mode
 * @param {(google.maps.LatLngLiteral) => void=} props.onDrop
 */
 const Map = function Map({ containerStyle, center, mode, onDrop }) {
@@ -70,7 +71,7 @@ const Map = function Map({ containerStyle, center, mode, onDrop }) {
     if (mode === 'view') {
       map.data.loadGeoJson('/sample_events.json', { idPropertyName: 'storeid' });
     }
-  }, [center, mode]);
+  }, [center, mode, onDrop]);
 
   // style={{ width: '100vw', height: '100vh' }}>
   return isLoaded ? (
