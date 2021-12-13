@@ -23,11 +23,11 @@ const SearchSection = () => {
         lng: searchLocation.lng,
         from: searchDate
           || new Date(),
-        limit: 5,
+        limit: 100,
       },
     }).then((result) => {
       const byTime = result.data.features.sort(
-        (a, b) => a.properties.starts > b.properties.starts,
+        (a, b) => new Date(a.properties.starts) - new Date(b.properties.starts),
       );
 
       let bySearchTerm = byTime;
