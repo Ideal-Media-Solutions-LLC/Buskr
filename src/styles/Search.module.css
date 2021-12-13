@@ -66,10 +66,10 @@ align-items: center ;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: space-around;
   align-items: baseline;
   width:100%
 }
+
 .searchTag {
   background-color: #5C4C4C;
   border-radius: 12px;
@@ -78,12 +78,12 @@ align-items: center ;
   color: #FFFFFF;
   cursor: pointer;
   display: inline-block;
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 500;
   height: 40px;
   line-height: 20px;
   list-style: none;
-  margin: 12px 0 0 0;
+  margin: 8px 8px 0px 0px;
   outline: none;
   padding: 10px 15px;
   position: relative;
@@ -94,8 +94,8 @@ align-items: center ;
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
-
 }
+
 .searchTag:focus{
   background-color: #4e3c3c;
 
