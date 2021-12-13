@@ -11,51 +11,21 @@ const InfoBox = function InfoBox(props) {
   const description = feature.getProperty('description');
   return (
     <article className={styles.infobox}>
-          <img className={styles.infoPhoto} src={photos[0]} alt={name}/>
-          <div className={styles.infoDetails}>
-            <div className={styles.infoBoxName}>{name}</div>
-            <div className={styles.infoBoxBuskerName}>{buskerName}</div>
-          </div>
+      <img className={styles.infoPhoto} src={photos[0]} alt={name}/>
+      <div className={styles.infoDetails}>
+        <div className={styles.infoBoxName}>{name}</div>
+        <div className={styles.infoBoxBuskerName}>{buskerName}</div>
+      </div>
     </article>
   );
 };
 
-const MapWithLessStuff = function MapWithLessStuff({ containerStyle, center }) {
-  const { isLoaded } = useJsApiLoader({
-    id: 'google-map-script',
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
-    googleMapsClientId: process.env.NEXT_PUBLIC_GOOGLE_MAPS_CLIENT_ID,
-    version: 3,
-  });
-
-  const onLoad = React.useCallback((/** @type {google.maps.Map} */ map) => {
-    const pin = new google.maps.Marker({
-      position: center,
-      map,
-      draggable: true,
-    }).setMap(map);
-
-    pin.addListener('drag', (mapsMouseEvent) => {
-      console.log('Drag me');
-    });
-  }, []);
-
-  // style={{ width: '100vw', height: '100vh' }}>
-  return isLoaded ? (
-    <div className={styles.mapContainer}>
-      <GoogleMap
-        mapContainerStyle={containerStyle}
-        center={center}
-        zoom={17}
-        onLoad={onLoad}
-        options={{ mapId: 'c4f800a3ac3629c2' }}
-      >
-      </GoogleMap>
-    </div>
-  ) : null;
-};
-
-const Map = function Map({ containerStyle, center, withInfoBoxes }) {
+let currentMarker = null;
+/**
+* @param {Object} props
+* @param {'view' | 'create'} props.mode
+*/
+const Map = function Map({ containerStyle, center, mode, withInfoBoxes }) {
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
@@ -66,46 +36,55 @@ const Map = function Map({ containerStyle, center, withInfoBoxes }) {
   const [infoFeature, setInfoFeature] = useState(null);
 
   const onLoad = React.useCallback((/** @type {google.maps.Map} */ map) => {
+    /* eslint-disable-next-line no-new */
     new google.maps.Marker({
       position: center,
       map,
       title: 'You are here',
-    }).setMap(map);
+      icon: {
+        path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
+        scale: 5,
+      },
+    });
 
-    map.addListener('click', (/* { latLng: { lng, lat } } */) => {
+    map.addListener('click', ({ latLng: { lng, lat } }) => {
       setInfoFeature(null);
-      /*
+
       const center = { lat: lat(), lng: lng() };
 
-      new google.maps.Marker({
-        position: center,
-        map,
-        title: 'Hello World!',
-      }).setMap(map);
-      */
+      if (currentMarker === null) {
+        currentMarker = new google.maps.Marker({
+          position: center,
+          map,
+          draggable: true,
+        });
+      } else {
+        currentMarker.setPosition(center);
+      }
     });
 
     map.data.addListener('click', ({ feature }) => {
       setInfoFeature(feature);
     });
-    map.data.loadGeoJson('/sample_events.json', { idPropertyName: 'storeid' });
-  }, []);
+    if (mode === 'view') {
+      map.data.loadGeoJson('/sample_events.json', { idPropertyName: 'storeid' });
+    }
+  }, [center, mode]);
 
   // style={{ width: '100vw', height: '100vh' }}>
   return isLoaded ? (
     <div className={styles.mapContainer}>
-      <GoogleMap
-        mapContainerStyle={containerStyle}
-        center={center}
-        zoom={17}
-        onLoad={onLoad}
-        options={{ mapId: 'c4f800a3ac3629c2' }}
-      >
-        {withInfoBoxes && infoFeature && <InfoBox feature={infoFeature} />}
-      </GoogleMap>
+    <GoogleMap
+    mapContainerStyle={containerStyle}
+    center={center}
+    zoom={17}
+    onLoad={onLoad}
+    options={{ mapId: 'c4f800a3ac3629c2' }}
+    >
+    {withInfoBoxes && infoFeature && <InfoBox feature={infoFeature} />}
+    </GoogleMap>
     </div>
   ) : null;
 };
 
 export default React.memo(Map);
-export { MapWithLessStuff };
