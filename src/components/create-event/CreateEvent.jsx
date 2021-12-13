@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ImageUploader from './UploadImage';
 import styles from '../../styles/CreateEvent.module.css';
 import Map from '../map/Map';
 
@@ -49,29 +50,46 @@ const CreateEvent2 = () => (
 );
 
 const CreateEvent3 = ({
-  handleName, handleDescription, handleTags, handleImage, handleAddMyEvent,
-}) => (
-  <div className={styles.eventUploadContainer}>
-    <div className={styles.formAndButtonContainer}>
-      <div className='master-title'>Create Event</div>
-      <form className={styles.formContainer}>
-        <div className={styles.smallTitle}> Event Name: </div>
-        <div className={styles.validationWarning}> Please enter an event name </div>
-          <input onChange={handleName} type='search' className={styles.masterSearchBar} placeholder='Enter Event Name'></input>
-        <div className={styles.smallTitle}> Description: </div>
-        <div className={styles.validationWarning}> Please enter a description </div>
-          <textarea onChange={handleDescription} type='search' className={styles.descriptionField}placeholder='Enter Description'></textarea>
-        <div className={styles.tagsDescription}>
-          <div className={styles.smallTitle}> Tags </div>
-          <div className={styles.tagSubtext}> (OPTIONAL - Separated By Comma)  </div>
+  handleName,
+  handleDescription,
+  handleTags,
+  handleImage,
+  handleAddMyEvent,
+  handleUploadMode,
+  uploadMode,
+}) => {
+  const [uploadView, setUploadView] = useState(false);
+  useEffect(() => {
+    setUploadView(uploadMode);
+  }, [uploadMode]);
+
+  if (!uploadView) {
+    return (
+      <div className={styles.eventUploadContainer}>
+        <div className={styles.formAndButtonContainer}>
+          <div className='master-title'>Create Event</div>
+          <form className={styles.formContainer}>
+            <div className={styles.smallTitle}> Event Name: </div>
+            <div className={styles.validationWarning}> Please enter an event name </div>
+              <input onChange={handleName} type='search' className={styles.masterSearchBar} placeholder='Enter Event Name'></input>
+            <div className={styles.smallTitle}> Description: </div>
+            <div className={styles.validationWarning}> Please enter a description </div>
+              <textarea onChange={handleDescription} type='search' className={styles.descriptionField}placeholder='Enter Description'></textarea>
+            <div className={styles.tagsDescription}>
+              <div className={styles.smallTitle}> Tags </div>
+              <div className={styles.tagSubtext}> (OPTIONAL - Separated By Comma)  </div>
+            </div>
+              <input onChange={handleTags} type='search' className={styles.masterSearchBar}placeholder='Add Tags (separated by comma)'></input>
+          </form>
+          {/* if image exists, render image, otherwise render button */}
+          <button onClick={handleUploadMode} type='text' className={styles.uploadImageButton}>Upload Image</button>
         </div>
-          <input onChange={handleTags} type='search' className={styles.masterSearchBar}placeholder='Add Tags (separated by comma)'></input>
-      </form>
-      <button onClick={handleImage} type='text' className={styles.uploadImageButton}>Upload Image</button>
-    </div>
-    <button onClick={handleAddMyEvent} type='text' className='master-button'> Add My Event </button>
-  </div>
-);
+        <button onClick={handleAddMyEvent} type='text' className='master-button'> Add My Event </button>
+      </div>
+    );
+  }
+  return <ImageUploader handleImage={handleImage}/>;
+};
 
 // const dummyEventInfo = {
 //   name: '',
@@ -85,7 +103,7 @@ const CreateEvent3 = ({
 // }
 
 const CreateEvent = ({ center }) => {
-  const [createPage, setCreatePage] = useState(1);
+  const [createPage, setCreatePage] = useState(3);
   const [name, setEventName] = useState();
   const [description, setEventDescription] = useState();
   const [image, setEventImage] = useState();
@@ -94,6 +112,7 @@ const CreateEvent = ({ center }) => {
   const [end, setEventEnd] = useState();
   const [loc, setEventLoc] = useState();
   const [tags, setEventTags] = useState();
+  const [uploadMode, setUploadMode] = useState(false);
 
   useEffect(() => {
     setEventLoc(center);
@@ -141,8 +160,15 @@ const CreateEvent = ({ center }) => {
     console.log('ADD MY EVENT CLICKED!');
   };
 
-  const handleImage = () => {
+  const handleImage = (img) => {
     console.log('Upload Image button was clicked!');
+    setEventImage(img);
+    setUploadMode(false);
+  };
+
+  const handleUploadMode = () => {
+    console.log('switch upload view!');
+    setUploadMode(true);
   };
 
   if (createPage === 1) {
@@ -169,6 +195,8 @@ const CreateEvent = ({ center }) => {
         handleDescription={handleDescription}
         handleImage={handleImage}
         handleAddMyEvent={handleAddMyEvent}
+        handleUploadMode={handleUploadMode}
+        uploadMode={uploadMode}
       />
     );
   }

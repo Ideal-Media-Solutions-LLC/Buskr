@@ -1,0 +1,66 @@
+/* .imageUploader {
+  padding: 0px 0px 0px 0px;
+  margin: 0px 0px 0px 0px;
+} */
+
+.uploadRemoveButtonsContainer {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+}
+
+
+.clickOrDrag, .dragging {
+  border: 2px solid var(--buskr-pink);
+  height: 400px;
+  width: 100%;
+  border-radius: 10px;
+  padding: 0px 0px 0px 0px;
+  margin: 0px 0px 0px 0px;
+}
+
+.dragging {
+  background-color: var(--buskr-pink);
+  color: var(--buskr-white);
+}
+
+.dragged {
+  border: none;
+}
+
+.currentImage {
+  border: 2px solid var(--buskr-pink);
+  border-radius: 10px;
+  height: 400px;
+  width: 335px;
+  width: 100%;
+  object-fit: cover;
+}
+
+
+.addBackRemoveButtonsContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.skipAndRemoveButton {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.removeAllImages, .skipThisStep {
+  border: none;
+  background-color: var(--buskr-purple);
+  padding: 15px 15px 15px 15px;
+  margin: 20px 0px 20px 0px;
+  border-radius: 10px;
+  color: white;
+  font-size: 17px;
+  font-weight: bold;
+  width: 158px;
+}
+
+.removeAllImages {
+  background-color: var(--buskr-purple)
+}
