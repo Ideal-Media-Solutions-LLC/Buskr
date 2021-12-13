@@ -58,6 +58,9 @@ const CreateEvent3 = ({
   handleUploadMode,
   uploadMode,
   image,
+  submitAttempted,
+  name,
+  description,
 }) => {
   const [uploadView, setUploadView] = useState(false);
   useEffect(() => {
@@ -71,10 +74,16 @@ const CreateEvent3 = ({
           <div className='master-title'>Create Event</div>
           <form className={styles.formContainer}>
             <div className={styles.smallTitle}> Event Name: </div>
-            <div className={styles.validationWarning}> Please enter an event name </div>
+            <div className={submitAttempted && !name
+              ? styles.validationWarning
+              : styles.validationWarningHidden}>
+                Please enter an event name
+              </div>
               <input onChange={handleName} type='search' className={styles.masterSearchBar} placeholder='Enter Event Name'></input>
             <div className={styles.smallTitle}> Description: </div>
-            <div className={styles.validationWarning}> Please enter a description </div>
+            <div className={submitAttempted && !description
+              ? styles.validationWarning
+              : styles.validationWarningHidden}> Please enter a description </div>
               <textarea onChange={handleDescription} type='search' className={styles.descriptionField}placeholder='Enter Description'></textarea>
             <div className={styles.tagsDescription}>
               <div className={styles.smallTitle}> Tags </div>
@@ -118,6 +127,7 @@ const CreateEvent = ({ center }) => {
   const [loc, setEventLoc] = useState();
   const [tags, setEventTags] = useState();
   const [uploadMode, setUploadMode] = useState(false);
+  const [submitAttempted, setSubmitAttempted] = useState(false);
 
   useEffect(() => {
     setEventLoc(center);
@@ -163,6 +173,7 @@ const CreateEvent = ({ center }) => {
 
   const handleAddMyEvent = () => {
     console.log('ADD MY EVENT CLICKED!');
+    setSubmitAttempted(true);
   };
 
   const handleImage = (img) => {
@@ -203,6 +214,9 @@ const CreateEvent = ({ center }) => {
         handleUploadMode={handleUploadMode}
         uploadMode={uploadMode}
         image={image}
+        submitAttempted={submitAttempted}
+        name={name}
+        description={description}
       />
     );
   }

@@ -99,6 +99,7 @@
 }
 
 .uploadedImage {
+  margin-top: 25px;
   height: 200px;
   border-radius: 10px;
   width: 100%;
@@ -113,7 +114,12 @@
 
 .validationWarning {
   color: var(--buskr-pink);
-  /* visibility: hidden; */
+  height: 20px;
+}
+
+.validationWarningHidden {
+  height: 20px;
+  visibility: hidden;
 }
 
 .tagsDescription {

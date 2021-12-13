@@ -1,13 +1,3 @@
-/* .imageUploader {
-  padding: 0px 0px 0px 0px;
-  margin: 0px 0px 0px 0px;
-  display: flex;
-  flex-direction: column;
-  margin-top: 20px;
-  height: 715px;
-  justify-content: space-between;
-} */
-
 .uploadImageViewContainer {
   display: flex;
   flex-direction: column;
@@ -28,12 +18,16 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 2px solid var(--buskr-pink);
+  border: 1px solid var(--buskr-pink);
   height: 400px;
   width: 335px;
   border-radius: 10px;
   padding: 0px 0px 0px 0px;
   margin: 0px 0px 0px 0px;
+}
+
+.clickOrDrag {
+  background-color: rgb(226, 226, 226);
 }
 
 .dragging {
@@ -48,7 +42,7 @@
 } */
 
 .currentImage {
-  border: 2px solid var(--buskr-pink);
+  /* border: 2px solid var(--buskr-pink); */
   border-radius: 10px;
   height: 400px;
   width: 335px;
@@ -74,7 +68,7 @@
   border: none;
   background-color: var(--buskr-purple);
   padding: 15px 15px 15px 15px;
-  margin: 20px 0px 20px 0px;
+  /* margin: 20px 0px 20px 0px; */
   border-radius: 10px;
   color: white;
   font-size: 17px;
