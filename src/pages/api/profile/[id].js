@@ -1,22 +1,11 @@
-import db from '../../../db';
-import middleware from '../../../middleware';
-import { reverseLookup } from '../../../geocode';
+import { HttpException, db, getLocations, handler } from '../../../endpoint';
 
 /**
  * @param {import('http').IncomingMessage} req
  * @param {import('http').ServerResponse} res
  */
-export default async function handler(req, res) {
-  await middleware(req, res);
-
-  const { id } = req.query;
-
-  const nId = Number(id);
-  if (Number.isNaN(nId)) {
-    res.statusCode = 400;
-    res.end('invalid id');
-    return;
-  }
+const GET = async function GET(req, res) {
+  const id = req.intParam('id');
 
   const query = `
     WITH busker_events AS (
@@ -58,18 +47,22 @@ export default async function handler(req, res) {
     busker.name,
     busker.photo,
     busker.bio,
-    coalesce(array_agg(eventObj), '{}') as events
+    coalesce(
+      array_agg(eventObj) FILTER (WHERE busker_events.busker_id IS NOT NULL),
+      '{}'
+    ) as events
   FROM busker
   LEFT JOIN busker_events
   ON busker_events.busker_id = busker.id
   WHERE busker.id = $1
   GROUP BY busker.id
   `;
-  const { rows: [profile] } = await db.query(query, [nId]);
-
-  await Promise.all(profile.events.map(async (row) => {
-    row.properties.location = await reverseLookup(row.properties.id, row.geometry.coordinates);
-  }));
-
+  const { rows: [profile] } = await db.query(query, [id]);
+  if (profile === undefined) {
+    throw new HttpException(400, 'Profile not found', id);
+  }
+  await getLocations(profile.events);
   res.status(200).json(profile);
-}
+};
+
+export default handler({ GET });
