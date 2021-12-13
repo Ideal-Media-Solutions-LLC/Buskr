@@ -57,6 +57,7 @@ const CreateEvent3 = ({
   handleAddMyEvent,
   handleUploadMode,
   uploadMode,
+  image,
 }) => {
   const [uploadView, setUploadView] = useState(false);
   useEffect(() => {
@@ -82,7 +83,11 @@ const CreateEvent3 = ({
               <input onChange={handleTags} type='search' className={styles.masterSearchBar}placeholder='Add Tags (separated by comma)'></input>
           </form>
           {/* if image exists, render image, otherwise render button */}
-          <button onClick={handleUploadMode} type='text' className={styles.uploadImageButton}>Upload Image</button>
+          {image
+            ? <img className={styles.uploadedImage} src={image} alt=''/>
+            : <button onClick={handleUploadMode} type='text' className={styles.uploadImageButton}>Upload Image</button>
+          }
+
         </div>
         <button onClick={handleAddMyEvent} type='text' className='master-button'> Add My Event </button>
       </div>
@@ -197,6 +202,7 @@ const CreateEvent = ({ center }) => {
         handleAddMyEvent={handleAddMyEvent}
         handleUploadMode={handleUploadMode}
         uploadMode={uploadMode}
+        image={image}
       />
     );
   }
