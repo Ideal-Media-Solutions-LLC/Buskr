@@ -1,4 +1,4 @@
-.imageUploader {
+/* .imageUploader {
   padding: 0px 0px 0px 0px;
   margin: 0px 0px 0px 0px;
   display: flex;
@@ -6,6 +6,13 @@
   margin-top: 20px;
   height: 715px;
   justify-content: space-between;
+} */
+
+.uploadImageViewContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 695px;
 }
 
 .dragAreaAndButtonsContainer {
