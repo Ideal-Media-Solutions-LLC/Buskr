@@ -20,21 +20,20 @@ const InfoBox = function InfoBox(props) {
   );
 };
 
-let currentMarker = null;
 /**
 * @param {Object} props
-* @param {'view' | 'create'} props.mode
+* @param {React.CSSProperties} props.containerStyle
+* @param {google.maps.LatLngLiteral} props.center
+* @param {(google.maps.LatLngLiteral) => void=} props.onDrop
 */
-const Map = function Map({ containerStyle, center, mode, withInfoBoxes }) {
+const Map = function Map({ containerStyle, center, mode, onDrop }) {
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_KEY,
-    googleMapsClientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT,
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
+    googleMapsClientId: process.env.NEXT_PUBLIC_GOOGLE_MAPS_CLIENT_ID,
     version: 3,
   });
-
   const [infoFeature, setInfoFeature] = useState(null);
-
   const onLoad = React.useCallback((/** @type {google.maps.Map} */ map) => {
     /* eslint-disable-next-line no-new */
     new google.maps.Marker({
@@ -52,15 +51,17 @@ const Map = function Map({ containerStyle, center, mode, withInfoBoxes }) {
 
       const center = { lat: lat(), lng: lng() };
 
-      if (currentMarker === null) {
-        currentMarker = new google.maps.Marker({
+      if (map.currentMarker) {
+        map.currentMarker = new google.maps.Marker({
           position: center,
           map,
           draggable: true,
         });
       } else {
-        currentMarker.setPosition(center);
+        map.currentMarker.setPosition(center);
       }
+
+      onDrop(center);
     });
 
     map.data.addListener('click', ({ feature }) => {
@@ -81,7 +82,7 @@ const Map = function Map({ containerStyle, center, mode, withInfoBoxes }) {
     onLoad={onLoad}
     options={{ mapId: 'c4f800a3ac3629c2' }}
     >
-    {withInfoBoxes && infoFeature && <InfoBox feature={infoFeature} />}
+    {mode === 'view' && infoFeature && <InfoBox feature={infoFeature} />}
     </GoogleMap>
     </div>
   ) : null;
