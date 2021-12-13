@@ -4,12 +4,12 @@ import ResultSection from './results/ResultSection';
 import SearchContext from './SearchContext';
 import data from './results/sampleData';
 
-const Search = (props) => {
-  const [results, setResults] = useState(data);
+const Search = () => {
+  const [results, setResults] = useState({ results: [], filtered: [] });
 
   return (
     <div id='searchContainer'>
-      <SearchContext.Provider value={results}>
+      <SearchContext.Provider value={{ results, setResults }}>
         <SearchSection></SearchSection>
         <ResultSection />
       </SearchContext.Provider>
