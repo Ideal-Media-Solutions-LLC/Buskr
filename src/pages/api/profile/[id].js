@@ -1,4 +1,4 @@
-import { db, getLocations, handler } from '../../../../endpoint';
+import { HttpException, db, getLocations, handler } from '../../../endpoint';
 
 /**
  * @param {import('http').IncomingMessage} req
@@ -47,7 +47,10 @@ const GET = async function GET(req, res) {
     busker.name,
     busker.photo,
     busker.bio,
-    coalesce(array_agg(eventObj), '{}') as events
+    coalesce(
+      array_agg(eventObj) FILTER (WHERE busker_events.busker_id IS NOT NULL),
+      '{}'
+    ) as events
   FROM busker
   LEFT JOIN busker_events
   ON busker_events.busker_id = busker.id
@@ -55,6 +58,9 @@ const GET = async function GET(req, res) {
   GROUP BY busker.id
   `;
   const { rows: [profile] } = await db.query(query, [id]);
+  if (profile === undefined) {
+    throw new HttpException(400, 'Profile not found', id);
+  }
   await getLocations(profile.events);
   res.status(200).json(profile);
 };

@@ -1,4 +1,4 @@
-import { db, getLocations, handler } from '../../../../endpoint';
+import { HttpException, db, getLocations, handler } from '../../../endpoint';
 
 /**
  * @param {import('http').IncomingMessage} req
@@ -57,8 +57,11 @@ const GET = async function GET(req, res) {
   ${clauses.join('\n')}
   `;
   const { rows } = await db.query(query, args);
+  if (rows.length === 0) {
+    throw new HttpException(404, 'Event not found', id);
+  }
   await getLocations(rows);
-  res.status(200).json(rows);
+  res.status(200).json(rows[0]);
 };
 
 export default handler({ GET });

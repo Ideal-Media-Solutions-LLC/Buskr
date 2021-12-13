@@ -1,14 +1,17 @@
 import axios from 'axios';
 import { createClient } from 'redis';
 
-const { CACHE_EXPIRY_SECS: expiry, CACHE_URL: url } = process.env;
+const { CACHE_EXPIRY_SECS: expiry, CACHE_URL: url, CACHE_TLS } = process.env;
 
 const request = axios.create({
   baseURL: 'https://maps.googleapis.com/maps/api/geocode',
   method: 'GET',
 });
 
-const cache = createClient({ url });
+const cache = createClient({
+  socket: { tls: CACHE_TLS === 'true' || CACHE_TLS === '1' },
+  url,
+});
 
 export const geocode = function geocode() {};
 
