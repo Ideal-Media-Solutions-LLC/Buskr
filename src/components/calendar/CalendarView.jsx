@@ -42,7 +42,7 @@ const CalendarView = () => {
   }, [currentStartDate]);
 
   return (
-    <div>
+    <div className='calendar-container'>
       <Calendar
         onClickDay={setDate}
         value={date}

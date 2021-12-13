@@ -21,6 +21,10 @@
   font-size: 15px;
 }
 
+.tabs button {
+  padding-top: 5px;
+}
+
 .activeTabs {
   color: white;
   background-color: var(--buskr-pink);
@@ -36,7 +40,7 @@
 .tabsContent {
   border: var(--buskr-lightgray) solid 1px;
   border-top: none;
-  max-height: 315px;
+  height: 330px;
   overflow: auto;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;

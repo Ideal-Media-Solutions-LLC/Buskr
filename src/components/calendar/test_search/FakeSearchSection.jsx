@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { FaSearch, FaMapMarkerAlt } from 'react-icons/fa';
+import { FaSearch, FaMapMarkerAlt, FaRegCalendar } from 'react-icons/fa';
+import DatePicker from 'react-datepicker';
 import AutoComplete from '../../search/Autocomplete';
+import 'react-datepicker/dist/react-datepicker.css';
 import styles from '../../../styles/Search.module.css';
 
 const FakeSearchSection = () => {
-  const dummyTags = ['Starting soon', 'Tomorrow', 'Near you', 'Dancers", Clowns', 'Magicians'];
+  const dummyTags = ['Starting soon', 'Tomorrow', 'Near you', 'Dancers', 'Clowns', 'Magicians'];
   const [searchTerm, setSearchTerm] = useState('');
   const [searchLocation, setSearchLocation] = useState('');
   const [searchDate, setSearchDate] = useState('');
@@ -15,10 +17,10 @@ const FakeSearchSection = () => {
   const onSearchLocationChange = (e) => {
     setSearchLocation(e.target.value);
   };
-  const onDateChange = (date, dateString) => {
+  const onDateChange = (date) => {
     if (date !== null) {
-      // console.log(date._d, dateString);
-      setSearchDate(dateString);
+      console.log(date);
+      setSearchDate(date);
     }
   };
   const onSearchSubmit = () => {
@@ -43,11 +45,11 @@ const FakeSearchSection = () => {
 
   return (
     <div id={styles.searchContainer}>
-      <h1>Find Your Next Performer:</h1>
+      <label id={styles.title}>Find Your Next Performer:</label>
 
       <div id={styles.searchForm}>
         <div className={styles.searchBar} id={styles.upperSearchBar}>
-        <AutoComplete className={styles.searchInput} suggestions={['aa', 'abc', 'abbba', 'asdaa', 'asddaa', 'ddsdef', 'iasdasgh']} />
+          <AutoComplete className={styles.searchInput} suggestions={dummyTags} />
           {/* <input className={styles.searchInput}
             onChange={onSearchTermChange}
             placeholder="Search by event name"
@@ -58,17 +60,21 @@ const FakeSearchSection = () => {
         <div className={styles.searchBar}>
           <input className={styles.searchInput}
             onChange={onSearchLocationChange}
-            placeholder="Search by location"
+            placeholder="Location"
           />
           <button className={styles.insideBtn}><FaMapMarkerAlt /></button>
         </div>
-        {/* <br/>
-        <Input.Search allowClear style={{ width: '95%' }} placeholder="Search by event name" />
-        <Input.Search allowClear style={{ width: '95%' }} placeholder="search by location" /> */}
+        {/* <label>
+          <DatePicker
+            customInput={<FaRegCalendar />}/>
+          <button id={styles.dateIcon}><FaRegCalendar /></button>
+        </label> */}
+        <div id={styles.datePicker}>
 
-        <div id={styles.datePicker}></div>
-
-        <button id={styles.searchBtn} onClick={onSearchSubmit}>Search</button>
+          <DatePicker wrapperClassName={styles.datePicker} selected={searchDate}
+            onChange={onDateChange}
+            placeholderText= 'Select Date Here'></DatePicker></div>
+        <button id={styles.searchBtn} className="master-button" onClick={onSearchSubmit}>Search</button>
       </div>
       <div id={styles.tagContainer}>
         {dummyTags.map((tag, index) => {
