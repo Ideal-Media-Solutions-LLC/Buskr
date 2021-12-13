@@ -62,11 +62,10 @@ align-items: center ;
 #searchBtn:focus {
   background-color: #f57c8a;
 } */
-.tagContainer {
+#tagContainer {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: space-around;
   align-items: baseline;
   width:100%
 }
