@@ -10,10 +10,6 @@ jobs:
     steps:
     - name: Checkout source code
       uses: actions/checkout@v2
-    - name: Install dependencies
-      run: yarn
-    - name: Run build
-      run: yarn build
     - name: Generate deployment package
       run: zip -r deploy.zip . -x '*.git*'
     - name: Deploy
@@ -26,3 +22,4 @@ jobs:
         version_label: ${{ github.SHA }}
         region: us-west-1
         deployment_package: deploy.zip
+        wait_for_environment_recovery: 1000
