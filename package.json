@@ -5,23 +5,37 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "migrate": "db-migrate up",
+    "seed": "node seed.js"
   },
   "dependencies": {
+    "@aws-sdk/client-cognito-identity": "^3.43.0",
+    "@aws-sdk/client-s3": "^3.44.0",
     "@react-google-maps/api": "^2.7.0",
     "axios": "^0.21.0",
     "express": "^4.15.0",
     "moment": "^2.29.1",
+    "moment-timezone": "^0.5.34",
     "next": "12.0.7",
+    "nextjs-cors": "^2.1.0",
+    "pg": "^8.7.1",
     "react": "17.0.2",
     "react-calendar": "^3.5.0",
+    "react-datepicker": "^4.5.0",
     "react-dom": "17.0.2",
-    "react-icons": "^4.3.1"
+    "react-icons": "^4.3.1",
+    "react-images-upload": "^1.2.8",
+    "redis": "^4.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
+    "db-migrate": "^0.11.13",
+    "db-migrate-pg": "^1.2.2",
+    "dotenv": "^10.0.0",
     "eslint": "8.4.1",
     "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-config-next": "^12.0.7"
+    "eslint-config-next": "^12.0.7",
+    "faker": "^5.5.3"
   }
 }

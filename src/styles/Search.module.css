@@ -2,27 +2,46 @@
   display: flex;
 flex-direction: column;
 justify-content: center;
-align-items: flex-start;
+align-items: center ;
+}
+#title{
+  margin-top: 5px;
+  margin-bottom: 15px;
+  align-self: flex-start;
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--buskr-purple);
+
 }
 .searchBar {
   margin:0px 0px;
-  width:95%;
+  width:335px;
+  height:35px;
   border:1px solid #d9d9d9;
-
+  border-bottom:0px;
 }
 #upperSearchBar{
-  border-top-left-radius: 15px;
-  border-top-right-radius: 15px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+
 }
 .searchInput{
   position: absolute;
   padding-left:30px;
-  width:85vw;
+  width:335px;
   background-color:transparent;
   border:0;
+  outline:none;
+  height:35px;
+
 }
+/* .searchInput:focus{
+  outline:1px solid var(--buskr-pink);
+} */
 .insideBtn{
   position: relative;
+  left:0;
+  top:8px;
   background-color:transparent;
   color:#d9d9d9;
   border:0;
@@ -32,39 +51,17 @@ align-items: flex-start;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width:100%;
+  width:335px;
 }
 #searchBtn{
-  background-color: #F77484;
-  border-radius: 8px;
-  border-style: none;
-  box-sizing: border-box;
-  color: #FFFFFF;
-  cursor: pointer;
-  display: inline-block;
-  font-family: "Haas Grot Text R Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 25px;
-  font-weight: 500;
-  height: 40px;
-  line-height: 20px;
-  list-style: none;
-  margin: 20px 0 0 0;
-  outline: none;
-  padding: 10px 120px;
-  position: relative;
-  text-align: center;
-  text-decoration: none;
-  transition: color 100ms;
-  vertical-align: baseline;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
+  width:335px;
+  margin-top:12px;
+  margin-bottom: 0px;
 }
-#searchBtn:hover,
+/* #searchBtn:hover,
 #searchBtn:focus {
-  color:greenyellow;
   background-color: #f57c8a;
-}
+} */
 #tagContainer {
   display: flex;
   flex-direction: row;
@@ -105,8 +102,10 @@ align-items: flex-start;
 }
 .autocompleteInput {
   position: absolute;
+  padding:5px;
   padding-left:30px;
-  width:85vw;
+  width:280px;
+  height:35px;
   background-color:transparent;
   border:0;
 }
@@ -119,22 +118,51 @@ align-items: flex-start;
 }
 .suggestions {
   border: 1px solid #999;
-  border-top-width: 0;
   list-style: none;
   margin-top: 25px;
   max-height: 100px;
   overflow-y: auto;
   padding-left: 0;
-  width: 84vw;
+  width: 335px;
+  z-index:20;
 }
 .suggestions li {
   padding: 0.1rem;
 }
 
-.suggestionsLi {
-  background-color:#d9d9d9;
-  ;
+.suggestions li:hover {
+  background-color: var(--buskr-pink);
+  color: var(--buskr-white);
+  cursor: pointer;
+  font-weight: 700;
 }
 /* .suggestions li:not(:last-of-type) {
   border-bottom: 1px solid #999;
 } */
+.datePicker {
+  display:flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width:335px;
+  height: 35px;
+  position: relative;
+}
+.datePicker > div {
+  width:335px;
+  margin:0px 0px;
+  border:1px solid #d9d9d9;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+
+}
+.datePicker > div > input{
+  padding-left:30px;
+  width:335px;
+  height: 35px;
+  background-color:transparent;
+  border:0;
+  outline: none;
+}
+.dateIcon {
+  position:absolute;
+}

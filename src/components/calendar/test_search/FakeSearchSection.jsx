@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { FaSearch, FaMapMarkerAlt, FaRegCalendar } from 'react-icons/fa';
 import DatePicker from 'react-datepicker';
-import AutoComplete from './Autocomplete';
+import AutoComplete from '../../search/Autocomplete';
 import 'react-datepicker/dist/react-datepicker.css';
-import styles from '../../styles/Search.module.css';
+import styles from '../../../styles/Search.module.css';
 
-const SearchSection = () => {
+const FakeSearchSection = () => {
   const dummyTags = ['Starting soon', 'Tomorrow', 'Near you', 'Dancers', 'Clowns', 'Magicians'];
   const [searchTerm, setSearchTerm] = useState('');
   const [searchLocation, setSearchLocation] = useState('');
@@ -85,4 +85,4 @@ const SearchSection = () => {
   );
 };
 
-export default SearchSection;
+export default FakeSearchSection;

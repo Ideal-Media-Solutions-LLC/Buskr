@@ -22,6 +22,7 @@ parserOptions:
 rules:
   arrow-body-style: off
   arrow-parens: off
+  camelcase: off
   func-names: warn
   func-style:
   - warn
@@ -37,6 +38,7 @@ rules:
     - warn
     - error
   no-nested-ternary: off
+  no-param-reassign: off
   no-plusplus: warn
   no-restricted-syntax: off
   no-shadow: off
