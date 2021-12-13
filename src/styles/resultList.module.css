@@ -49,6 +49,7 @@
 .eventItemContainerNoPadding {
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
   border-bottom: var(--buskr-lightgray) solid 2px;
   padding-bottom: 20px;
 }
