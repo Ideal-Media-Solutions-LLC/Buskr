@@ -24,10 +24,9 @@ const InfoBox = function InfoBox(props) {
 * @param {Object} props
 * @param {React.CSSProperties} props.containerStyle
 * @param {google.maps.LatLngLiteral} props.center
-* @param {'view' | 'create'} props.mode
 * @param {(google.maps.LatLngLiteral) => void=} props.onDrop
 */
-const Map = function Map({ containerStyle, center, mode, onDrop }) {
+const Map = function Map({ containerStyle, center, onDrop }) {
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
@@ -38,40 +37,44 @@ const Map = function Map({ containerStyle, center, mode, onDrop }) {
   const onLoad = React.useCallback((/** @type {google.maps.Map} */ map) => {
     /* eslint-disable-next-line no-new */
     new google.maps.Marker({
-      position: center,
       map,
+      position: center,
       title: 'You are here',
       icon: {
-        path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
+        fillColor: '#ff7585',
+        fillOpacity: 1,
+        path: google.maps.SymbolPath.CIRCLE,
+        strokeColor: '#ff7585',
         scale: 5,
       },
     });
 
-    map.addListener('click', ({ latLng: { lng, lat } }) => {
-      setInfoFeature(null);
+    if (onDrop === undefined) {
+      map.data.loadGeoJson('/sample_events.json', { idPropertyName: 'storeid' });
+    } else {
+      map.addListener('click', ({ latLng: { lng, lat } }) => {
+        setInfoFeature(null);
 
-      const center = { lat: lat(), lng: lng() };
+        const center = { lat: lat(), lng: lng() };
 
-      if (map.currentMarker) {
-        map.currentMarker = new google.maps.Marker({
-          position: center,
-          map,
-          draggable: true,
-        });
-      } else {
-        map.currentMarker.setPosition(center);
-      }
+        if (map.currentMarker) {
+          map.currentMarker.setPosition(center);
+        } else {
+          map.currentMarker = new google.maps.Marker({
+            position: center,
+            map,
+            draggable: true,
+          });
+        }
 
-      onDrop(center);
-    });
+        onDrop(center);
+      });
+    }
 
     map.data.addListener('click', ({ feature }) => {
       setInfoFeature(feature);
     });
-    if (mode === 'view') {
-      map.data.loadGeoJson('/sample_events.json', { idPropertyName: 'storeid' });
-    }
-  }, [center, mode, onDrop]);
+  }, [center, onDrop]);
 
   // style={{ width: '100vw', height: '100vh' }}>
   return isLoaded ? (
@@ -83,7 +86,7 @@ const Map = function Map({ containerStyle, center, mode, onDrop }) {
     onLoad={onLoad}
     options={{ mapId: 'c4f800a3ac3629c2' }}
     >
-    {mode === 'view' && infoFeature && <InfoBox feature={infoFeature} />}
+    {ondrop === undefined && infoFeature && <InfoBox feature={infoFeature} />}
     </GoogleMap>
     </div>
   ) : null;
