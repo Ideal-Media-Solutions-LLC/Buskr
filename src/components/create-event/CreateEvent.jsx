@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import DatePicker from 'react-datepicker';
 import styles from '../../styles/CreateEvent.module.css';
+import 'react-datepicker/dist/react-datepicker.css';
 import Map from '../map/Map';
 
 // const center = {
@@ -8,19 +10,27 @@ import Map from '../map/Map';
 // };
 
 const CreateEvent1 = ({
-  center, handleDate, handleEndTime, handleStartTime, handleLocation, handleNext,
+  center, handleDate, handleEndTime, handleStartTime, handleLocation, handleNext, date,
 }) => {
   const mapContainerStyle = {
     height: '300px',
     width: 'auto',
   };
 
+  const [startDate, setStartDate] = useState();
+  const onDateChange = (date) => {
+    if (date !== null) {
+      setStartDate(date);
+    }
+  };
+
   return (
     <div className={styles.createEventContainer}>
       <div className='master-title'>Create Event</div>
       <form className={styles.formContainer}>
-        <input onChange={handleDate} type='search' placeholder='MM/DD/YYYY' className={styles.masterSearchBar}></input>
-        <input onChange={handleStartTime} type='search' placeholder='Enter Start Time' className={styles.masterSearchBar}></input>
+        {/* <input onChange={handleDate} type='search' placeholder='MM/DD/YYYY' className={styles.masterSearchBar}></input> */}
+        <DatePicker className={styles.datePicker} selected={startDate} onChange={onDateChange} placeholderText='Select Date Here'/>
+        <input onChange={handleStartTime} type='time' placeholder='Enter Start Time' className={styles.timeInput}></input>
         <input onChange={handleEndTime} type='search' placeholder='Enter End Time' className={styles.masterSearchBar}></input>
         <input onChange={handleLocation}type='search' placeholder='Current Location' className={styles.masterSearchBar}></input>
       </form>
@@ -89,7 +99,7 @@ const CreateEvent = ({ center }) => {
   const [name, setEventName] = useState();
   const [description, setEventDescription] = useState();
   const [image, setEventImage] = useState();
-  const [date, setEventDate] = useState();
+  const [date, setEventDate] = useState(new Date());
   const [start, setEventStart] = useState();
   const [end, setEventEnd] = useState();
   const [loc, setEventLoc] = useState();
@@ -99,9 +109,8 @@ const CreateEvent = ({ center }) => {
     setEventLoc(center);
   }, [center]);
 
-  const handleDate = (e) => {
-    e.preventDefault();
-    setEventDate(e.target.value);
+  const handleDate = (date) => {
+    setEventDate(date);
   };
 
   const handleStartTime = (e) => {
