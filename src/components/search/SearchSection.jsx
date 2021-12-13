@@ -1,15 +1,66 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import axios from 'axios';
 import { FaSearch, FaMapMarkerAlt, FaRegCalendar } from 'react-icons/fa';
 import DatePicker from 'react-datepicker';
-import AutoComplete from './Autocomplete';
+// import AutoComplete from './Autocomplete';
 import 'react-datepicker/dist/react-datepicker.css';
 import styles from '../../styles/Search.module.css';
+import SearchContext from './SearchContext';
 
 const SearchSection = () => {
   const dummyTags = ['Starting soon', 'Tomorrow', 'Near you', 'Dancers', 'Clowns', 'Magicians'];
+  const geoLocation = { lat: 29.954767355989652, lng: -90.06911208674771 };
   const [searchTerm, setSearchTerm] = useState('');
-  const [searchLocation, setSearchLocation] = useState('');
+  const [searchLocation, setSearchLocation] = useState(geoLocation);
   const [searchDate, setSearchDate] = useState('');
+  const { setResults } = useContext(SearchContext);
+
+  const onSearchSubmit = () => {
+    axios.get('https://www.buskr.life/api/events', {
+      params: {
+        features: 'coords,location,photos,tags',
+        lat: searchLocation.lat,
+        lng: searchLocation.lng,
+        from: searchDate
+          || new Date(),
+        limit: 5,
+      },
+    }).then((result) => {
+      const byTime = result.data.features.sort(
+        (a, b) => a.properties.starts > b.properties.starts,
+      );
+
+      let bySearchTerm = byTime;
+      if (searchTerm) {
+        bySearchTerm = result.data.features.filter(
+          (event) => {
+            const filteredEvents = event.properties.name.toLowerCase()
+              .includes(searchTerm.toLowerCase())
+              || event.properties.buskerName.toLowerCase().includes(searchTerm.toLowerCase())
+              || event.properties.tags.indexOf(searchTerm.toLowerCase()) !== -1;
+            return filteredEvents;
+          },
+        );
+      }
+      setResults({ results: byTime, filtered: bySearchTerm });
+    });
+  };
+
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setSearchLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
+        },
+      );
+    } else {
+      setSearchLocation(geoLocation);
+    }
+    onSearchSubmit();
+  }, []);
 
   const onSearchTermChange = (e) => {
     setSearchTerm(e.target.value);
@@ -19,17 +70,8 @@ const SearchSection = () => {
   };
   const onDateChange = (date) => {
     if (date !== null) {
-      console.log(date);
       setSearchDate(date);
     }
-  };
-  const onSearchSubmit = () => {
-    // axios.get('/search', {params:{
-    //   name:searchTerm,
-    //   location:searchLocation,
-    //   date:searchDate
-    // }})
-    console.log(searchTerm + searchLocation + searchDate);
   };
 
   const onTagClick = (e) => {
@@ -49,11 +91,11 @@ const SearchSection = () => {
 
       <div id={styles.searchForm}>
         <div className={styles.searchBar} id={styles.upperSearchBar}>
-          <AutoComplete className={styles.searchInput} suggestions={dummyTags} />
-          {/* <input className={styles.searchInput}
+          {/* <AutoComplete className={styles.searchInput} suggestions={dummyTags} /> */}
+          <input className={styles.searchInput}
             onChange={onSearchTermChange}
             placeholder="Search by event name"
-          /> */}
+          />
 
           <button className={styles.insideBtn}><FaSearch /></button>
         </div>
@@ -73,7 +115,7 @@ const SearchSection = () => {
 
           <DatePicker wrapperClassName={styles.datePicker} selected={searchDate}
             onChange={onDateChange}
-            placeholderText= 'Select Date Here'></DatePicker></div>
+            placeholderText='Select Date Here'></DatePicker></div>
         <button id={styles.searchBtn} className="master-button" onClick={onSearchSubmit}>Search</button>
       </div>
       <div id={styles.tagContainer}>
