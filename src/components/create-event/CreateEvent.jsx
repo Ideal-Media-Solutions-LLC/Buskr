@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-// import TimePicker from 'react-time-picker';
-// import 'react-time-picker/dist/TimePicker.css';
-// import 'react-clock/dist/Clock.css';
 import styles from '../../styles/CreateEvent.module.css';
 import Map from '../map/Map';
 
@@ -41,11 +38,10 @@ const CreateEvent1 = ({
     <div className={styles.createEventContainer}>
       <div className='master-title'>Create Event</div>
       <form className={styles.formContainer}>
-        {/* <input onChange={handleDate} type='search' placeholder='MM/DD/YYYY' className={styles.masterSearchBar}></input> */}
+        <div className={styles.validationWarning}> Please select a start date and time </div>
         <DatePicker className={styles.datePicker} selected={startDate} onChange={onDateChange} placeholderText='Select Start Date and Time' showTimeSelect/>
+        <div className={styles.validationWarning}> Please select an end date and time</div>
         <DatePicker className={styles.datePicker} selected={endDate} onChange={onEndDateChange} placeholderText='Select End Date and Time' showTimeSelect/>
-        {/* <input onChange={handleStartTime} type='time' placeholder='Enter Start Time' className={styles.timeInput}></input> */}
-        {/* <input onChange={handleEndTime} type='search' placeholder='Enter End Time' className={styles.masterSearchBar}></input> */}
         <input onChange={handleLocation}type='search' placeholder='Current Location' className={styles.masterSearchBar}></input>
       </form>
       <div className='mapContainer'>
@@ -113,7 +109,7 @@ const CreateEvent = ({ center }) => {
   const [name, setEventName] = useState();
   const [description, setEventDescription] = useState();
   const [image, setEventImage] = useState();
-  const [date, setEventDate] = useState(new Date());
+  const [date, setEventDate] = useState();
   const [start, setEventStart] = useState();
   const [end, setEventEndDate] = useState();
   const [loc, setEventLoc] = useState();
