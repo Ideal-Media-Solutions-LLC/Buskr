@@ -26,10 +26,29 @@
 .icon {
   height: 30px;
   width: auto;
-  padding-left: 30px;
+  padding-right: 65px;
 }
 
 .logo {
   height: 20px;
   width: auto;
+}
+
+.logoText {
+  font-size: 27px;
+  color: var(--buskr-pink);
+}
+
+.hamburgerContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 15px;
+  width: 25px;
+}
+
+.hamburgerLine {
+  height: 3px;
+  border-radius: 10px;
+  background-color: var(--buskr-purple);
 }

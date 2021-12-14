@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import ImageUploader from './UploadImage';
 import styles from '../../styles/CreateEvent.module.css';
 import Map from '../map/Map';
 
@@ -8,20 +11,45 @@ import Map from '../map/Map';
 // };
 
 const CreateEvent1 = ({
-  center, handleDate, handleEndTime, handleStartTime, handleLocation, handleNext,
+  center, handleDate, handleLocation, handleNext,
+  handleEndDate, nextClickAttempted, date, endDateAndTime, loc,
 }) => {
   const mapContainerStyle = {
     height: '300px',
     width: 'auto',
   };
 
+  const [startDate, setStartDate] = useState();
+  const onDateChange = (date) => {
+    if (date !== null) {
+      setStartDate(date);
+      handleDate(date);
+    }
+  };
+
+  const [endDate, setEndDate] = useState();
+  const onEndDateChange = (date) => {
+    if (date !== null) {
+      setEndDate(date);
+      handleEndDate(date);
+    }
+  };
+
   return (
     <div className={styles.createEventContainer}>
       <div className='master-title'>Create Event</div>
       <form className={styles.formContainer}>
-        <input onChange={handleDate} type='search' placeholder='MM/DD/YYYY' className={styles.masterSearchBar}></input>
-        <input onChange={handleStartTime} type='search' placeholder='Enter Start Time' className={styles.masterSearchBar}></input>
-        <input onChange={handleEndTime} type='search' placeholder='Enter End Time' className={styles.masterSearchBar}></input>
+        <div className={nextClickAttempted && !date
+          ? styles.validationWarning
+          : styles.validationWarningHidden}> Please select a start date and time </div>
+        <DatePicker className={styles.datePicker} selected={startDate} onChange={onDateChange} placeholderText='Select Start Date and Time' showTimeSelect dateFormat="MMMM d, yyyy h:mm aa" />
+        <div className={nextClickAttempted && !endDateAndTime
+          ? styles.validationWarning
+          : styles.validationWarningHidden}> Please select an end date and time</div>
+        <DatePicker className={styles.datePicker} selected={endDate} onChange={onEndDateChange} placeholderText='Select End Date and Time' showTimeSelect dateFormat="MMMM d, yyyy h:mm aa"/>
+        <div className={nextClickAttempted && !loc
+          ? styles.validationWarning
+          : styles.validationWarningHidden}> Please select a location </div>
         <input onChange={handleLocation}type='search' placeholder='Current Location' className={styles.masterSearchBar}></input>
       </form>
       <div className='mapContainer'>
@@ -49,29 +77,60 @@ const CreateEvent2 = () => (
 );
 
 const CreateEvent3 = ({
-  handleName, handleDescription, handleTags, handleImage, handleAddMyEvent,
-}) => (
-  <div className={styles.eventUploadContainer}>
-    <div className={styles.formAndButtonContainer}>
-      <div className='master-title'>Create Event</div>
-      <form className={styles.formContainer}>
-        <div className={styles.smallTitle}> Event Name: </div>
-        <div className={styles.validationWarning}> Please enter an event name </div>
-          <input onChange={handleName} type='search' className={styles.masterSearchBar} placeholder='Enter Event Name'></input>
-        <div className={styles.smallTitle}> Description: </div>
-        <div className={styles.validationWarning}> Please enter a description </div>
-          <textarea onChange={handleDescription} type='search' className={styles.descriptionField}placeholder='Enter Description'></textarea>
-        <div className={styles.tagsDescription}>
-          <div className={styles.smallTitle}> Tags </div>
-          <div className={styles.tagSubtext}> (OPTIONAL - Separated By Comma)  </div>
+  handleName,
+  handleDescription,
+  handleTags,
+  handleImage,
+  handleAddMyEvent,
+  handleUploadMode,
+  uploadMode,
+  image,
+  submitAttempted,
+  name,
+  description,
+}) => {
+  const [uploadView, setUploadView] = useState(false);
+  useEffect(() => {
+    setUploadView(uploadMode);
+  }, [uploadMode]);
+
+  if (!uploadView) {
+    return (
+      <div className={styles.eventUploadContainer}>
+        <div className={styles.formAndButtonContainer}>
+          <div className='master-title'>Create Event</div>
+          <form className={styles.formContainer}>
+            <div className={styles.smallTitle}> Event Name: </div>
+            <div className={submitAttempted && !name
+              ? styles.validationWarning
+              : styles.validationWarningHidden}>
+                Please enter an event name
+              </div>
+              <input onChange={handleName} type='search' className={styles.masterSearchBar} placeholder='Enter Event Name'></input>
+            <div className={styles.smallTitle}> Description: </div>
+            <div className={submitAttempted && !description
+              ? styles.validationWarning
+              : styles.validationWarningHidden}> Please enter a description </div>
+              <textarea onChange={handleDescription} type='search' className={styles.descriptionField}placeholder='Enter Description'></textarea>
+            <div className={styles.tagsDescription}>
+              <div className={styles.smallTitle}> Tags </div>
+              <div className={styles.tagSubtext}> (OPTIONAL - Separated By Comma)  </div>
+            </div>
+              <input onChange={handleTags} type='search' className={styles.masterSearchBar}placeholder='Add Tags (separated by comma)'></input>
+          </form>
+          {/* if image exists, render image, otherwise render button */}
+          {image
+            ? <img className={styles.uploadedImage} src={image} alt=''/>
+            : <button onClick={handleUploadMode} type='text' className={styles.uploadImageButton}>Upload Image</button>
+          }
+
         </div>
-          <input onChange={handleTags} type='search' className={styles.masterSearchBar}placeholder='Add Tags (separated by comma)'></input>
-      </form>
-      <button onClick={handleImage} type='text' className={styles.uploadImageButton}>Upload Image</button>
-    </div>
-    <button onClick={handleAddMyEvent} type='text' className='master-button'> Add My Event </button>
-  </div>
-);
+        <button onClick={handleAddMyEvent} type='text' className='master-button'> Add My Event </button>
+      </div>
+    );
+  }
+  return <ImageUploader handleImage={handleImage}/>;
+};
 
 // const dummyEventInfo = {
 //   name: '',
@@ -90,28 +149,23 @@ const CreateEvent = ({ center }) => {
   const [description, setEventDescription] = useState();
   const [image, setEventImage] = useState();
   const [date, setEventDate] = useState();
-  const [start, setEventStart] = useState();
-  const [end, setEventEnd] = useState();
+  const [endDateAndTime, setEventEndDate] = useState();
   const [loc, setEventLoc] = useState();
   const [tags, setEventTags] = useState();
+  const [uploadMode, setUploadMode] = useState(false);
+  const [submitAttempted, setSubmitAttempted] = useState(false);
+  const [nextClickAttempted, setNextClickAttempted] = useState(false);
 
   useEffect(() => {
     setEventLoc(center);
   }, [center]);
 
-  const handleDate = (e) => {
-    e.preventDefault();
-    setEventDate(e.target.value);
+  const handleDate = (date) => {
+    setEventDate(date);
   };
 
-  const handleStartTime = (e) => {
-    e.preventDefault();
-    setEventStart(e.target.value);
-  };
-
-  const handleEndTime = (e) => {
-    e.preventDefault();
-    setEventEnd(e.target.value);
+  const handleEndDate = (date) => {
+    setEventEndDate(date);
   };
 
   const handleLocation = (e) => {
@@ -132,17 +186,32 @@ const CreateEvent = ({ center }) => {
   };
 
   const handleNext = () => {
-    if (date && start && end && loc) {
+    if (date && endDateAndTime && loc) {
       setCreatePage(3);
+    } else {
+      if (!date) {
+        setNextClickAttempted(true);
+      }
+      if (!endDateAndTime) {
+        setNextClickAttempted(true);
+      }
     }
   };
 
   const handleAddMyEvent = () => {
     console.log('ADD MY EVENT CLICKED!');
+    setSubmitAttempted(true);
   };
 
-  const handleImage = () => {
+  const handleImage = (img) => {
     console.log('Upload Image button was clicked!');
+    setEventImage(img);
+    setUploadMode(false);
+  };
+
+  const handleUploadMode = () => {
+    console.log('switch upload view!');
+    setUploadMode(true);
   };
 
   if (createPage === 1) {
@@ -150,10 +219,13 @@ const CreateEvent = ({ center }) => {
       <CreateEvent1
         center={center}
         handleDate={handleDate}
-        handleStartTime={handleStartTime}
-        handleEndTime={handleEndTime}
+        handleEndDate={handleEndDate}
         handleLocation={handleLocation}
         handleNext={handleNext}
+        nextClickAttempted={nextClickAttempted}
+        loc={loc}
+        date={date}
+        endDateAndTime={endDateAndTime}
       />
     );
   }
@@ -169,6 +241,12 @@ const CreateEvent = ({ center }) => {
         handleDescription={handleDescription}
         handleImage={handleImage}
         handleAddMyEvent={handleAddMyEvent}
+        handleUploadMode={handleUploadMode}
+        uploadMode={uploadMode}
+        image={image}
+        submitAttempted={submitAttempted}
+        name={name}
+        description={description}
       />
     );
   }
