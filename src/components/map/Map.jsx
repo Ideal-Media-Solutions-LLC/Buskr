@@ -1,7 +1,7 @@
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
 import moment from 'moment-timezone';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import styles from '../../styles/Map.module.css';
 
 const InfoBox = function InfoBox(props) {
@@ -41,16 +41,19 @@ const InfoBox = function InfoBox(props) {
 * @param {React.CSSProperties} props.containerStyle
 * @param {google.maps.LatLngLiteral} props.center
 * @param {(google.maps.LatLngLiteral) => void=} props.onDrop
+* @param {GeoJSON[]} props.events
 */
-const Map = function Map({ containerStyle, center, onDrop }) {
+const Map = function Map({ containerStyle, center, onDrop, events }) {
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_KEY,
     googleMapsClientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT,
     version: 3,
   });
+  const [map, setMap] = useState(null);
   const [infoFeature, setInfoFeature] = useState(null);
-  const onLoad = React.useCallback((/** @type {google.maps.Map} */ map) => {
+  const onLoad = useCallback((/** @type {google.maps.Map} */ map) => {
+    setMap(map);
     /* eslint-disable-next-line no-new */
     new google.maps.Marker({
       map,
@@ -64,10 +67,6 @@ const Map = function Map({ containerStyle, center, onDrop }) {
         scale: 5,
       },
     });
-
-    if (onDrop === undefined) {
-      map.data.loadGeoJson(`/api/events?features=coords,photos&lat=${center.lat}&lng=${center.lng}`, { idPropertyName: 'storeid' });
-    }
     map.addListener('click', ({ latLng: { lng, lat } }) => {
       setInfoFeature(null);
       if (onDrop === undefined) {
@@ -93,6 +92,17 @@ const Map = function Map({ containerStyle, center, onDrop }) {
       setInfoFeature(feature);
     });
   }, [center, onDrop]);
+
+  useEffect(() => {
+    if (map) {
+      map.data.forEach(feature => map.data.remove(feature));
+      if (events) {
+        for (const feature of events.data.features) {
+          map.data.addGeoJson(feature);
+        }
+      }
+    }
+  }, [map, events]);
 
   // style={{ width: '100vw', height: '100vh' }}>
   return isLoaded ? (
