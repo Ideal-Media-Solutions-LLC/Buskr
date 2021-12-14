@@ -71,7 +71,7 @@ align-items: center ;
 }
 
 .searchTag {
-  background-color: #5C4C4C;
+  background-color: var(--buskr-orange);
   border-radius: 12px;
   border-style: none;
   box-sizing: border-box;

@@ -13,9 +13,11 @@
 }
 
 .profileBio {
-  margin-bottom: 30px;
+  margin-bottom: 15px;
   color: var(--buskr-gray);
   font-size: 14px;
+  height: 80px;
+  overflow-y: scroll;
 }
 
 .eventCardsContainer {
@@ -32,11 +34,13 @@
 .tipsContainer {
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: flex-end;
 }
 
 .tipIcon {
   margin: 0px 5px 0px 5px;
   background-color: white;
   border-radius: 5px;
+  height: 30px;
+  width: 30px;
 }
