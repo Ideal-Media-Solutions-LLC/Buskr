@@ -18,6 +18,7 @@ const SearchSection = () => {
   const { results, setResults } = useContext(SearchContext);
 
   const onSearchSubmit = async () => {
+    console.log(searchLocation.lat);
     axios.get('https://www.buskr.life/api/events', {
       params: {
         features: 'coords,location,photos,tags',
@@ -69,13 +70,13 @@ const SearchSection = () => {
     onSearchSubmit();
   }, []);
 
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => setSearchLocation(position.coords.latitude, position.coords.longitude),
-      );
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (navigator.geolocation) {
+  //     navigator.geolocation.getCurrentPosition(
+  //       (position) => setSearchLocation(position.coords.latitude, position.coords.longitude),
+  //     );
+  //   }
+  // }, []);
 
   const onSearchTermChange = (e) => {
     setSearchTerm(e.target.value);
@@ -84,42 +85,18 @@ const SearchSection = () => {
     if (e.target.value !== '') {
       axios.get('/api/search', { params: { address: e.target.value } })
         .then((res) => {
-          console.log(res.data);
           setSearchLocation(res.data);
         });
     } else {
       setSearchLocation(geoLocation);
     }
   };
-  // const changeToCoords = (location) => {
 
-  //   // .then((res) => {
-  //   //   const coords = res.data;
-  //   //   return coords;
-  //   // });
-  // };
   const onDateChange = (date) => {
     if (date !== null) {
       setSearchDate(date);
     }
   };
-
-  // const onSearchSubmit = () => {
-  //   axios.get('http://www.buskr.life/api/events', {
-  //     params: {
-  //       features: coords,
-  //       lat: geolocation.lat,
-  //       lng: geolocation.lng,
-  //     },
-  //   }).then((data) => {
-  //     console.log(data.features);
-  //   });
-  //   // console.log({
-  //   //   searchTerm: searchTerm,
-  //   //   searchLocation: searchLocation,
-  //   //   searchDate: searchDate
-  //   // });
-  // };
 
   const onTagClick = (e) => {
     console.log(e.target.innerHTML);
