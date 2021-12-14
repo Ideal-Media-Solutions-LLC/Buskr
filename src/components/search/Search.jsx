@@ -5,7 +5,7 @@ import SearchContext from './SearchContext';
 import data from './results/sampleData';
 
 const Search = () => {
-  const [results, setResults] = useState({ results: [], filtered: [] });
+  const [results, setResults] = useState({ byDistance: [], byTime: [], filtered: [] });
 
   return (
     <div id='searchContainer'>

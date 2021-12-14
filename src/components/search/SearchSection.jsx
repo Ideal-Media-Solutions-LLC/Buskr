@@ -12,7 +12,7 @@ const SearchSection = () => {
   const geoLocation = { lat: 29.954767355989652, lng: -90.06911208674771 };
   const [searchTerm, setSearchTerm] = useState('');
   const [searchLocation, setSearchLocation] = useState(geoLocation);
-  const [searchDate, setSearchDate] = useState('');
+  const [searchDate, setSearchDate] = useState(new Date());
   const { setResults } = useContext(SearchContext);
 
   const onSearchSubmit = () => {
@@ -21,28 +21,32 @@ const SearchSection = () => {
         features: 'coords,location,photos,tags',
         lat: searchLocation.lat,
         lng: searchLocation.lng,
-        from: searchDate
-          || new Date(),
+        from: searchDate,
         limit: 100,
       },
     }).then((result) => {
-      const byTime = result.data.features.sort(
+      const oneDate = result.data.features.slice().sort().filter((event) => {
+        const retrievedDate = new Date(event.properties.starts).toString().slice(4, 15);
+        const searchedDate = searchDate.toString();
+        return searchedDate.includes(retrievedDate);
+      });
+      const byTime = oneDate.slice().sort(
         (a, b) => new Date(a.properties.starts) - new Date(b.properties.starts),
       );
-
-      let bySearchTerm = byTime;
+      let bySearchTerm = oneDate;
       if (searchTerm) {
         bySearchTerm = result.data.features.filter(
           (event) => {
+            const searchedTerm = searchTerm.toLowerCase();
             const filteredEvents = event.properties.name.toLowerCase()
-              .includes(searchTerm.toLowerCase())
-              || event.properties.buskerName.toLowerCase().includes(searchTerm.toLowerCase())
-              || event.properties.tags.indexOf(searchTerm.toLowerCase()) !== -1;
+              .includes(searchedTerm)
+              || event.properties.buskerName.toLowerCase().includes(searchedTerm)
+              || event.properties.tags.indexOf(searchedTerm) !== -1;
             return filteredEvents;
           },
         );
       }
-      setResults({ results: byTime, filtered: bySearchTerm });
+      setResults({ byDistance: oneDate, byTime, filtered: bySearchTerm });
     });
   };
 
@@ -119,7 +123,7 @@ const SearchSection = () => {
 
           <DatePicker wrapperClassName={styles.datePicker} selected={searchDate}
             onChange={onDateChange}
-            placeholderText='Select Date Here'></DatePicker></div>
+            placeholderText='Select Date Here' /></div>
         <button id={styles.searchBtn} className="master-button" onClick={onSearchSubmit}>Search</button>
       </div>
       <div id={styles.tagContainer}>
