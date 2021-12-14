@@ -42,11 +42,6 @@
   border-bottom-right-radius: 5px;
 }
 
-.tabsContent::-webkit-scrollbar {
-  width: 0;
-  background: transparent;
-}
-
 .eventItemContainer {
   padding: 20px 20px 0 20px;
 }
