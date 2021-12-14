@@ -28,9 +28,9 @@ const SearchSection = () => {
     }).then((result) => {
       const oneDate = result.data.features.slice().filter((event) => {
         const eventDate = new Date(event.properties.starts);
-        const retrievedDate = eventDate.toDateString();
-        const searchedDate = searchDate.toDateString();
-        return searchedDate === retrievedDate;
+        return searchDate.getDate() === eventDate.getDate()
+          && searchDate.getMonth() === eventDate.getMonth()
+          && searchDate.getFullYear() === eventDate.getFullYear();
       });
       const byTime = oneDate.slice().sort(
         (a, b) => new Date(a.properties.starts) - new Date(b.properties.starts),
@@ -88,7 +88,7 @@ const SearchSection = () => {
 
   const onTagClick = (e) => {
     console.log(e.target.innerHTML);
-    // let tagName = e.target.innerHTML;
+    // const tagName = e.target.innerHTML;
     //   if(tagName === 'Starting soon') {
     //     let currentDate = new Date.now();
     //     setSearchDate(currentDate)
