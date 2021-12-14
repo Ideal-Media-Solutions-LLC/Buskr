@@ -27,7 +27,7 @@
 
 .infoboxTime {
     font-weight: normal;
-    color: gray;
+    color: var(--buskr-gray);
     float: right;
 }
 
