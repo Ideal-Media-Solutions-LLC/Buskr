@@ -1,17 +1,9 @@
-<<<<<<< HEAD
-import React, { useState, useEffect, createContext } from 'react';
-import axios from 'axios';
-import { FaSearch, FaMapMarkerAlt, FaRegCalendar } from 'react-icons/fa';
-import DatePicker from 'react-datepicker';
-import AutoComplete from './Autocomplete';
-import SearchContext from './SearchContext';
-=======
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { FaSearch, FaMapMarkerAlt, FaRegCalendar } from 'react-icons/fa';
 import DatePicker from 'react-datepicker';
+import debounce from 'lodash.debounce';
 // import AutoComplete from './Autocomplete';
->>>>>>> 6bbbba8fefd266132b6eceb2f0ff7b108586693e
 import 'react-datepicker/dist/react-datepicker.css';
 import styles from '../../styles/Search.module.css';
 import SearchContext from './SearchContext';
@@ -20,21 +12,17 @@ const SearchSection = () => {
   const dummyTags = ['Starting soon', 'Tomorrow', 'Near you', 'Dancers', 'Clowns', 'Magicians'];
   const geoLocation = { lat: 29.954767355989652, lng: -90.06911208674771 };
   const [searchTerm, setSearchTerm] = useState('');
-<<<<<<< HEAD
-  const [searchLocation, setSearchLocation] = useState(geoLocation);
-  const [searchDate, setSearchDate] = useState('');
-=======
   // const [previousSearchTerm, setPreviousSearchTerm] = useState(searchTerm);
   const [searchLocation, setSearchLocation] = useState(geoLocation);
   const [searchDate, setSearchDate] = useState(new Date());
   const { results, setResults } = useContext(SearchContext);
 
-  const onSearchSubmit = () => {
+  const onSearchSubmit = async () => {
     axios.get('https://www.buskr.life/api/events', {
       params: {
         features: 'coords,location,photos,tags',
-        lat: searchLocation.lat,
-        lng: searchLocation.lng,
+        lat: searchLocation.lat || geoLocation.lat,
+        lng: searchLocation.lng || geoLocation.lng,
         from: searchDate,
         limit: 100,
       },
@@ -80,7 +68,6 @@ const SearchSection = () => {
     }
     onSearchSubmit();
   }, []);
->>>>>>> 6bbbba8fefd266132b6eceb2f0ff7b108586693e
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -94,37 +81,45 @@ const SearchSection = () => {
     setSearchTerm(e.target.value);
   };
   const onSearchLocationChange = (e) => {
-    changeToCoords(e.target.value);
-    // what the results return
-    // setSearchLocation();
+    if (e.target.value !== '') {
+      axios.get('/api/search', { params: { address: e.target.value } })
+        .then((res) => {
+          console.log(res.data);
+          setSearchLocation(res.data);
+        });
+    } else {
+      setSearchLocation(geoLocation);
+    }
   };
+  // const changeToCoords = (location) => {
+
+  //   // .then((res) => {
+  //   //   const coords = res.data;
+  //   //   return coords;
+  //   // });
+  // };
   const onDateChange = (date) => {
     if (date !== null) {
       setSearchDate(date);
     }
   };
-<<<<<<< HEAD
-  const onSearchSubmit = () => {
-    axios.get('http://www.buskr.life/api/events', {
-      params: {
-        features: coords,
-        lat: geolocation.lat,
-        lng: geolocation.lng,
-      },
-    }).then((data) => {
-      console.log(data.features);
-    });
-    // console.log({
-    //   searchTerm: searchTerm,
-    //   searchLocation: searchLocation,
-    //   searchDate: searchDate
-    // });
-=======
 
-  const changeToCoords = (location) => {
-    // will send to https://www.buskr.life/api/searchLocation to retrieve coordinates
->>>>>>> 6bbbba8fefd266132b6eceb2f0ff7b108586693e
-  };
+  // const onSearchSubmit = () => {
+  //   axios.get('http://www.buskr.life/api/events', {
+  //     params: {
+  //       features: coords,
+  //       lat: geolocation.lat,
+  //       lng: geolocation.lng,
+  //     },
+  //   }).then((data) => {
+  //     console.log(data.features);
+  //   });
+  //   // console.log({
+  //   //   searchTerm: searchTerm,
+  //   //   searchLocation: searchLocation,
+  //   //   searchDate: searchDate
+  //   // });
+  // };
 
   const onTagClick = (e) => {
     console.log(e.target.innerHTML);
@@ -145,48 +140,44 @@ const SearchSection = () => {
 
   return (
     <SearchContext.Provider value={{ setSearchTerm, setSearchLocation }}>
-    <div id={styles.searchContainer}>
-      <label id={styles.title}>Find Your Next Performer:</label>
+      <div id={styles.searchContainer}>
+        <label id={styles.title}>Find Your Next Performer:</label>
 
-      <div id={styles.searchForm}>
-        <div className={styles.searchBar} id={styles.upperSearchBar}>
-          {/* <AutoComplete className={styles.searchInput} suggestions={dummyTags} /> */}
-          <input className={styles.searchInput}
-            onChange={onSearchTermChange}
-            placeholder="Search by event name"
-          />
+        <div id={styles.searchForm}>
+          <div className={styles.searchBar} id={styles.upperSearchBar}>
+            {/* <AutoComplete className={styles.searchInput} suggestions={dummyTags} /> */}
+            <input className={styles.searchInput}
+              onChange={onSearchTermChange}
+              placeholder="Search by event name"
+            />
 
-          <button className={styles.insideBtn}><FaSearch /></button>
-        </div>
-        <div className={styles.searchBar}>
-          <input className={styles.searchInput}
-            onChange={onSearchLocationChange}
-            placeholder="Location"
-          />
-          <button className={styles.insideBtn}><FaMapMarkerAlt /></button>
-        </div>
-        {/* <label>
+            <button className={styles.insideBtn}><FaSearch /></button>
+          </div>
+          <div className={styles.searchBar}>
+            <input className={styles.searchInput}
+              onChange={debounce(onSearchLocationChange, 800)}
+              placeholder="Location"
+            />
+            <button className={styles.insideBtn}><FaMapMarkerAlt /></button>
+          </div>
+          {/* <label>
           <DatePicker
             customInput={<FaRegCalendar />}/>
           <button id={styles.dateIcon}><FaRegCalendar /></button>
         </label> */}
-        <div id={styles.datePicker}>
+          <div id={styles.datePicker}>
 
-          <DatePicker wrapperClassName={styles.datePicker} selected={searchDate}
-            onChange={onDateChange}
-<<<<<<< HEAD
-            placeholderText='Select Date Here'></DatePicker></div>
-=======
-            placeholderText='Select Date Here' /></div>
->>>>>>> 6bbbba8fefd266132b6eceb2f0ff7b108586693e
-        <button id={styles.searchBtn} className="master-button" onClick={onSearchSubmit}>Search</button>
+            <DatePicker wrapperClassName={styles.datePicker} selected={searchDate}
+              onChange={onDateChange}
+              placeholderText='Select Date Here' /></div>
+          <button id={styles.searchBtn} className="master-button" onClick={onSearchSubmit}>Search</button>
+        </div>
+        <div id={styles.tagContainer}>
+          {dummyTags.map((tag, index) => {
+            return <button className={styles.searchTag} key={index} onClick={onTagClick} color="#5C4C4C" >{tag}</button>;
+          })}
+        </div>
       </div>
-      <div id={styles.tagContainer}>
-        {dummyTags.map((tag, index) => {
-          return <button className={styles.searchTag} key={index} onClick={onTagClick} color="#5C4C4C" >{tag}</button>;
-        })}
-      </div>
-    </div>
     </SearchContext.Provider>
   );
 };
