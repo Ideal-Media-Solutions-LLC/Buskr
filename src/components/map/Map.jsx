@@ -1,20 +1,36 @@
-import React, { useState } from 'react';
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
-import styles from '../../styles/map.module.css';
+import moment from 'moment-timezone';
+import Link from 'next/link';
+import React, { useState } from 'react';
+import styles from '../../styles/Map.module.css';
 
 const InfoBox = function InfoBox(props) {
   const { feature } = props;
-  const buskerName = feature.getProperty('buskerName');
+  const id = feature.getProperty('buskerId');
   const name = feature.getProperty('name');
+  const buskerId = feature.getProperty('buskerId');
+  const buskerName = feature.getProperty('buskerName');
   const photos = feature.getProperty('photos');
-  const starts = feature.getProperty('starts');
-  const description = feature.getProperty('description');
+  const starts = new Date(feature.getProperty('starts'));
+  const time = moment(starts);
   return (
     <article className={styles.infobox}>
       <img className={styles.infoPhoto} src={photos[0]} alt={name}/>
       <div className={styles.infoDetails}>
-        <div className={styles.infoBoxName}>{name}</div>
-        <div className={styles.infoBoxBuskerName}>{buskerName}</div>
+        <div className={styles.infoboxName}>
+          <span className={styles.infoboxTime}>
+            {time.format('h:mm A')}
+          </span>
+          <Link href={`/event/${id}`}>
+            {name}
+          </Link>
+        </div>
+        <div className={styles.infoboxBuskerName}>
+          <span className={styles.infoboxTime}>
+            {time.format('MMM DDD YYYY')}
+          </span>
+          <Link href={`/profile/${buskerId}`}>{buskerName}</Link>
+        </div>
       </div>
     </article>
   );
@@ -29,8 +45,8 @@ const InfoBox = function InfoBox(props) {
 const Map = function Map({ containerStyle, center, onDrop }) {
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
-    googleMapsClientId: process.env.NEXT_PUBLIC_GOOGLE_MAPS_CLIENT_ID,
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_KEY,
+    googleMapsClientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT,
     version: 3,
   });
   const [infoFeature, setInfoFeature] = useState(null);
@@ -50,26 +66,28 @@ const Map = function Map({ containerStyle, center, onDrop }) {
     });
 
     if (onDrop === undefined) {
-      map.data.loadGeoJson('/sample_events.json', { idPropertyName: 'storeid' });
-    } else {
-      map.addListener('click', ({ latLng: { lng, lat } }) => {
-        setInfoFeature(null);
-
-        const center = { lat: lat(), lng: lng() };
-
-        if (map.currentMarker) {
-          map.currentMarker.setPosition(center);
-        } else {
-          map.currentMarker = new google.maps.Marker({
-            position: center,
-            map,
-            draggable: true,
-          });
-        }
-
-        onDrop(center);
-      });
+      map.data.loadGeoJson(`/api/events?features=coords,photos&lat=${center.lat}&lng=${center.lng}`, { idPropertyName: 'storeid' });
     }
+    map.addListener('click', ({ latLng: { lng, lat } }) => {
+      setInfoFeature(null);
+      if (onDrop === undefined) {
+        return;
+      }
+
+      const center = { lat: lat(), lng: lng() };
+
+      if (map.currentMarker) {
+        map.currentMarker.setPosition(center);
+      } else {
+        map.currentMarker = new google.maps.Marker({
+          position: center,
+          map,
+          draggable: true,
+        });
+      }
+
+      onDrop(center);
+    });
 
     map.data.addListener('click', ({ feature }) => {
       setInfoFeature(feature);
@@ -79,15 +97,15 @@ const Map = function Map({ containerStyle, center, onDrop }) {
   // style={{ width: '100vw', height: '100vh' }}>
   return isLoaded ? (
     <div className={styles.mapContainer}>
-    <GoogleMap
-    mapContainerStyle={containerStyle}
-    center={center}
-    zoom={17}
-    onLoad={onLoad}
-    options={{ mapId: 'c4f800a3ac3629c2' }}
-    >
-    {ondrop === undefined && infoFeature && <InfoBox feature={infoFeature} />}
-    </GoogleMap>
+      <GoogleMap
+        mapContainerStyle={containerStyle}
+        center={center}
+        zoom={17}
+        onLoad={onLoad}
+        options={{ mapId: process.env.NEXT_PUBLIC_MAP_ID }}
+      >
+        {infoFeature && <InfoBox feature={infoFeature} />}
+      </GoogleMap>
     </div>
   ) : null;
 };
