@@ -11,7 +11,7 @@ const CalendarView = () => {
     lng: '-90.06911208674771',
     lat: '29.954767355989652',
     starts: new Date(),
-    keywords: 'Lynn',
+    keywords: '',
   });
   // updates when a date is clicked, will tie this with search function
   const [date, setDate] = useState(new Date());
@@ -26,12 +26,14 @@ const CalendarView = () => {
   const [queryData, setQueryData] = useState(null);
   const [eventDates, setEventDates] = useState(new Set());
 
+  // updates "from" and "to" dates when month is changed in calendar
   useEffect(() => {
     if (calendarStartDate !== null) {
       findStartEndDates();
     }
   }, [calendarStartDate]);
 
+  // performs search with new "from" and "to" dates
   useEffect(() => {
     axios.get(`https://www.buskr.life/api/events?lng=${searchObj.lng}&lat=${searchObj.lat}&from=${currentStartDate}&to=${currentEndDate}&sort=time`)
       .then(res => {
