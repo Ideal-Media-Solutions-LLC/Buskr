@@ -1,61 +1,98 @@
-import React, { useState } from 'react';
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
-import Image from 'next/image';
-import styles from '../../styles/map.module.css';
+import moment from 'moment-timezone';
+import Link from 'next/link';
+import React, { useState } from 'react';
+import styles from '../../styles/Map.module.css';
 
 const InfoBox = function InfoBox(props) {
   const { feature } = props;
-  const buskerName = feature.getProperty('buskerName');
+  const id = feature.getProperty('buskerId');
   const name = feature.getProperty('name');
+  const buskerId = feature.getProperty('buskerId');
+  const buskerName = feature.getProperty('buskerName');
   const photos = feature.getProperty('photos');
-  const starts = feature.getProperty('starts');
-  const description = feature.getProperty('description');
+  const starts = new Date(feature.getProperty('starts'));
+  const time = moment(starts);
   return (
     <article className={styles.infobox}>
-          <img className={styles.infoPhoto} src={photos[0]} />
-          <div className={styles.infoDetails}>
-            <div className={styles.infoBoxName}>{name}</div>
-            <div className={styles.infoBoxBuskerName}>{buskerName}</div>
-          </div>
+      <img className={styles.infoPhoto} src={photos[0]} alt={name}/>
+      <div className={styles.infoDetails}>
+        <div className={styles.infoboxName}>
+          <span className={styles.infoboxTime}>
+            {time.format('h:mm A')}
+          </span>
+          <Link href={`/event/${id}`}>
+            {name}
+          </Link>
+        </div>
+        <div className={styles.infoboxBuskerName}>
+          <span className={styles.infoboxTime}>
+            {time.format('MMM DDD YYYY')}
+          </span>
+          <Link href={`/profile/${buskerId}`}>{buskerName}</Link>
+        </div>
+      </div>
     </article>
   );
 };
 
-const Map = function Map({ containerStyle, center, withInfoBoxes }) {
+/**
+* @param {Object} props
+* @param {React.CSSProperties} props.containerStyle
+* @param {google.maps.LatLngLiteral} props.center
+* @param {(google.maps.LatLngLiteral) => void=} props.onDrop
+*/
+const Map = function Map({ containerStyle, center, onDrop }) {
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
-    googleMapsClientId: process.env.NEXT_PUBLIC_GOOGLE_MAPS_CLIENT_ID,
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_KEY,
+    googleMapsClientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT,
     version: 3,
   });
-
   const [infoFeature, setInfoFeature] = useState(null);
-
   const onLoad = React.useCallback((/** @type {google.maps.Map} */ map) => {
+    /* eslint-disable-next-line no-new */
     new google.maps.Marker({
-      position: center,
       map,
+      position: center,
       title: 'You are here',
-    }).setMap(map);
+      icon: {
+        fillColor: '#ff7585',
+        fillOpacity: 1,
+        path: google.maps.SymbolPath.CIRCLE,
+        strokeColor: '#ff7585',
+        scale: 5,
+      },
+    });
 
-    map.addListener('click', (/* { latLng: { lng, lat } } */) => {
+    if (onDrop === undefined) {
+      map.data.loadGeoJson(`/api/events?features=coords,photos&lat=${center.lat}&lng=${center.lng}`, { idPropertyName: 'storeid' });
+    }
+    map.addListener('click', ({ latLng: { lng, lat } }) => {
       setInfoFeature(null);
-      /*
+      if (onDrop === undefined) {
+        return;
+      }
+
       const center = { lat: lat(), lng: lng() };
 
-      new google.maps.Marker({
-        position: center,
-        map,
-        title: 'Hello World!',
-      }).setMap(map);
-      */
+      if (map.currentMarker) {
+        map.currentMarker.setPosition(center);
+      } else {
+        map.currentMarker = new google.maps.Marker({
+          position: center,
+          map,
+          draggable: true,
+        });
+      }
+
+      onDrop(center);
     });
 
     map.data.addListener('click', ({ feature }) => {
       setInfoFeature(feature);
     });
-    map.data.loadGeoJson('/sample_events.json', { idPropertyName: 'storeid' });
-  }, []);
+  }, [center, onDrop]);
 
   // style={{ width: '100vw', height: '100vh' }}>
   return isLoaded ? (
@@ -65,9 +102,9 @@ const Map = function Map({ containerStyle, center, withInfoBoxes }) {
         center={center}
         zoom={17}
         onLoad={onLoad}
-        options={{ mapId: 'c4f800a3ac3629c2' }}
+        options={{ mapId: process.env.NEXT_PUBLIC_MAP_ID }}
       >
-        {withInfoBoxes && infoFeature && <InfoBox feature={infoFeature} />}
+        {infoFeature && <InfoBox feature={infoFeature} />}
       </GoogleMap>
     </div>
   ) : null;

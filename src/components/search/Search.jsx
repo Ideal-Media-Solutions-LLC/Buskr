@@ -4,8 +4,8 @@ import ResultSection from './results/ResultSection';
 import SearchContext from './SearchContext';
 import data from './results/sampleData';
 
-const Search = (props) => {
-  const [results, setResults] = useState(data);
+const Search = () => {
+  const [results, setResults] = useState({ byDistance: [], byTime: [], filtered: [] });
 
   return (
     <div id='searchContainer'>

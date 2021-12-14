@@ -1,73 +1,40 @@
-import db from '../../db';
-import middleware from '../../middleware';
-import { reverseLookup } from '../../geocode';
+import { HttpException, db, getLocations, handler } from '../../endpoint';
 
 /**
  * @param {import('http').IncomingMessage} req
  * @param {import('http').ServerResponse} res
  */
-export default async function handler(req, res) {
-  await middleware(req, res);
+const GET = async function GET(req, res) {
+  const lat = req.numParam('lat');
+  const lng = req.numParam('lng');
+  const from = req.dateParam('from', null);
+  const to = req.dateParam('to', null);
+  const limit = req.intParam('limit', null);
+  const offset = req.intParam('offset', null);
 
-  const { features, lat, lng, from, to, limit, offset, sort } = req.query;
-
-  const latitude = Number(lat);
-  const longitude = Number(lng);
-
-  if (
-    lat === undefined || lng === undefined
-    || Number.isNaN(latitude) || Number.isNaN(longitude)
-  ) {
-    res.statusCode = 400;
-    res.end('invalid coordinates');
-    return;
-  }
+  const { features, sort } = req.query;
 
   const clauses = [];
   const wheres = [];
-  const args = [`SRID=4326;POINT(${longitude} ${latitude})`];
+  const args = [`SRID=4326;POINT(${lng} ${lat})`];
 
-  if (from !== undefined) {
-    const timestamp = Date.parse(from);
-    if (Number.isNaN(timestamp)) {
-      res.statusCode = 400;
-      res.end('invalid date');
-      return;
-    }
-    args.push(new Date(timestamp));
+  if (from !== null) {
+    args.push(from);
     wheres.push(`starts >= $${args.length}`);
   }
 
-  if (to !== undefined) {
-    const timestamp = Date.parse(to);
-    if (Number.isNaN(timestamp)) {
-      res.statusCode = 400;
-      res.end('invalid date');
-      return;
-    }
-    args.push(new Date(timestamp));
+  if (to !== null) {
+    args.push(to);
     wheres.push(`ends <= $${args.length}`);
   }
 
-  if (limit !== undefined) {
-    const nLimit = Number(limit);
-    if (Number.isNaN(nLimit)) {
-      res.statusCode = 400;
-      res.end('invalid limit');
-      return;
-    }
-    args.push(nLimit);
+  if (limit !== null) {
+    args.push(limit);
     clauses.push(`LIMIT $${args.length}`);
   }
 
-  if (offset !== undefined) {
-    const nOffset = Number(offset);
-    if (Number.isNaN(nOffset)) {
-      res.statusCode = 400;
-      res.end('invalid offset');
-      return;
-    }
-    args.push(nOffset);
+  if (offset !== null) {
+    args.push(offset);
     clauses.push(`OFFSET $${args.length}`);
   }
 
@@ -77,8 +44,7 @@ export default async function handler(req, res) {
   } else if (sort === 'time') {
     orderBy = 'starts';
   } else {
-    res.statusCode = 400;
-    res.end('"sort" must be either "distance" or "time"');
+    throw new HttpException(400, `unrecognized sort option ${sort}`, sort);
   }
 
   let coordsQuery = '';
@@ -117,9 +83,7 @@ export default async function handler(req, res) {
           LEFT JOIN tag ON event_tag.tag_id = tag.id
         `;
       } else {
-        res.statusCode = 400;
-        res.end(`unrecognized feature ${feature}`);
-        return;
+        throw new HttpException(400, `unrecognized feature ${feature}`, feature);
       }
     }
   }
@@ -149,15 +113,13 @@ export default async function handler(req, res) {
     ${clauses.join('\n    ')}
   `;
   const { rows } = await db.query(query, args);
-
   if (getLocation) {
-    await Promise.all(rows.map(async (row) => {
-      row.properties.location = await reverseLookup(row.properties.id, row.geometry.coordinates);
-    }));
+    await getLocations(rows);
   }
-
   res.status(200).json({
     type: 'FeatureCollection',
     features: rows,
   });
-}
+};
+
+export default handler({ GET });

@@ -2,20 +2,18 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import EventItem from '../search/results/EventItem';
 import styles from '../../styles/Profile.module.css';
-import profileData from './profileData';
 
-const Profile = ({ profileId }) => {
-  const [loggedIn, setLoggedIn] = useState();
+const Profile = ({ id }) => {
+  // const [loggedIn, setLoggedIn] = useState();
   const [performer, setPerformer] = useState();
 
   useEffect(() => {
-    axios.get(`http://www.buskr.life/api/profile/${profileId}`).then(result => {
-      console.log('RESULT: ', result.data);
+    axios.get(`https://www.buskr.life/api/profile/${id}`).then(result => {
       setPerformer(result.data);
     }).catch(err => {
       console.log('Error attempting GET profile by id: ', err);
     });
-  }, [profileId]);
+  }, [id]);
 
   return (
     <div className={styles.profileContainer}>
@@ -32,7 +30,6 @@ const Profile = ({ profileId }) => {
       <button className='master-button' type='text'>Add Event</button>
       <div className='master-title'>Upcoming Events:</div>
       <div className={styles.eventCardsContainer}>
-        {/* Map through performer's events, and render an Event Card for each one */}
         {performer?.events.map((event, i) => <EventItem key={i} event={event}/>)}
       </div>
     </div>

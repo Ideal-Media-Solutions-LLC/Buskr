@@ -5,7 +5,7 @@ import styles from '../../../styles/resultList.module.css';
 const EventItem = (props) => {
   const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const time = moment.tz(props.event.properties.starts, zone).format('ddd, MMM D [@] h:mA z');
-  const location = `${props.event.properties.location.sublocality}, ${props.event.properties.location.administrative_area_level_1}`;
+  const location = `${props.event.properties.location.locality}, ${props.event.properties.location.administrative_area_level_1}`;
 
   // work on click event will lead to event detail page (stretch goal)
   const clickEvent = (e) => {
