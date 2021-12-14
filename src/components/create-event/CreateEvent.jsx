@@ -29,7 +29,6 @@ const CreateEvent1 = ({
     setCoords(loc);
   }, [loc]);
 
-
   const onDateChange = (date) => {
     if (date !== null) {
       setStartDate(date);
@@ -124,8 +123,8 @@ const CreateEvent3 = ({
 
   if (!uploadView) {
     return (
-      <div className={styles.eventUploadContainer}>
-        <div className={styles.formAndButtonContainer}>
+      <div className={styles.createEventContainer}>
+        <div>
           <div className='master-title'>Create Event</div>
           <form className={styles.formContainer}>
             <div className={styles.smallTitle}> Event Name: </div>
@@ -151,9 +150,10 @@ const CreateEvent3 = ({
             ? <img className={styles.uploadedImage} src={image} alt=''/>
             : <button onClick={handleUploadMode} type='text' className={styles.uploadImageButton}>Upload Image</button>
           }
-
         </div>
-        <button onClick={handleAddMyEvent} type='text' className='master-button'> Add My Event </button>
+        <button onClick={handleAddMyEvent} type='text' className='master-button'>
+          Add My Event
+        </button>
       </div>
     );
   }
@@ -172,7 +172,7 @@ const CreateEvent3 = ({
 // }
 
 const CreateEvent = ({ center }) => {
-  const [createPage, setCreatePage] = useState(1);
+  const [createPage, setCreatePage] = useState(3);
   const [name, setEventName] = useState();
   const [description, setEventDescription] = useState();
   const [image, setEventImage] = useState();
@@ -214,9 +214,16 @@ const CreateEvent = ({ center }) => {
     setEventDescription(e.target.value);
   };
 
+  const handleTags = (e) => {
+    e.preventDefault();
+    console.log(e.target.value);
+    setEventTags(e.target.value);
+  };
+
   const handleNext = () => {
     if (date && endDateAndTime && loc) {
       axios.get('endpoint that looks for conflicts').then(result => {
+        // might be .conflict, might just be true/false
         if (result.data.conflict === true) {
           setCreatePage(2);
         } else {
@@ -233,7 +240,15 @@ const CreateEvent = ({ center }) => {
   };
 
   const handleAddMyEvent = () => {
-    console.log('ADD MY EVENT CLICKED!');
+    if (name && description && image && date && endDateAndTime && loc) {
+      // Check if there isConflict
+      // If yes
+      // axios query for all conflicts
+
+      // Build out object for query
+      // let eventInfo = {}
+      console.log('ADD MY EVENT CLICKED!');
+    }
     setSubmitAttempted(true);
   };
 
@@ -282,6 +297,7 @@ const CreateEvent = ({ center }) => {
       <CreateEvent3
         handleName={handleName}
         handleDescription={handleDescription}
+        handleTags={handleTags}
         handleImage={handleImage}
         handleAddMyEvent={handleAddMyEvent}
         handleUploadMode={handleUploadMode}

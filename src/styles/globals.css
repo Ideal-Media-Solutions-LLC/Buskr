@@ -45,6 +45,9 @@ a {
 }
 
 .master-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border: none;
   background-color: var(--buskr-pink);
   padding: 15px 15px 15px 15px;
