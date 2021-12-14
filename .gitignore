@@ -5,6 +5,7 @@
 # User-specific
 .vscode
 .env.local
+task.md
 
 # Module management
 node_modules/
