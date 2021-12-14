@@ -9,11 +9,12 @@ const Search = (props) => {
 
   return (
     <div id='searchContainer'>
-      <SearchContext.Provider value={results}>
+      <SearchContext.Provider value={{ results, setResults }}>
         <SearchSection></SearchSection>
         <ResultSection />
       </SearchContext.Provider>
     </div>
   );
 };
+
 export default Search;

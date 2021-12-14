@@ -3,7 +3,7 @@ import EventItem from './EventItem';
 import SearchContext from '../SearchContext';
 
 const EventList = () => {
-  const resultList = useContext(SearchContext);
+  const resultList = useContext(SearchContext).results;
 
   return (
     <div className="eventListContainer">

@@ -1,22 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, createContext } from 'react';
+import axios from 'axios';
 import { FaSearch, FaMapMarkerAlt, FaRegCalendar } from 'react-icons/fa';
 import DatePicker from 'react-datepicker';
 import AutoComplete from './Autocomplete';
+import SearchContext from './SearchContext';
 import 'react-datepicker/dist/react-datepicker.css';
 import styles from '../../styles/Search.module.css';
 
 const SearchSection = () => {
   const dummyTags = ['Starting soon', 'Tomorrow', 'Near you', 'Dancers', 'Clowns', 'Magicians'];
+  const geoLocation = { lat: 29.954767355989652, lng: -90.06911208674771 };
   const [searchTerm, setSearchTerm] = useState('');
-  const [searchLocation, setSearchLocation] = useState('');
+  const [searchLocation, setSearchLocation] = useState(geoLocation);
   const [searchDate, setSearchDate] = useState('');
 
   useEffect(() => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) =>
-        console.log(position.coords.latitude, position.coords.longitude));
+      navigator.geolocation.getCurrentPosition(
+        (position) => setSearchLocation(position.coords.latitude, position.coords.longitude),
+      );
     }
   }, []);
+
   const onSearchTermChange = (e) => {
     setSearchTerm(e.target.value);
   };
@@ -30,12 +35,20 @@ const SearchSection = () => {
     }
   };
   const onSearchSubmit = () => {
-    // axios.get('/search', {params:{
-    //   name:searchTerm,
-    //   location:searchLocation,
-    //   date:searchDate
-    // }})
-    console.log(searchTerm + searchLocation + searchDate);
+    axios.get('http://www.buskr.life/api/events', {
+      params: {
+        features: coords,
+        lat: geolocation.lat,
+        lng: geolocation.lng,
+      },
+    }).then((data) => {
+      console.log(data.features);
+    });
+    // console.log({
+    //   searchTerm: searchTerm,
+    //   searchLocation: searchLocation,
+    //   searchDate: searchDate
+    // });
   };
 
   const onTagClick = (e) => {
@@ -50,16 +63,17 @@ const SearchSection = () => {
   };
 
   return (
+    <SearchContext.Provider value={{ setSearchTerm, setSearchLocation }}>
     <div id={styles.searchContainer}>
       <label id={styles.title}>Find Your Next Performer:</label>
 
       <div id={styles.searchForm}>
         <div className={styles.searchBar} id={styles.upperSearchBar}>
-          <AutoComplete className={styles.searchInput} suggestions={dummyTags} />
-          {/* <input className={styles.searchInput}
+          {/* <AutoComplete className={styles.searchInput} suggestions={dummyTags} /> */}
+          <input className={styles.searchInput}
             onChange={onSearchTermChange}
             placeholder="Search by event name"
-          /> */}
+          />
 
           <button className={styles.insideBtn}><FaSearch /></button>
         </div>
@@ -88,6 +102,7 @@ const SearchSection = () => {
         })}
       </div>
     </div>
+    </SearchContext.Provider>
   );
 };
 
