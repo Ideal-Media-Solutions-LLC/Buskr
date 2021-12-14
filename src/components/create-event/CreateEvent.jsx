@@ -11,7 +11,7 @@ import Map from '../map/Map';
 // };
 
 const CreateEvent1 = ({
-  center, handleDate, handleEndTime, handleStartTime, handleLocation, handleNext,
+  center, handleDate, handleLocation, handleNext,
   handleEndDate,
 }) => {
   const mapContainerStyle = {
@@ -143,12 +143,12 @@ const CreateEvent = ({ center }) => {
   const [description, setEventDescription] = useState();
   const [image, setEventImage] = useState();
   const [date, setEventDate] = useState();
-  const [start, setEventStart] = useState();
   const [end, setEventEndDate] = useState();
   const [loc, setEventLoc] = useState();
   const [tags, setEventTags] = useState();
   const [uploadMode, setUploadMode] = useState(false);
   const [submitAttempted, setSubmitAttempted] = useState(false);
+  const [submitAttempted1, setSubmitAttempted1] = useState(false);
 
   useEffect(() => {
     setEventLoc(center);
@@ -160,16 +160,6 @@ const CreateEvent = ({ center }) => {
 
   const handleEndDate = (date) => {
     setEventEndDate(date);
-  };
-
-  const handleStartTime = (e) => {
-    e.preventDefault();
-    setEventStart(e.target.value);
-  };
-
-  const handleEndTime = (e) => {
-    e.preventDefault();
-    setEventEnd(e.target.value);
   };
 
   const handleLocation = (e) => {
@@ -190,7 +180,7 @@ const CreateEvent = ({ center }) => {
   };
 
   const handleNext = () => {
-    if (date && start && end && loc) {
+    if (date && end && loc) {
       setCreatePage(3);
     }
   };
@@ -217,8 +207,6 @@ const CreateEvent = ({ center }) => {
         center={center}
         handleDate={handleDate}
         handleEndDate={handleEndDate}
-        handleStartTime={handleStartTime}
-        handleEndTime={handleEndTime}
         handleLocation={handleLocation}
         handleNext={handleNext}
       />
