@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
-import styles from '../../styles/CreateEvent.module.css';
 import 'react-datepicker/dist/react-datepicker.css';
+// import TimePicker from 'react-time-picker';
+// import 'react-time-picker/dist/TimePicker.css';
+// import 'react-clock/dist/Clock.css';
+import styles from '../../styles/CreateEvent.module.css';
 import Map from '../map/Map';
 
 // const center = {
@@ -10,7 +13,8 @@ import Map from '../map/Map';
 // };
 
 const CreateEvent1 = ({
-  center, handleDate, handleEndTime, handleStartTime, handleLocation, handleNext, date,
+  center, handleDate, handleEndTime, handleStartTime, handleLocation, handleNext,
+  handleEndDate,
 }) => {
   const mapContainerStyle = {
     height: '300px',
@@ -21,6 +25,15 @@ const CreateEvent1 = ({
   const onDateChange = (date) => {
     if (date !== null) {
       setStartDate(date);
+      handleDate(date);
+    }
+  };
+
+  const [endDate, setEndDate] = useState();
+  const onEndDateChange = (date) => {
+    if (date !== null) {
+      setEndDate(date);
+      handleEndDate(date);
     }
   };
 
@@ -29,9 +42,10 @@ const CreateEvent1 = ({
       <div className='master-title'>Create Event</div>
       <form className={styles.formContainer}>
         {/* <input onChange={handleDate} type='search' placeholder='MM/DD/YYYY' className={styles.masterSearchBar}></input> */}
-        <DatePicker className={styles.datePicker} selected={startDate} onChange={onDateChange} placeholderText='Select Date Here'/>
-        <input onChange={handleStartTime} type='time' placeholder='Enter Start Time' className={styles.timeInput}></input>
-        <input onChange={handleEndTime} type='search' placeholder='Enter End Time' className={styles.masterSearchBar}></input>
+        <DatePicker className={styles.datePicker} selected={startDate} onChange={onDateChange} placeholderText='Select Start Date and Time' showTimeSelect/>
+        <DatePicker className={styles.datePicker} selected={endDate} onChange={onEndDateChange} placeholderText='Select End Date and Time' showTimeSelect/>
+        {/* <input onChange={handleStartTime} type='time' placeholder='Enter Start Time' className={styles.timeInput}></input> */}
+        {/* <input onChange={handleEndTime} type='search' placeholder='Enter End Time' className={styles.masterSearchBar}></input> */}
         <input onChange={handleLocation}type='search' placeholder='Current Location' className={styles.masterSearchBar}></input>
       </form>
       <div className='mapContainer'>
@@ -101,7 +115,7 @@ const CreateEvent = ({ center }) => {
   const [image, setEventImage] = useState();
   const [date, setEventDate] = useState(new Date());
   const [start, setEventStart] = useState();
-  const [end, setEventEnd] = useState();
+  const [end, setEventEndDate] = useState();
   const [loc, setEventLoc] = useState();
   const [tags, setEventTags] = useState();
 
@@ -111,6 +125,10 @@ const CreateEvent = ({ center }) => {
 
   const handleDate = (date) => {
     setEventDate(date);
+  };
+
+  const handleEndDate = (date) => {
+    setEventEndDate(date);
   };
 
   const handleStartTime = (e) => {
@@ -159,6 +177,7 @@ const CreateEvent = ({ center }) => {
       <CreateEvent1
         center={center}
         handleDate={handleDate}
+        handleEndDate={handleEndDate}
         handleStartTime={handleStartTime}
         handleEndTime={handleEndTime}
         handleLocation={handleLocation}
