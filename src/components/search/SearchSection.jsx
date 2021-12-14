@@ -88,7 +88,7 @@ const SearchSection = () => {
 
   const onTagClick = (e) => {
     console.log(e.target.innerHTML);
-    let tagName = e.target.innerHTML;
+    // let tagName = e.target.innerHTML;
     //   if(tagName === 'Starting soon') {
     //     let currentDate = new Date.now();
     //     setSearchDate(currentDate)
