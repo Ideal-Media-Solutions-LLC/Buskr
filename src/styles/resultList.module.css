@@ -5,37 +5,40 @@
 .roundedTabs {
   display: flex;
   flex-direction: row;
-  padding-bottom: 0;
+  /* padding-bottom: 0; */
+  justify-content: space-between;
   border-bottom: var(--buskr-pink) solid 3px;
 }
 
-.tabs {
-  color: var(--buskr-purple);
-  background-color: var(--buskr-lightgray);
-  flex: 1;
-  padding: 5px;
+.tabs, .activeTabs {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--buskr-gray);
+  /* flex: 1; */
+  padding: 5px 0px 5px 0px;
   border: none;
-  margin: 0 0.1em;
+  /* margin: 0 0.1em; */
+  width: 107px;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
-  font-size: 15px;
-}
-
-.tabs button {
-  padding-top: 5px;
+  font-size: 17px;
+  background-color: var(--buskr-lightgray);
 }
 
 .activeTabs {
   color: white;
   background-color: var(--buskr-pink);
-  flex: 1;
-  padding: 5px;
-  border: none;
-  margin: 0 0.1em;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-  font-size: 15px;
 }
+
+/* .tabs button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 10px;
+  font-size: 17px;
+} */
+
 
 .tabsContent {
   border: var(--buskr-lightgray) solid 1px;
@@ -76,7 +79,7 @@
 }
 
 .eventItemName {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: bold;
   padding-bottom: 10px;
   color: var(--buskr-purple)

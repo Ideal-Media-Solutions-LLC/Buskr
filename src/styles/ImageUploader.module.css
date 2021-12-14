@@ -18,12 +18,14 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid var(--buskr-pink);
+  /* border: 1px solid var(--buskr-pink); */
+  border:none;
   height: 400px;
   width: 335px;
   border-radius: 10px;
   padding: 0px 0px 0px 0px;
   margin: 0px 0px 0px 0px;
+  color: var(--buskr-gray)
 }
 
 .clickOrDrag {
@@ -71,11 +73,12 @@
   /* margin: 20px 0px 20px 0px; */
   border-radius: 10px;
   color: white;
-  font-size: 17px;
+  font-size: 15px;
   font-weight: bold;
   width: 158px;
+
 }
 
 .removeAllImages {
-  background-color: var(--buskr-purple)
+  background-color: var(--buskr-orange)
 }
