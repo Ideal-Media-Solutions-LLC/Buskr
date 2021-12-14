@@ -1,0 +1,81 @@
+.uploadImageViewContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 695px;
+}
+
+.dragAreaAndButtonsContainer {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+  width: 335px;
+  justify-content: flex-start;
+}
+
+
+.clickOrDrag, .dragging, .dragged {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid var(--buskr-pink);
+  height: 400px;
+  width: 335px;
+  border-radius: 10px;
+  padding: 0px 0px 0px 0px;
+  margin: 0px 0px 0px 0px;
+}
+
+.clickOrDrag {
+  background-color: rgb(226, 226, 226);
+}
+
+.dragging {
+  background-color: var(--buskr-pink);
+  color: var(--buskr-white);
+}
+
+/* .dragged {
+  border: none;
+  height: 400px;
+  width: 335px;
+} */
+
+.currentImage {
+  /* border: 2px solid var(--buskr-pink); */
+  border-radius: 10px;
+  height: 400px;
+  width: 335px;
+  object-fit: cover;
+}
+
+
+.backRemoveButtonsContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 0px 0px 0px 0px;
+  margin: 0px 0px 0px 0px;
+}
+
+.skipAndRemoveButton {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.removeAllImages, .skipThisStep {
+  border: none;
+  background-color: var(--buskr-purple);
+  padding: 15px 15px 15px 15px;
+  /* margin: 20px 0px 20px 0px; */
+  border-radius: 10px;
+  color: white;
+  font-size: 17px;
+  font-weight: bold;
+  width: 158px;
+}
+
+.removeAllImages {
+  background-color: var(--buskr-purple)
+}
