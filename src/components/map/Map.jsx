@@ -4,15 +4,6 @@ import Link from 'next/link';
 import React, { useState } from 'react';
 import styles from '../../styles/Map.module.css';
 
-const isThisYear = function thisYear(date) {
-  const now = new Date();
-  if (date < now) {
-    return false;
-  }
-  now.setFullYear(now.getFullYear() + 1);
-  return date < now;
-};
-
 const InfoBox = function InfoBox(props) {
   const { feature } = props;
   const id = feature.getProperty('buskerId');
