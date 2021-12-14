@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import ImageUploader from './UploadImage';
 import styles from '../../styles/CreateEvent.module.css';
 import Map from '../map/Map';
@@ -9,20 +11,45 @@ import Map from '../map/Map';
 // };
 
 const CreateEvent1 = ({
-  center, handleDate, handleEndTime, handleStartTime, handleLocation, handleNext,
+  center, handleDate, handleLocation, handleNext,
+  handleEndDate, nextClickAttempted, date, endDateAndTime, loc,
 }) => {
   const mapContainerStyle = {
     height: '300px',
     width: 'auto',
   };
 
+  const [startDate, setStartDate] = useState();
+  const onDateChange = (date) => {
+    if (date !== null) {
+      setStartDate(date);
+      handleDate(date);
+    }
+  };
+
+  const [endDate, setEndDate] = useState();
+  const onEndDateChange = (date) => {
+    if (date !== null) {
+      setEndDate(date);
+      handleEndDate(date);
+    }
+  };
+
   return (
     <div className={styles.createEventContainer}>
       <div className='master-title'>Create Event</div>
       <form className={styles.formContainer}>
-        <input onChange={handleDate} type='search' placeholder='MM/DD/YYYY' className={styles.masterSearchBar}></input>
-        <input onChange={handleStartTime} type='search' placeholder='Enter Start Time' className={styles.masterSearchBar}></input>
-        <input onChange={handleEndTime} type='search' placeholder='Enter End Time' className={styles.masterSearchBar}></input>
+        <div className={nextClickAttempted && !date
+          ? styles.validationWarning
+          : styles.validationWarningHidden}> Please select a start date and time </div>
+        <DatePicker className={styles.datePicker} selected={startDate} onChange={onDateChange} placeholderText='Select Start Date and Time' showTimeSelect dateFormat="MMMM d, yyyy h:mm aa" />
+        <div className={nextClickAttempted && !endDateAndTime
+          ? styles.validationWarning
+          : styles.validationWarningHidden}> Please select an end date and time</div>
+        <DatePicker className={styles.datePicker} selected={endDate} onChange={onEndDateChange} placeholderText='Select End Date and Time' showTimeSelect dateFormat="MMMM d, yyyy h:mm aa"/>
+        <div className={nextClickAttempted && !loc
+          ? styles.validationWarning
+          : styles.validationWarningHidden}> Please select a location </div>
         <input onChange={handleLocation}type='search' placeholder='Current Location' className={styles.masterSearchBar}></input>
       </form>
       <div className='mapContainer'>
@@ -117,35 +144,28 @@ const CreateEvent3 = ({
 // }
 
 const CreateEvent = ({ center }) => {
-  const [createPage, setCreatePage] = useState(3);
+  const [createPage, setCreatePage] = useState(1);
   const [name, setEventName] = useState();
   const [description, setEventDescription] = useState();
   const [image, setEventImage] = useState();
   const [date, setEventDate] = useState();
-  const [start, setEventStart] = useState();
-  const [end, setEventEnd] = useState();
+  const [endDateAndTime, setEventEndDate] = useState();
   const [loc, setEventLoc] = useState();
   const [tags, setEventTags] = useState();
   const [uploadMode, setUploadMode] = useState(false);
   const [submitAttempted, setSubmitAttempted] = useState(false);
+  const [nextClickAttempted, setNextClickAttempted] = useState(false);
 
   useEffect(() => {
     setEventLoc(center);
   }, [center]);
 
-  const handleDate = (e) => {
-    e.preventDefault();
-    setEventDate(e.target.value);
+  const handleDate = (date) => {
+    setEventDate(date);
   };
 
-  const handleStartTime = (e) => {
-    e.preventDefault();
-    setEventStart(e.target.value);
-  };
-
-  const handleEndTime = (e) => {
-    e.preventDefault();
-    setEventEnd(e.target.value);
+  const handleEndDate = (date) => {
+    setEventEndDate(date);
   };
 
   const handleLocation = (e) => {
@@ -166,8 +186,15 @@ const CreateEvent = ({ center }) => {
   };
 
   const handleNext = () => {
-    if (date && start && end && loc) {
+    if (date && endDateAndTime && loc) {
       setCreatePage(3);
+    } else {
+      if (!date) {
+        setNextClickAttempted(true);
+      }
+      if (!endDateAndTime) {
+        setNextClickAttempted(true);
+      }
     }
   };
 
@@ -192,10 +219,13 @@ const CreateEvent = ({ center }) => {
       <CreateEvent1
         center={center}
         handleDate={handleDate}
-        handleStartTime={handleStartTime}
-        handleEndTime={handleEndTime}
+        handleEndDate={handleEndDate}
         handleLocation={handleLocation}
         handleNext={handleNext}
+        nextClickAttempted={nextClickAttempted}
+        loc={loc}
+        date={date}
+        endDateAndTime={endDateAndTime}
       />
     );
   }
