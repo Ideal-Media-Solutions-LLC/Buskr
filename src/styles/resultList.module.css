@@ -56,15 +56,10 @@
 .eventItemContainerNoPadding {
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
   border-bottom: var(--buskr-lightgray) solid 2px;
   padding-bottom: 20px;
 }
-
-/* .eventItemContainerNoPadding:last-child {
-  display: flex;
-  flex-direction: row;
-  border-bottom: none;
-} */
 
 .eventItemInfo {
   display: flex;
@@ -73,7 +68,6 @@
 
 .eventItemTime {
   font-size: 13px;
-  /* color: var(---buskr-gray); */
   padding-bottom: 10px;
   color: var(--buskr-purple);
 }
