@@ -42,11 +42,11 @@ const CreateEvent1 = ({
         <div className={nextClickAttempted && !date
           ? styles.validationWarning
           : styles.validationWarningHidden}> Please select a start date and time </div>
-        <DatePicker className={styles.datePicker} selected={startDate} onChange={onDateChange} placeholderText='Select Start Date and Time' showTimeSelect/>
+        <DatePicker className={styles.datePicker} selected={startDate} onChange={onDateChange} placeholderText='Select Start Date and Time' showTimeSelect dateFormat="MMMM d, yyyy h:mm aa" />
         <div className={nextClickAttempted && !endDateAndTime
           ? styles.validationWarning
           : styles.validationWarningHidden}> Please select an end date and time</div>
-        <DatePicker className={styles.datePicker} selected={endDate} onChange={onEndDateChange} placeholderText='Select End Date and Time' showTimeSelect/>
+        <DatePicker className={styles.datePicker} selected={endDate} onChange={onEndDateChange} placeholderText='Select End Date and Time' showTimeSelect dateFormat="MMMM d, yyyy h:mm aa"/>
         <div className={nextClickAttempted && !loc
           ? styles.validationWarning
           : styles.validationWarningHidden}> Please select a location </div>
