@@ -11,9 +11,10 @@ const SearchSection = () => {
   const dummyTags = ['Starting soon', 'Tomorrow', 'Near you', 'Dancers', 'Clowns', 'Magicians'];
   const geoLocation = { lat: 29.954767355989652, lng: -90.06911208674771 };
   const [searchTerm, setSearchTerm] = useState('');
+  // const [previousSearchTerm, setPreviousSearchTerm] = useState(searchTerm);
   const [searchLocation, setSearchLocation] = useState(geoLocation);
   const [searchDate, setSearchDate] = useState(new Date());
-  const { setResults } = useContext(SearchContext);
+  const { results, setResults } = useContext(SearchContext);
 
   const onSearchSubmit = () => {
     axios.get('https://www.buskr.life/api/events', {
@@ -25,17 +26,18 @@ const SearchSection = () => {
         limit: 100,
       },
     }).then((result) => {
-      const oneDate = result.data.features.slice().sort().filter((event) => {
-        const retrievedDate = new Date(event.properties.starts).toString().slice(4, 15);
-        const searchedDate = searchDate.toString();
-        return searchedDate.includes(retrievedDate);
+      const oneDate = result.data.features.slice().filter((event) => {
+        const eventDate = new Date(event.properties.starts);
+        const retrievedDate = eventDate.toDateString();
+        const searchedDate = searchDate.toDateString();
+        return searchedDate === retrievedDate;
       });
       const byTime = oneDate.slice().sort(
         (a, b) => new Date(a.properties.starts) - new Date(b.properties.starts),
       );
       let bySearchTerm = oneDate;
       if (searchTerm) {
-        bySearchTerm = result.data.features.filter(
+        bySearchTerm = oneDate.filter(
           (event) => {
             const searchedTerm = searchTerm.toLowerCase();
             const filteredEvents = event.properties.name.toLowerCase()
@@ -71,6 +73,8 @@ const SearchSection = () => {
   };
   const onSearchLocationChange = (e) => {
     changeToCoords(e.target.value);
+    // what the results return
+    // setSearchLocation();
   };
   const onDateChange = (date) => {
     if (date !== null) {
@@ -84,13 +88,19 @@ const SearchSection = () => {
 
   const onTagClick = (e) => {
     console.log(e.target.innerHTML);
-    //   let tagName = e.target.innerHTML;
+    let tagName = e.target.innerHTML;
     //   if(tagName === 'Starting soon') {
     //     let currentDate = new Date.now();
     //     setSearchDate(currentDate)
     //     onSearchSubmit()
     //     axios.get("/search",)
-    //   } else if {}
+    //   } else if (tagname === 'Tomorrow') {
+    //
+    //   } else if (tagname === 'Near you') {
+    //
+    //   } else {
+    //
+    //   }
   };
 
   return (
