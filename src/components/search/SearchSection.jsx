@@ -16,6 +16,7 @@ const SearchSection = () => {
   const [address, setAddress] = useState('');
   const [searchLocation, setSearchLocation] = useState(geoLocation);
   const [searchDate, setSearchDate] = useState(new Date());
+  const [initialList, setInitialList] = useState([]);
   const { results, setResults } = useContext(SearchContext);
 
   const onSearchSubmit = async () => {
@@ -32,34 +33,33 @@ const SearchSection = () => {
         lat: searchLocation.lat,
         lng: searchLocation.lng,
         from: searchDate,
-        limit: 100,
       },
-    })
-      .then((result) => {
-        const oneDate = result.data.features.slice().filter((event) => {
-          const eventDate = new Date(event.properties.starts);
-          return searchDate.getDate() === eventDate.getDate()
-            && searchDate.getMonth() === eventDate.getMonth()
-            && searchDate.getFullYear() === eventDate.getFullYear();
-        });
-        const byTime = oneDate.slice().sort(
-          (a, b) => new Date(a.properties.starts) - new Date(b.properties.starts),
-        );
-        let bySearchTerm = oneDate;
-        if (searchTerm) {
-          bySearchTerm = oneDate.filter(
-            (event) => {
-              const searchedTerm = searchTerm.toLowerCase();
-              const filteredEvents = event.properties.name.toLowerCase()
-                .includes(searchedTerm)
-                || event.properties.buskerName.toLowerCase().includes(searchedTerm)
-                || event.properties.tags.indexOf(searchedTerm) !== -1;
-              return filteredEvents;
-            },
-          );
-        }
-        setResults({ byDistance: oneDate, byTime, filtered: bySearchTerm });
+    }).then((result) => {
+      setInitialList(result.data.features);
+      const oneDate = result.data.features.slice().filter((event) => {
+        const eventDate = new Date(event.properties.starts);
+        return searchDate.getDate() === eventDate.getDate()
+          && searchDate.getMonth() === eventDate.getMonth()
+          && searchDate.getFullYear() === eventDate.getFullYear();
       });
+      const byTime = oneDate.slice().sort(
+        (a, b) => new Date(a.properties.starts) - new Date(b.properties.starts),
+      );
+      let bySearchTerm = oneDate;
+      if (searchTerm) {
+        bySearchTerm = oneDate.filter(
+          (event) => {
+            const searchedTerm = searchTerm.toLowerCase();
+            const filteredEvents = event.properties.name.toLowerCase()
+              .includes(searchedTerm)
+              || event.properties.buskerName.toLowerCase().includes(searchedTerm)
+              || event.properties.tags.indexOf(searchedTerm) !== -1;
+            return filteredEvents;
+          },
+        );
+      }
+      setResults({ byDistance: oneDate, byTime, filtered: bySearchTerm });
+    });
   };
 
   useEffect(() => {
@@ -92,7 +92,55 @@ const SearchSection = () => {
   };
 
   const onTagClick = (e) => {
-    console.log(e.target.innerHTML);
+    // filter based on initial list when rendered since it will not be visible after initial search
+    const tagName = e.target.innerHTML;
+    if (tagName === 'Starting soon') {
+      setSearchDate(new Date());
+      setResults(
+        { byDistance: results.byDistance, byTime: results.byTime, filtered: results.byTime },
+      );
+    } else if (tagName === 'Tomorrow') {
+      const today = new Date();
+      const tomorrow = new Date();
+      tomorrow.setDate(today.getDate() + 1);
+      const tomorrowEvents = initialList.slice().filter((event) => {
+        const eventDate = new Date(event.properties.starts);
+        return tomorrow.getDate() === eventDate.getDate()
+          && tomorrow.getMonth() === eventDate.getMonth()
+          && tomorrow.getFullYear() === eventDate.getFullYear();
+      });
+      setSearchDate(tomorrow);
+      setResults(
+        { byDistance: results.byDistance, byTime: results.byTime, filtered: tomorrowEvents },
+      );
+    } else if (tagName === 'Near you') {
+      const nearYouEvents = results.byDistance.slice().filter((event) => {
+        return event.distance <= 100;
+      });
+      setResults(
+        { byDistance: results.byDistance, byTime: results.byTime, filtered: nearYouEvents },
+      );
+    } else {
+      const bySearchTerm = results.byDistance.slice().filter(
+        (event) => {
+          const tags = ['Dancers', 'Clowns', 'Magicians'];
+          for (const tag of tags) {
+            if (tagName === tag) {
+              const searchedTerm = tag.toLowerCase();
+              const filteredEvents = event.properties.name.toLowerCase()
+                .includes(searchedTerm)
+                || event.properties.buskerName.toLowerCase().includes(searchedTerm)
+                || event.properties.tags.indexOf(searchedTerm) !== -1;
+              return filteredEvents;
+            }
+          }
+          return [];
+        },
+      );
+      setResults(
+        { byDistance: results.byDistance, byTime: results.byTime, filtered: bySearchTerm },
+      );
+    }
   };
   if (SearchbarContext.isBarView) {
     return (
@@ -123,44 +171,47 @@ const SearchSection = () => {
       </div>);
   }
   return (
-      <div id={styles.searchContainer}>
-        <label id={styles.title}>Find Your Next Performer:</label>
+    <div id={styles.searchContainer}>
+      <label id={styles.title}>Find Your Next Performer:</label>
 
-        <div id={styles.searchForm}>
-          <div className={styles.searchBar} id={styles.upperSearchBar}>
-            {/* <AutoComplete className={styles.searchInput} suggestions={dummyTags} /> */}
-            <input className={styles.searchInput}
-              onChange={onSearchTermChange}
-              placeholder="Search by event name"
-            />
+      <div id={styles.searchForm}>
+        <div className={styles.searchBar} id={styles.upperSearchBar}>
+          {/* <AutoComplete className={styles.searchInput} suggestions={dummyTags} /> */}
+          <input className={styles.searchInput}
+            onChange={onSearchTermChange}
+            placeholder="Search by event name"
+          />
 
-            <button className={styles.insideBtn}><FaSearch /></button>
-          </div>
-          <div className={styles.searchBar}>
-            <input className={styles.searchInput}
-              onChange={onSearchLocationChange}
-              placeholder="Location"
-            />
-            <button className={styles.insideBtn}><FaMapMarkerAlt /></button>
-          </div>
-          {/* <label>
+          <button className={styles.insideBtn}><FaSearch /></button>
+        </div>
+        <div className={styles.searchBar}>
+          <input className={styles.searchInput}
+            onChange={onSearchLocationChange}
+            placeholder="Location"
+          />
+          <button className={styles.insideBtn}><FaMapMarkerAlt /></button>
+        </div>
+        {/* <label>
           <DatePicker
             customInput={<FaRegCalendar />}/>
           <button id={styles.dateIcon}><FaRegCalendar /></button>
         </label> */}
-          <div id={styles.datePicker}>
+        <div id={styles.datePicker}>
 
-            <DatePicker wrapperClassName={styles.datePicker} selected={searchDate}
-              onChange={onDateChange}
-              placeholderText='Select Date Here' /></div>
-          <button id={styles.searchBtn} className="master-button" onClick={onSearchSubmit}>Search</button>
-        </div>
-        <div id={styles.tagContainer}>
-          {dummyTags.map((tag, index) => {
-            return <button className={styles.searchTag} key={index} onClick={onTagClick} color="#5C4C4C" >{tag}</button>;
-          })}
-        </div>
+          <DatePicker wrapperClassName={styles.datePicker} selected={searchDate}
+            onChange={onDateChange}
+            placeholderText='Select Date Here' /></div>
       </div>
+      <div id={styles.tagContainer}>
+        {dummyTags.map((tag, index) => {
+          return <button
+            className={styles.searchTag}
+            key={index}
+            onClick={onTagClick}>{tag}</button>;
+        })}
+      </div>
+      <button id={styles.searchBtn} className="master-button" onClick={onSearchSubmit}>Search</button>
+    </div>
   );
 };
 
