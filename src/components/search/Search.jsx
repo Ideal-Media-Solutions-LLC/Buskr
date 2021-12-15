@@ -10,7 +10,7 @@ const Search = () => {
   return (
     <div id='searchContainer'>
       <SearchContext.Provider value={{ results, setResults }}>
-        <SearchSection></SearchSection>
+        <SearchSection />
         <ResultSection />
       </SearchContext.Provider>
     </div>

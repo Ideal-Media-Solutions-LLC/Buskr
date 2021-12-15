@@ -5,7 +5,6 @@ export default function Home() {
   const [searchResults, setSearchResults] = useState([]);
   return (
     <div>
-
         <Search />
         {/* <Profile profileId={1}/> */}
         {/* <CreateEvent/> */}

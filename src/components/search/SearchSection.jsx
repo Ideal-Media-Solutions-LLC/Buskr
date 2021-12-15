@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { FaSearch, FaMapMarkerAlt, FaRegCalendar } from 'react-icons/fa';
 import DatePicker from 'react-datepicker';
-import debounce from 'lodash.debounce';
 // import AutoComplete from './Autocomplete';
 import 'react-datepicker/dist/react-datepicker.css';
 import styles from '../../styles/Search.module.css';
@@ -13,45 +12,57 @@ const SearchSection = () => {
   const geoLocation = { lat: 29.954767355989652, lng: -90.06911208674771 };
   const [searchTerm, setSearchTerm] = useState('');
   // const [previousSearchTerm, setPreviousSearchTerm] = useState(searchTerm);
+  const [address, setAddress] = useState('');
   const [searchLocation, setSearchLocation] = useState(geoLocation);
   const [searchDate, setSearchDate] = useState(new Date());
+  const [isBarView, setBarView] = useState(true);
   const { results, setResults } = useContext(SearchContext);
 
   const onSearchSubmit = async () => {
-    console.log(searchLocation.lat);
+    setBarView(!isBarView);
+    if (address !== '') {
+      await axios.get('/api/search', { params: { address } })
+        .then((res) => {
+          setSearchLocation(res.data);
+        })
+    }
+
+
     axios.get('https://www.buskr.life/api/events', {
       params: {
         features: 'coords,location,photos,tags',
-        lat: searchLocation.lat || geoLocation.lat,
-        lng: searchLocation.lng || geoLocation.lng,
+        lat: searchLocation.lat,
+        lng: searchLocation.lng,
         from: searchDate,
         limit: 100,
       },
-    }).then((result) => {
-      const oneDate = result.data.features.slice().filter((event) => {
-        const eventDate = new Date(event.properties.starts);
-        return searchDate.getDate() === eventDate.getDate()
-          && searchDate.getMonth() === eventDate.getMonth()
-          && searchDate.getFullYear() === eventDate.getFullYear();
-      });
-      const byTime = oneDate.slice().sort(
-        (a, b) => new Date(a.properties.starts) - new Date(b.properties.starts),
-      );
-      let bySearchTerm = oneDate;
-      if (searchTerm) {
-        bySearchTerm = oneDate.filter(
-          (event) => {
-            const searchedTerm = searchTerm.toLowerCase();
-            const filteredEvents = event.properties.name.toLowerCase()
-              .includes(searchedTerm)
-              || event.properties.buskerName.toLowerCase().includes(searchedTerm)
-              || event.properties.tags.indexOf(searchedTerm) !== -1;
-            return filteredEvents;
-          },
+    })
+      .then((result) => {
+        const oneDate = result.data.features.slice().filter((event) => {
+          const eventDate = new Date(event.properties.starts);
+          return searchDate.getDate() === eventDate.getDate()
+            && searchDate.getMonth() === eventDate.getMonth()
+            && searchDate.getFullYear() === eventDate.getFullYear();
+        });
+        const byTime = oneDate.slice().sort(
+          (a, b) => new Date(a.properties.starts) - new Date(b.properties.starts),
         );
-      }
-      setResults({ byDistance: oneDate, byTime, filtered: bySearchTerm });
-    });
+        let bySearchTerm = oneDate;
+        if (searchTerm) {
+          bySearchTerm = oneDate.filter(
+            (event) => {
+              const searchedTerm = searchTerm.toLowerCase();
+              const filteredEvents = event.properties.name.toLowerCase()
+                .includes(searchedTerm)
+                || event.properties.buskerName.toLowerCase().includes(searchedTerm)
+                || event.properties.tags.indexOf(searchedTerm) !== -1;
+              return filteredEvents;
+            },
+          );
+        }
+        setResults({ byDistance: oneDate, byTime, filtered: bySearchTerm });
+      });
+
   };
 
   useEffect(() => {
@@ -70,26 +81,19 @@ const SearchSection = () => {
     onSearchSubmit();
   }, []);
 
-  // useEffect(() => {
-  //   if (navigator.geolocation) {
-  //     navigator.geolocation.getCurrentPosition(
-  //       (position) => setSearchLocation(position.coords.latitude, position.coords.longitude),
-  //     );
-  //   }
-  // }, []);
-
   const onSearchTermChange = (e) => {
     setSearchTerm(e.target.value);
   };
   const onSearchLocationChange = (e) => {
-    if (e.target.value !== '') {
-      axios.get('/api/search', { params: { address: e.target.value } })
-        .then((res) => {
-          setSearchLocation(res.data);
-        });
-    } else {
-      setSearchLocation(geoLocation);
-    }
+    setAddress(e.target.value);
+    // if (e.target.value !== '') {
+    //   axios.get('/api/search', { params: { address: e.target.value } })
+    //     .then((res) => {
+    //       setSearchLocation(res.data);
+    //     });
+    // } else {
+    //   setSearchLocation(geoLocation);
+    // }
   };
 
   const onDateChange = (date) => {
@@ -100,21 +104,35 @@ const SearchSection = () => {
 
   const onTagClick = (e) => {
     console.log(e.target.innerHTML);
-    // const tagName = e.target.innerHTML;
-    //   if(tagName === 'Starting soon') {
-    //     let currentDate = new Date.now();
-    //     setSearchDate(currentDate)
-    //     onSearchSubmit()
-    //     axios.get("/search",)
-    //   } else if (tagname === 'Tomorrow') {
-    //
-    //   } else if (tagname === 'Near you') {
-    //
-    //   } else {
-    //
-    //   }
   };
+  if (isBarView) {
+    return (
+      <div id={styles.miniForm}>
+        <div className={styles.miniBar} id={styles.miniTermInput}>
+          {/* <AutoComplete className={styles.searchInput} suggestions={dummyTags} /> */}
+          <input className={styles.miniSearchInput}
+            onChange={onSearchTermChange}
+            placeholder="Search"
+          />
 
+          <button className={styles.miniInsideBtn}><FaSearch /></button>
+        </div>
+        <div className={styles.miniBar} id={styles.miniLocationInput}>
+          <input className={styles.miniSearchInput}
+            onChange={onSearchLocationChange}
+            placeholder="Location"
+          />
+          <button className={styles.miniInsideBtn}><FaMapMarkerAlt /></button>
+        </div>
+
+        {/* <div id={styles.datePicker}>
+
+        <DatePicker wrapperClassName={styles.datePicker} selected={searchDate}
+          onChange={onDateChange}
+          placeholderText='Select Date Here' /></div> */}
+        <button id={styles.miniSearchBtn} className="master-button" onClick={onSearchSubmit}><FaSearch /></button>
+      </div>);
+  }
   return (
     <SearchContext.Provider value={{ setSearchTerm, setSearchLocation }}>
       <div id={styles.searchContainer}>
@@ -132,7 +150,7 @@ const SearchSection = () => {
           </div>
           <div className={styles.searchBar}>
             <input className={styles.searchInput}
-              onChange={debounce(onSearchLocationChange, 800)}
+              onChange={onSearchLocationChange}
               placeholder="Location"
             />
             <button className={styles.insideBtn}><FaMapMarkerAlt /></button>
