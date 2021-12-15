@@ -176,6 +176,7 @@
 .searchBar:focus, .autocompleteInput, .autocompleteInput:focus, .searchInput:focus, .datePicker > div > input {
   border: none;
   box-shadow: none;
+}
 
 #miniForm {
   display: flex;
