@@ -11,9 +11,9 @@ const SearchSection = () => {
   const dummyTags = ['Starting soon', 'Tomorrow', 'Near you', 'Dancers', 'Clowns', 'Magicians'];
   const geoLocation = { lat: 29.954767355989652, lng: -90.06911208674771 };
   const [searchTerm, setSearchTerm] = useState('');
-  // const [previousSearchTerm, setPreviousSearchTerm] = useState(searchTerm);
   const [searchLocation, setSearchLocation] = useState(geoLocation);
   const [searchDate, setSearchDate] = useState(new Date());
+  const [initialList, setInitialList] = useState([]);
   const { results, setResults } = useContext(SearchContext);
 
   const onSearchSubmit = () => {
@@ -23,9 +23,9 @@ const SearchSection = () => {
         lat: searchLocation.lat,
         lng: searchLocation.lng,
         from: searchDate,
-        limit: 100,
       },
     }).then((result) => {
+      setInitialList(result.data.features);
       const oneDate = result.data.features.slice().filter((event) => {
         const eventDate = new Date(event.properties.starts);
         return searchDate.getDate() === eventDate.getDate()
@@ -87,20 +87,55 @@ const SearchSection = () => {
   };
 
   const onTagClick = (e) => {
-    console.log(e.target.innerHTML);
-    // const tagName = e.target.innerHTML;
-    //   if(tagName === 'Starting soon') {
-    //     let currentDate = new Date.now();
-    //     setSearchDate(currentDate)
-    //     onSearchSubmit()
-    //     axios.get("/search",)
-    //   } else if (tagname === 'Tomorrow') {
-    //
-    //   } else if (tagname === 'Near you') {
-    //
-    //   } else {
-    //
-    //   }
+    // filter based on initial list when rendered since it will not be visible after initial search
+    const tagName = e.target.innerHTML;
+    if (tagName === 'Starting soon') {
+      setSearchDate(new Date());
+      setResults(
+        { byDistance: results.byDistance, byTime: results.byTime, filtered: results.byTime },
+      );
+    } else if (tagName === 'Tomorrow') {
+      const today = new Date();
+      const tomorrow = new Date();
+      tomorrow.setDate(today.getDate() + 1);
+      const tomorrowEvents = initialList.slice().filter((event) => {
+        const eventDate = new Date(event.properties.starts);
+        return tomorrow.getDate() === eventDate.getDate()
+          && tomorrow.getMonth() === eventDate.getMonth()
+          && tomorrow.getFullYear() === eventDate.getFullYear();
+      });
+      setSearchDate(tomorrow);
+      setResults(
+        { byDistance: results.byDistance, byTime: results.byTime, filtered: tomorrowEvents },
+      );
+    } else if (tagName === 'Near you') {
+      const nearYouEvents = results.byDistance.slice().filter((event) => {
+        return event.distance <= 100;
+      });
+      setResults(
+        { byDistance: results.byDistance, byTime: results.byTime, filtered: nearYouEvents },
+      );
+    } else {
+      const bySearchTerm = results.byDistance.slice().filter(
+        (event) => {
+          const tags = ['Dancers', 'Clowns', 'Magicians'];
+          for (const tag of tags) {
+            if (tagName === tag) {
+              const searchedTerm = tag.toLowerCase();
+              const filteredEvents = event.properties.name.toLowerCase()
+                .includes(searchedTerm)
+                || event.properties.buskerName.toLowerCase().includes(searchedTerm)
+                || event.properties.tags.indexOf(searchedTerm) !== -1;
+              return filteredEvents;
+            }
+          }
+          return [];
+        },
+      );
+      setResults(
+        { byDistance: results.byDistance, byTime: results.byTime, filtered: bySearchTerm },
+      );
+    }
   };
 
   return (
@@ -134,13 +169,16 @@ const SearchSection = () => {
           <DatePicker wrapperClassName={styles.datePicker} selected={searchDate}
             onChange={onDateChange}
             placeholderText='Select Date Here' /></div>
-        <button id={styles.searchBtn} className="master-button" onClick={onSearchSubmit}>Search</button>
       </div>
       <div id={styles.tagContainer}>
         {dummyTags.map((tag, index) => {
-          return <button className={styles.searchTag} key={index} onClick={onTagClick} color="#5C4C4C" >{tag}</button>;
+          return <button
+            className={styles.searchTag}
+            key={index}
+            onClick={onTagClick}>{tag}</button>;
         })}
       </div>
+      <button id={styles.searchBtn} className="master-button" onClick={onSearchSubmit}>Search</button>
     </div>
   );
 };
