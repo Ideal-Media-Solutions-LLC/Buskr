@@ -13,7 +13,6 @@ const Profile = ({ performer }) => {
         <img className ={styles.tipIcon} src='/imgs/tip-paypal-40px.png' alt='paypal'/>
         <img className ={styles.tipIcon} src='/imgs/tip-cashapp-40px.png' alt='cashapp'/>
         <img className ={styles.tipIcon} src='/imgs/tip-venmo-40px.png' alt ='venmo'/>
-
       </div>
       <button className='master-button' type='text'>Add Event</button>
       <div className='master-title'>Upcoming Events:</div>

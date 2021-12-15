@@ -212,9 +212,10 @@ const SearchSection = () => {
       <div id={styles.tagContainer}>
         {dummyTags.map((tag, index) => {
           return <button
-            className={styles.searchTag}
-            key={index}
-            onClick={onTagClick}>{tag}</button>;
+              className={styles.searchTag}
+              key={index} onClick={onTagClick}>
+                {tag}
+            </button>;
         })}
       </div>
       <button id={styles.searchBtn} className="master-button" onClick={onSearchSubmit}>Search</button>

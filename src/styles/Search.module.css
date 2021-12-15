@@ -1,9 +1,10 @@
 #searchContainer {
   display: flex;
-flex-direction: column;
-justify-content: center;
-align-items: center ;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
+
 #title{
   margin-top: 5px;
   margin-bottom: 15px;
@@ -20,6 +21,8 @@ align-items: center ;
   border:1px solid #d9d9d9;
   border-bottom:0px;
 }
+
+
 #upperSearchBar{
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
@@ -31,9 +34,9 @@ align-items: center ;
   width:335px;
   background-color:transparent;
   border:0;
-  outline:none;
+  /* outline:none; */
   height:35px;
-
+  color: var(--buskr-purple)
 }
 /* .searchInput:focus{
   outline:1px solid var(--buskr-pink);
@@ -53,6 +56,7 @@ align-items: center ;
   align-items: center;
   width:335px;
 }
+
 #searchBtn{
   width:335px;
   margin-top:12px;
@@ -97,9 +101,9 @@ align-items: center ;
 }
 
 .searchTag:focus{
-  background-color: #4e3c3c;
-
+  background-color: var(--buskr-purple);
 }
+
 .autocompleteInput {
   position: absolute;
   padding:5px;
@@ -108,6 +112,7 @@ align-items: center ;
   height:35px;
   background-color:transparent;
   border:0;
+  color: var(--buskr-purple);
 }
 .autocompleteInput:focus{
   outline: none;
@@ -162,10 +167,17 @@ align-items: center ;
   background-color:transparent;
   border:0;
   outline: none;
+  color: var(--buskr-purple);
 }
 .dateIcon {
   position:absolute;
 }
+
+.searchBar:focus, .autocompleteInput, .autocompleteInput:focus, .searchInput:focus, .datePicker > div > input {
+  border: none;
+  box-shadow: none;
+}
+
 #miniForm {
   display: flex;
   flex-direction: row;
