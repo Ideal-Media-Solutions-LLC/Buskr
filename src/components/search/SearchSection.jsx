@@ -109,8 +109,12 @@ const SearchSection = () => {
         { byDistance: results.byDistance, byTime: results.byTime, filtered: tomorrowEvents },
       );
     } else if (tagName === 'Near you') {
+      const nearYouEvents = results.byDistance.slice().filter((event) => {
+        console.log(event.distance);
+        return event.distance <= 100;
+      });
       setResults(
-        { byDistance: results.byDistance, byTime: results.byTime, filtered: results.byDistance },
+        { byDistance: results.byDistance, byTime: results.byTime, filtered: nearYouEvents },
       );
     } else {
       const bySearchTerm = results.byDistance.filter(
