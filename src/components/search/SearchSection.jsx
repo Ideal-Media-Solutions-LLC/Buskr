@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { FaSearch, FaMapMarkerAlt, FaRegCalendar } from 'react-icons/fa';
 import DatePicker from 'react-datepicker';
-// import AutoComplete from './Autocomplete';
+import AutoComplete from './Autocomplete';
 import styles from '../../styles/Search.module.css';
 import SearchContext from './SearchContext';
 
@@ -188,11 +188,14 @@ const SearchSection = () => {
 
       <div id={styles.searchForm}>
         <div className={styles.searchBar} id={styles.upperSearchBar}>
-          {/* <AutoComplete className={styles.searchInput} suggestions={dummyTags} /> */}
-          <input className={styles.searchInput}
+          <AutoComplete className={styles.searchInput}
+          suggestions={dummyTags}
+          onChange={onSearchTermChange}
+          placeholder="Search by event name" />
+          {/* <input className={styles.searchInput}
             onChange={onSearchTermChange}
             placeholder="Search by event name"
-          />
+          /> */}
 
           <button className={styles.insideBtn}><FaSearch /></button>
         </div>

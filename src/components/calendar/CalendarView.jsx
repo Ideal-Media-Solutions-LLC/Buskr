@@ -32,7 +32,6 @@ const CalendarView = () => {
 
   // performs search with new "from" and "to" dates
   useEffect(() => {
-    SearchbarContext.setCalendarDate(date);
     axios.get(`https://www.buskr.life/api/events?lng=${searchObj.lng}&lat=${searchObj.lat}&from=${currentStartDate}&to=${currentEndDate}&sort=time`)
       .then(res => {
         // do we need a state for queryData?
@@ -75,11 +74,15 @@ const CalendarView = () => {
       ),
     );
   };
+  const handleDayClick = (value) =>{
+    setDate(value);
+    SearchbarContext.setCalendarDate(date);
+  };
 
   return (
     <div className='calendar-container'>
       <Calendar
-        onClickDay={setDate}
+        onClickDay={handleDayClick}
         value={date}
         tileContent={({ date, view }) => view === 'month' && eventDates.has(date.getDate()) ? <div className="notification"></div> : null}
         prevLabel={<BsChevronLeft />}

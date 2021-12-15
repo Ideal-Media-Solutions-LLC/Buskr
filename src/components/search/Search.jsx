@@ -11,11 +11,11 @@ const Search = () => {
     filterWords: {},
   });
   const [isBarView, setBarView] = useState(true);
-  const [calendarDate, setCalendarDate] = useState(null);
+  const [calendarDate, setCalendarDate] = useState(new Date());
   return (
     <div id='searchContainer'>
       <SearchContext.Provider value={{
-        results, setResults, isBarView, setBarView, setCalendarDate,
+        results, setResults, isBarView, setBarView, calendarDate, setCalendarDate,
       }}>
         <SearchSection />
         <ResultSection />
