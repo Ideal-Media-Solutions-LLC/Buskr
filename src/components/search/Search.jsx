@@ -4,7 +4,12 @@ import ResultSection from './results/ResultSection';
 import SearchContext from './SearchContext';
 
 const Search = () => {
-  const [results, setResults] = useState({ byDistance: [], byTime: [], filtered: [] });
+  const [results, setResults] = useState({
+    byDistance: [],
+    byTime: [],
+    filtered: [],
+    filterWords: {},
+  });
   const [isBarView, setBarView] = useState(true);
   return (
     <div id='searchContainer'>
