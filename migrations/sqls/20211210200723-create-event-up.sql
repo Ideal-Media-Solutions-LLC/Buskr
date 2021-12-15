@@ -5,7 +5,7 @@ CREATE TABLE event (
     description  text  NOT NULL,
     starts  timestamp with time zone  NOT NULL,
     ends  timestamp with time zone  NOT NULL,
-    busker_id  integer  NOT NULL  REFERENCES busker (id)  ON DELETE CASCADE
+    busker_id  uuid  NOT NULL  REFERENCES busker (id)  ON DELETE CASCADE
 );
 CREATE INDEX event_location ON event (location);
 CREATE INDEX event_start ON event (starts);

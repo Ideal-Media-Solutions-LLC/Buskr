@@ -1,5 +1,31 @@
+import Link from 'next/link';
 import React from 'react';
 import styles from '../styles/Header.module.css';
+import UserContext from '../contexts/user';
+
+const auth = process.env.NEXT_PUBLIC_AUTH_DOMAIN;
+const client = process.env.NEXT_PUBLIC_AWS_CLIENT;
+const domain = process.env.NEXT_PUBLIC_DOMAIN;
+
+const LoginLinks = () => (
+  <a href={`${auth}/login?response_type=code&client_id=${client}&redirect_uri=${domain}/login`}>
+    LOGIN
+    &nbsp;/&nbsp;
+    REGISTER
+  </a>
+);
+
+const UserLinks = ({ user }) => (
+  <>
+    <Link href={`/profile/${user.id}`}>
+      MY PROFILE
+    </Link>
+    &nbsp;/&nbsp;
+    <a href={`${auth}/logout?client_id=${client}&logout_uri=${domain}/logout`}>
+      LOGOUT
+    </a>
+  </>
+);
 
 const Header = () => (
   <div className={styles.headerContainer}>
@@ -14,7 +40,9 @@ const Header = () => (
       </div>
     </div>
     <div className={styles.loginButton}>
-      LOGIN / REGISTER
+      <UserContext.Consumer>
+        {user => user ? <UserLinks user={user} /> : <LoginLinks />}
+      </UserContext.Consumer>
     </div>
   </div>
 );

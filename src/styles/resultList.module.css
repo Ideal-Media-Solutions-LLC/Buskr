@@ -48,6 +48,14 @@
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
 }
+.longtabsContent {
+  border: var(--buskr-lightgray) solid 1px;
+  border-top: none;
+  height: 600px;
+  overflow: auto;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
 
 .eventListNoEvents {
   color: var(--buskr-purple);
@@ -58,6 +66,7 @@
 
 .eventItemContainer {
   padding: 20px 20px 0 20px;
+  color: var(--buskr-purple);
 }
 
 .eventItemContainerNoPadding {

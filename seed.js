@@ -26,8 +26,11 @@ const db = new Client({
 });
 
 const args = process.argv;
+console.log(args);
 const numBuskers = Number(args[2]);
 const [lng, lat] = args[3].split(',').map(Number);
+console.log(args[3].split(','));
+console.log(lng, lat);
 const maxDist = Number(args[4]);
 const distRange = { min: -maxDist, max: maxDist };
 

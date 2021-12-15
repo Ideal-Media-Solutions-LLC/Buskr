@@ -3,20 +3,28 @@ import axios from 'axios';
 import { FaSearch, FaMapMarkerAlt, FaRegCalendar } from 'react-icons/fa';
 import DatePicker from 'react-datepicker';
 // import AutoComplete from './Autocomplete';
-import 'react-datepicker/dist/react-datepicker.css';
 import styles from '../../styles/Search.module.css';
 import SearchContext from './SearchContext';
 
 const SearchSection = () => {
+  const SearchbarContext = useContext(SearchContext);
   const dummyTags = ['Starting soon', 'Tomorrow', 'Near you', 'Dancers', 'Clowns', 'Magicians'];
   const geoLocation = { lat: 29.954767355989652, lng: -90.06911208674771 };
   const [searchTerm, setSearchTerm] = useState('');
+  const [address, setAddress] = useState('');
   const [searchLocation, setSearchLocation] = useState(geoLocation);
   const [searchDate, setSearchDate] = useState(new Date());
   const [initialList, setInitialList] = useState([]);
   const { results, setResults } = useContext(SearchContext);
 
-  const onSearchSubmit = () => {
+  const onSearchSubmit = async () => {
+    SearchbarContext.setBarView(!SearchbarContext.isBarView);
+    if (address !== '') {
+      await axios.get('/api/search', { params: { address } })
+        .then((res) => {
+          setSearchLocation(res.data);
+        });
+    }
     axios.get('https://www.buskr.life/api/events', {
       params: {
         features: 'coords,location,photos,tags',
@@ -48,7 +56,17 @@ const SearchSection = () => {
           },
         );
       }
-      setResults({ byDistance: oneDate, byTime, filtered: bySearchTerm });
+      setResults({
+        byDistance: oneDate,
+        byTime,
+        filtered: bySearchTerm,
+        filterWords: {
+          lat: searchLocation.lat,
+          lng: searchLocation.lng,
+          starts: searchDate,
+          keywords: searchTerm,
+        },
+      });
     });
   };
 
@@ -72,18 +90,13 @@ const SearchSection = () => {
     setSearchTerm(e.target.value);
   };
   const onSearchLocationChange = (e) => {
-    changeToCoords(e.target.value);
-    // what the results return
-    // setSearchLocation();
+    setAddress(e.target.value);
   };
+
   const onDateChange = (date) => {
     if (date !== null) {
       setSearchDate(date);
     }
-  };
-
-  const changeToCoords = (location) => {
-    // will send to https://www.buskr.life/api/searchLocation to retrieve coordinates
   };
 
   const onTagClick = (e) => {
@@ -92,7 +105,7 @@ const SearchSection = () => {
     if (tagName === 'Starting soon') {
       setSearchDate(new Date());
       setResults(
-        { byDistance: results.byDistance, byTime: results.byTime, filtered: results.byTime },
+        { ...results, filtered: results.byTime },
       );
     } else if (tagName === 'Tomorrow') {
       const today = new Date();
@@ -106,14 +119,14 @@ const SearchSection = () => {
       });
       setSearchDate(tomorrow);
       setResults(
-        { byDistance: results.byDistance, byTime: results.byTime, filtered: tomorrowEvents },
+        { ...results, filtered: tomorrowEvents },
       );
     } else if (tagName === 'Near you') {
       const nearYouEvents = results.byDistance.slice().filter((event) => {
-        return event.distance <= 100;
+        return event.distance <= 250;
       });
       setResults(
-        { byDistance: results.byDistance, byTime: results.byTime, filtered: nearYouEvents },
+        { ...results, filtered: nearYouEvents },
       );
     } else {
       const bySearchTerm = results.byDistance.slice().filter(
@@ -133,11 +146,38 @@ const SearchSection = () => {
         },
       );
       setResults(
-        { byDistance: results.byDistance, byTime: results.byTime, filtered: bySearchTerm },
+        { ...results, filtered: bySearchTerm },
       );
     }
   };
+  if (SearchbarContext.isBarView) {
+    return (
+      <div id={styles.miniForm}>
+        <div className={styles.miniBar} id={styles.miniTermInput}>
+          {/* <AutoComplete className={styles.searchInput} suggestions={dummyTags} /> */}
+          <input className={styles.miniSearchInput}
+            onChange={onSearchTermChange}
+            placeholder="Search"
+          />
 
+          <button className={styles.miniInsideBtn}><FaSearch /></button>
+        </div>
+        <div className={styles.miniBar} id={styles.miniLocationInput}>
+          <input className={styles.miniSearchInput}
+            onChange={onSearchLocationChange}
+            placeholder="Location"
+          />
+          <button className={styles.miniInsideBtn}><FaMapMarkerAlt /></button>
+        </div>
+
+        {/* <div id={styles.datePicker}>
+
+        <DatePicker wrapperClassName={styles.datePicker} selected={searchDate}
+          onChange={onDateChange}
+          placeholderText='Select Date Here' /></div> */}
+        <button id={styles.miniSearchBtn} className="master-button" onClick={onSearchSubmit}><FaSearch /></button>
+      </div>);
+  }
   return (
     <div id={styles.searchContainer}>
       <label id={styles.title}>Find Your Next Performer:</label>
@@ -173,9 +213,10 @@ const SearchSection = () => {
       <div id={styles.tagContainer}>
         {dummyTags.map((tag, index) => {
           return <button
-            className={styles.searchTag}
-            key={index}
-            onClick={onTagClick}>{tag}</button>;
+              className={styles.searchTag}
+              key={index} onClick={onTagClick}>
+                {tag}
+            </button>;
         })}
       </div>
       <button id={styles.searchBtn} className="master-button" onClick={onSearchSubmit}>Search</button>

@@ -2,7 +2,7 @@ import React from 'react';
 import ImageUploading from 'react-images-uploading';
 import styles from '../../styles/ImageUploader.module.css';
 
-const ImageUploader = ({ handleImage }) => {
+const ImageUploader = ({ handleImage, handleGoBack }) => {
   const [images, setImages] = React.useState([]);
   const maxNumber = 10;
   const onChange = (imageList, addUpdateIndex) => {
@@ -43,7 +43,7 @@ const ImageUploader = ({ handleImage }) => {
               }
               &nbsp;
               <div className={styles.backRemoveButtonsContainer}>
-                  <button className={styles.goBack} >Go Back</button>
+                  <button className={styles.goBack} onClick={handleGoBack}>Go Back</button>
                   <button className={styles.removeImage} onClick={onImageRemoveAll}>
                     Remove Image
                   </button>
@@ -60,7 +60,7 @@ const ImageUploader = ({ handleImage }) => {
               ))} */}
             </div>
             {images.length > 0 ? <button onClick={() => handleImage(images[images.length - 1].data_url)}className='master-button'>Add Image</button>
-              : <buttom className={styles.addImageGreyedOut}>Add Image</buttom>
+              : <button className={styles.addImageGreyedOut}>Add Image</button>
             }
           </div>
         )}

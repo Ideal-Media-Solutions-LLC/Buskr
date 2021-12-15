@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
 import ImageUploader from './UploadImage';
 import styles from '../../styles/CreateEvent.module.css';
 import Map from '../map/Map';
@@ -108,6 +107,7 @@ const CreateEvent3 = ({
   handleDescription,
   handleTags,
   handleImage,
+  handleGoBack,
   handleAddMyEvent,
   handleUploadMode,
   uploadMode,
@@ -158,7 +158,7 @@ const CreateEvent3 = ({
       </div>
     );
   }
-  return <ImageUploader handleImage={handleImage}/>;
+  return <ImageUploader handleImage={handleImage} handleGoBack={handleGoBack}/>;
 };
 
 // const dummyEventInfo = {
@@ -223,21 +223,21 @@ const CreateEvent = ({ center }) => {
 
   const handleNext = () => {
     if (date && endDateAndTime && loc) {
-      setCreatePage(3)
-    //   axios.get('endpoint that looks for conflicts').then(result => {
-    //     // might be .conflict, might just be true/false
-    //     if (result.data.conflict === true) {
-    //       setCreatePage(2);
-    //     } else {
-    //       setCreatePage(3);
-    //     }
-    //   });
-    // }
-    // if (!date) {
-    //   setNextClickAttempted(true);
-    // }
-    // if (!endDateAndTime) {
-    //   setNextClickAttempted(true);
+      axios.get(`https://buskr.life/api/conflicts?lat=${loc.lat}&lng=${loc.lng}&from=${date}&to=${endDateAndTime}`).then(result => {
+        console.log('results', result.data);
+        const conflict = result.data;
+        if (conflict === true) {
+          setCreatePage(2);
+        } else {
+          setCreatePage(3);
+        }
+      }).catch(err => { console.log('err: ', err); });
+    }
+    if (!date) {
+      setNextClickAttempted(true);
+    }
+    if (!endDateAndTime) {
+      setNextClickAttempted(true);
     }
   };
 
@@ -270,8 +270,11 @@ const CreateEvent = ({ center }) => {
   };
 
   const handleImage = (img) => {
-    console.log('Upload Image button was clicked!');
     setEventImage(img);
+    setUploadMode(false);
+  };
+
+  const handleGoBack = () => {
     setUploadMode(false);
   };
 
@@ -316,6 +319,7 @@ const CreateEvent = ({ center }) => {
         handleDescription={handleDescription}
         handleTags={handleTags}
         handleImage={handleImage}
+        handleGoBack={handleGoBack}
         handleAddMyEvent={handleAddMyEvent}
         handleUploadMode={handleUploadMode}
         uploadMode={uploadMode}

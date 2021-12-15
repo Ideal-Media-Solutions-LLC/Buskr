@@ -70,6 +70,10 @@ a {
   margin-bottom: 10px;
 }
 
+input {
+  color: var(--buskr-purple)
+}
+
 input::-webkit-input-placeholder{
   color: var(--buskr-gray);
 }
