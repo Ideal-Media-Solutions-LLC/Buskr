@@ -165,7 +165,6 @@ const SearchSection = () => {
           <DatePicker wrapperClassName={styles.datePicker} selected={searchDate}
             onChange={onDateChange}
             placeholderText='Select Date Here' /></div>
-        <button id={styles.searchBtn} className="master-button" onClick={onSearchSubmit}>Search</button>
       </div>
       <div id={styles.tagContainer}>
         {dummyTags.map((tag, index) => {
@@ -175,6 +174,7 @@ const SearchSection = () => {
             onClick={onTagClick}>{tag}</button>;
         })}
       </div>
+      <button id={styles.searchBtn} className="master-button" onClick={onSearchSubmit}>Search</button>
     </div>
   );
 };
