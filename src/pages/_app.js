@@ -2,6 +2,7 @@ import App from 'next/app';
 import React from 'react';
 import '../styles/globals.css';
 import '../styles/Calendar.css';
+import '../styles/Datepicker.css';
 import Header from '../components/Header';
 import UserContext from '../contexts/user';
 

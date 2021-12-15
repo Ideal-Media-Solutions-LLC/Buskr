@@ -12,6 +12,10 @@ const TabViews = () => {
   const changeView = (index) => {
     setView(index);
   };
+  const mapStyle = {
+    height: '100%',
+    width: '100%',
+  };
 
   return (
     <div className={styles.tabsContainer}>
@@ -34,13 +38,19 @@ const TabViews = () => {
       </div>
       <div className={SearchbarContext.isBarView ? styles.longtabsContent : styles.tabsContent}>
         <div className={view === 1 ? styles.activeContent : styles.content}>
-          {view === 1 ? <EventList /> : <></>}
+          {view === 1 ? <EventList /> : null}
         </div>
         <div className={view === 2 ? styles.activeContent : styles.content}>
-          {view === 2 ? 'map' : <></>}
+          {view === 2 ? 'Map'
+            // <Map
+            //   events={{ features: SearchbarContext.results.filtered }}
+            //   containerStyle={mapStyle}
+            //   center={[-90.06911208674771, 29.954767355989652]}
+            //   />
+            : null}
         </div>
         <div className={view === 3 ? styles.activeContent : styles.content}>
-          {view === 3 ? <Calendar/> : <></>}
+          {view === 3 ? <Calendar /> : null}
         </div>
       </div>
     </div>

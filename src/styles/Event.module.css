@@ -1,0 +1,44 @@
+.eventImage {
+  height: 20vh;
+  object-fit: cover;
+  width: 100%;
+}
+
+.buskerNameContainer {
+  display: flex;
+  flex-direction: row;
+  flex-basis: auto;
+}
+
+.socialIcon {
+  height: 50%;
+}
+
+.timeAndLocContainer {
+  display: flex;
+  flex-direction: column;
+  border: var(--buskr-lightgray);
+  border-width: 2px 0px 2px 0px;
+  border-style: solid;
+  padding: 10px;
+  gap: 20px;
+}
+
+.timeContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.locContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.mapContainer {
+  border: var(--buskr-lightgray);
+  border-style: solid;
+  border-width: 0px 0px 2px 0px;
+  margin: 0px 0px 10px 0px;
+}
