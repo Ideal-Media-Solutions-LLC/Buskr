@@ -1,22 +1,19 @@
 import Calendar from 'react-calendar';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { BsChevronRight, BsChevronLeft } from 'react-icons/bs';
 import axios from 'axios';
+import SearchContext from '../search/SearchContext';
 
 const CalendarView = () => {
   // grab the current location data through Conext when no location was entered - default location
   // when the user clicks the Search button, then we would setSearchObj
   // to the passed down filterObject from Search Team
-  const [searchObj, setSearchObj] = useState({
-    lng: '-90.06911208674771',
-    lat: '29.954767355989652',
-    starts: new Date(),
-    keywords: '',
-  });
+  const SearchbarContext = useContext(SearchContext);
+  const [searchObj, setSearchObj] = useState(SearchbarContext.results.filterWords);
   // updates when a date is clicked, will tie this with search function
   const [date, setDate] = useState(new Date());
   const [calendarStartDate, setCalendarStartDate] = useState(null);
-  const filteredDate = new Date(searchObj.starts);
+  const filteredDate = searchObj.starts;
   const [currentStartDate, setCurrentStartDate] = useState(
     new Date(filteredDate.getFullYear(), filteredDate.getMonth(), 1),
   );
