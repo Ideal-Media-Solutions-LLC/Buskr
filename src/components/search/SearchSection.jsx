@@ -174,7 +174,7 @@ const SearchSection = () => {
         <DatePicker wrapperClassName={styles.datePicker} selected={searchDate}
           onChange={onDateChange}
           placeholderText='Select Date Here' /></div> */}
-        <button id={styles.miniSearchBtn} className="master-button" onClick={onSearchSubmit}><FaSearch /></button>
+        <button id={styles.miniSearchBtn} onClick={onSearchSubmit}><FaSearch /></button>
       </div>);
   }
   return (
