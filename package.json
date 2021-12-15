@@ -7,11 +7,14 @@
     "start": "next start",
     "lint": "next lint",
     "migrate": "db-migrate up",
+    "migrate:create": "db-migrate create",
+    "migrate:clean": "db-migrate down -c 100000 && db-migrate up",
     "seed": "node seed.js"
   },
   "dependencies": {
-    "@aws-sdk/client-cognito-identity": "^3.43.0",
+    "@aws-sdk/client-cognito-identity-provider": "^3.43.0",
     "@react-google-maps/api": "^2.7.0",
+    "@southlane/cognito-jwt-verifier": "^0.1.8",
     "axios": "^0.21.0",
     "express": "^4.15.0",
     "moment": "^2.29.1",
