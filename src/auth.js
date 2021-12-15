@@ -2,21 +2,27 @@ import {
   CognitoIdentityProviderClient,
   GetUserCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
-import { CognitoJwtVerifier } from 'aws-jwt-verify';
+import { verifierFactory } from '@southlane/cognito-jwt-verifier';
+
 import React from 'react';
 
 export const UserContext = React.createContext(null);
 
 const {
-  NEXT_PUBLIC_AWS_CLIENT: clientId,
+  NEXT_PUBLIC_AWS_CLIENT: appClientId,
   REGION: region,
   USER_POOL: userPoolId,
 } = process.env;
 
 const provider = new CognitoIdentityProviderClient({ region });
 
-const getVerifier = function tokenUse(tokenUse) {
-  return CognitoJwtVerifier.create({ userPoolId, clientId, tokenUse });
+const getVerifier = function tokenUse(tokenType) {
+  return verifierFactory({
+    region,
+    userPoolId,
+    appClientId,
+    tokenType,
+  });
 };
 
 const idVerifier = getVerifier('id');
