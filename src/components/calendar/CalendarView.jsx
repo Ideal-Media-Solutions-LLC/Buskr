@@ -9,6 +9,7 @@ const CalendarView = () => {
   // when the user clicks the Search button, then we would setSearchObj
   // to the passed down filterObject from Search Team
   const SearchbarContext = useContext(SearchContext);
+  console.log(SearchbarContext);
   const [searchObj, setSearchObj] = useState(SearchbarContext.results.filterWords);
   // updates when a date is clicked, will tie this with search function
   const [date, setDate] = useState(new Date());

@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import React from 'react';
+import React, { useContext } from 'react';
 import styles from '../styles/Header.module.css';
 import { UserContext } from '../contexts';
 

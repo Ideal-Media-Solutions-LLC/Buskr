@@ -70,6 +70,8 @@ const SearchSection = () => {
     });
   };
 
+  useEffect(() => onSearchSubmit(), []);
+
   const onSearchTermChange = (e) => {
     setSearchTerm(e.target.value);
   };
@@ -85,7 +87,7 @@ const SearchSection = () => {
 
   const onTagClick = (e) => {
     // filter based on initial list when rendered since it will not be visible after initial search
-    const tagName = e.target.innerHTML;
+    const tagName = e.target.innerText;
     if (tagName === 'Starting soon') {
       setSearchDate(new Date());
       setResults(
@@ -114,19 +116,15 @@ const SearchSection = () => {
       );
     } else {
       const bySearchTerm = results.byDistance.slice().filter(
-        (event) => {
-          const tags = ['Dancers', 'Clowns', 'Magicians'];
-          for (const tag of tags) {
-            if (tagName === tag) {
-              const searchedTerm = tag.toLowerCase();
-              const filteredEvents = event.properties.name.toLowerCase()
-                .includes(searchedTerm)
-                || event.properties.buskerName.toLowerCase().includes(searchedTerm)
-                || event.properties.tags.indexOf(searchedTerm) !== -1;
-              return filteredEvents;
-            }
-          }
-          return [];
+        ({ properties: { name, buskerName, tags } }) => {
+          const lowerName = name.toLowerCase();
+          const lowerBuskerName = buskerName.toLowerCase();
+          const searchedTerm = tagName.toLowerCase();
+          const filteredEvents = lowerName
+            .includes(searchedTerm)
+            || lowerBuskerName.toLowerCase().includes(searchedTerm)
+            || tags.indexOf(searchedTerm) !== -1;
+          return filteredEvents;
         },
       );
       setResults(

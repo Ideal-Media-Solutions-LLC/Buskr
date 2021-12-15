@@ -3,6 +3,7 @@ import Profile from '../../components/profile/Profile';
 import BuskerController from '../../db/busker';
 import { getUser } from '../../auth';
 import { UserContext } from '../../contexts';
+import Header from '../../components/Header';
 
 export const getServerSideProps = async function getServerSideProps(context) {
   const [user, performer] = await Promise.all([
@@ -14,6 +15,7 @@ export const getServerSideProps = async function getServerSideProps(context) {
 
 const ProfilePage = ({ performer, user }) => (
   <UserContext.Provider value={user}>
+    <Header />
     <Profile performer={performer} />
   </UserContext.Provider>
 );

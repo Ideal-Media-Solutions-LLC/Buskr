@@ -2,7 +2,6 @@ import React from 'react';
 import '../styles/globals.css';
 import '../styles/Calendar.css';
 import '../styles/Datepicker.css';
-import Header from '../components/Header';
 import { LocationContext } from '../contexts';
 
 const MyApp = function MyApp({ Component, pageProps }) {
@@ -20,7 +19,6 @@ const MyApp = function MyApp({ Component, pageProps }) {
   return (
       <LocationContext.Provider value={location}>
         <div className='master-container'>
-          <Header />
           <Component {...pageProps} />
         </div>
       </LocationContext.Provider>

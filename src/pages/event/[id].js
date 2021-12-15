@@ -3,6 +3,7 @@ import Event from '../../components/Event';
 import EventController from '../../db/event';
 import { getUser } from '../../auth';
 import { UserContext } from '../../contexts';
+import Header from '../../components/Header';
 
 export const getServerSideProps = async function getServerSideProps(context) {
   const [user, event] = await Promise.all([
@@ -14,6 +15,7 @@ export const getServerSideProps = async function getServerSideProps(context) {
 
 const EventPage = ({ event, user }) => (
   <UserContext.Provider value={user}>
+    <Header />
     <Event event={event} />
   </UserContext.Provider>
 );
