@@ -8,6 +8,7 @@ import styles from '../../styles/Search.module.css';
 import SearchContext from './SearchContext';
 
 const SearchSection = () => {
+  const SearchbarContext = useContext(SearchContext);
   const dummyTags = ['Starting soon', 'Tomorrow', 'Near you', 'Dancers', 'Clowns', 'Magicians'];
   const geoLocation = { lat: 29.954767355989652, lng: -90.06911208674771 };
   const [searchTerm, setSearchTerm] = useState('');
@@ -15,11 +16,10 @@ const SearchSection = () => {
   const [address, setAddress] = useState('');
   const [searchLocation, setSearchLocation] = useState(geoLocation);
   const [searchDate, setSearchDate] = useState(new Date());
-  const [isBarView, setBarView] = useState(true);
   const { results, setResults } = useContext(SearchContext);
 
   const onSearchSubmit = async () => {
-    setBarView(!isBarView);
+    SearchbarContext.setBarView(!SearchbarContext.isBarView);
     if (address !== '') {
       await axios.get('/api/search', { params: { address } })
         .then((res) => {
@@ -94,7 +94,7 @@ const SearchSection = () => {
   const onTagClick = (e) => {
     console.log(e.target.innerHTML);
   };
-  if (isBarView) {
+  if (SearchbarContext.isBarView) {
     return (
       <div id={styles.miniForm}>
         <div className={styles.miniBar} id={styles.miniTermInput}>
@@ -123,7 +123,6 @@ const SearchSection = () => {
       </div>);
   }
   return (
-    <SearchContext.Provider value={{ setSearchTerm, setSearchLocation }}>
       <div id={styles.searchContainer}>
         <label id={styles.title}>Find Your Next Performer:</label>
 
@@ -162,7 +161,6 @@ const SearchSection = () => {
           })}
         </div>
       </div>
-    </SearchContext.Provider>
   );
 };
 
