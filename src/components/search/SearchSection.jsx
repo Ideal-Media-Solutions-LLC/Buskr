@@ -110,7 +110,7 @@ const SearchSection = () => {
       );
     } else if (tagName === 'Near you') {
       const nearYouEvents = results.byDistance.slice().filter((event) => {
-        return event.distance <= 100;
+        return event.distance <= 250;
       });
       setResults(
         { byDistance: results.byDistance, byTime: results.byTime, filtered: nearYouEvents },
