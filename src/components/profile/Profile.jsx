@@ -1,20 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React from 'react';
 import EventItem from '../search/results/EventItem';
 import styles from '../../styles/Profile.module.css';
 
-const Profile = ({ id }) => {
-  // const [loggedIn, setLoggedIn] = useState();
-  const [performer, setPerformer] = useState();
-
-  useEffect(() => {
-    axios.get(`https://www.buskr.life/api/profile/${id}`).then(result => {
-      setPerformer(result.data);
-    }).catch(err => {
-      console.log('Error attempting GET profile by id: ', err);
-    });
-  }, [id]);
-
+const Profile = ({ performer }) => {
   return (
     <div className={styles.profileContainer}>
       <div className='master-title'>{performer?.name}</div>

@@ -13,9 +13,7 @@ const cache = createClient({
   url,
 });
 
-export const geocode = function geocode() {};
-
-export const reverseGeocode = async function reverseGeocode(id, [lng, lat]) {
+const reverseGeocode = async function reverseGeocode(id, [lng, lat]) {
   if (!cache.isOpen) {
     await cache.connect();
   }
@@ -47,8 +45,11 @@ export const reverseGeocode = async function reverseGeocode(id, [lng, lat]) {
   return location;
 };
 
-export const getLocations = async function getLocations(rows) {
+export default async function getLocations(rows) {
   return Promise.all(rows.map(async (row) => {
-    row.properties.location = await reverseGeocode(row.properties.id, row.geometry.coordinates);
+    row.properties.location = await reverseGeocode(
+      row.properties.id,
+      row.geometry.coordinates,
+    );
   }));
-};
+}
