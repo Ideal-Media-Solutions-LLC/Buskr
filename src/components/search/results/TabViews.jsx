@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { BsListUl, BsMap, BsCalendar3Week } from 'react-icons/bs';
 import EventList from './EventList';
 import styles from '../../../styles/resultList.module.css';
+import SearchContext from '../SearchContext';
 
 const TabViews = () => {
+  const SearchbarContext = useContext(SearchContext);
   const [view, setView] = useState(1);
   const changeView = (index) => {
     setView(index);
@@ -28,7 +30,7 @@ const TabViews = () => {
           <BsCalendar3Week />
         </button>
       </div>
-      <div className={styles.tabsContent}>
+      <div className={SearchbarContext.isBarView ? styles.longtabsContent : styles.tabsContent}>
         <div className={view === 1 ? styles.activeContent : styles.content}>
           {view === 1 ? <EventList /> : <></>}
         </div>
