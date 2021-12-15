@@ -19,15 +19,6 @@ const SearchSection = () => {
 
   const onSearchSubmit = async () => {
     SearchbarContext.setBarView(!SearchbarContext.isBarView);
-    setResults({
-      ...results,
-      filterWords: {
-        lat: searchLocation.lat,
-        lng: searchLocation.lng,
-        starts: searchDate,
-        keywords: searchTerm,
-      },
-    });
     if (address !== '') {
       await axios.get('/api/search', { params: { address } })
         .then((res) => {
@@ -65,7 +56,17 @@ const SearchSection = () => {
           },
         );
       }
-      setResults({ byDistance: oneDate, byTime, filtered: bySearchTerm });
+      setResults({
+        byDistance: oneDate,
+        byTime,
+        filtered: bySearchTerm,
+        filterWords: {
+          lat: searchLocation.lat,
+          lng: searchLocation.lng,
+          starts: searchDate,
+          keywords: searchTerm,
+        },
+      });
     });
   };
 
@@ -104,7 +105,7 @@ const SearchSection = () => {
     if (tagName === 'Starting soon') {
       setSearchDate(new Date());
       setResults(
-        { byDistance: results.byDistance, byTime: results.byTime, filtered: results.byTime },
+        { ...results, filtered: results.byTime },
       );
     } else if (tagName === 'Tomorrow') {
       const today = new Date();
@@ -118,14 +119,14 @@ const SearchSection = () => {
       });
       setSearchDate(tomorrow);
       setResults(
-        { byDistance: results.byDistance, byTime: results.byTime, filtered: tomorrowEvents },
+        { ...results, filtered: tomorrowEvents },
       );
     } else if (tagName === 'Near you') {
       const nearYouEvents = results.byDistance.slice().filter((event) => {
         return event.distance <= 250;
       });
       setResults(
-        { byDistance: results.byDistance, byTime: results.byTime, filtered: nearYouEvents },
+        { ...results, filtered: nearYouEvents },
       );
     } else {
       const bySearchTerm = results.byDistance.slice().filter(
@@ -145,7 +146,7 @@ const SearchSection = () => {
         },
       );
       setResults(
-        { byDistance: results.byDistance, byTime: results.byTime, filtered: bySearchTerm },
+        { ...results, filtered: bySearchTerm },
       );
     }
   };
