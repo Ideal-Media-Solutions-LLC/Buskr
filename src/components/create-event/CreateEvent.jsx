@@ -108,6 +108,7 @@ const CreateEvent3 = ({
   handleDescription,
   handleTags,
   handleImage,
+  handleGoBack,
   handleAddMyEvent,
   handleUploadMode,
   uploadMode,
@@ -157,7 +158,7 @@ const CreateEvent3 = ({
       </div>
     );
   }
-  return <ImageUploader handleImage={handleImage}/>;
+  return <ImageUploader handleImage={handleImage} handleGoBack={handleGoBack}/>;
 };
 
 // const dummyEventInfo = {
@@ -172,7 +173,7 @@ const CreateEvent3 = ({
 // }
 
 const CreateEvent = ({ center }) => {
-  const [createPage, setCreatePage] = useState(3);
+  const [createPage, setCreatePage] = useState(1);
   const [name, setEventName] = useState();
   const [description, setEventDescription] = useState();
   const [image, setEventImage] = useState();
@@ -220,16 +221,19 @@ const CreateEvent = ({ center }) => {
     setEventTags(e.target.value);
   };
 
+  // /api/conflict?from=blabla&to=blabla&lng=0.00&lat=0.01
+
   const handleNext = () => {
     if (date && endDateAndTime && loc) {
-      axios.get('endpoint that looks for conflicts').then(result => {
-        // might be .conflict, might just be true/false
-        if (result.data.conflict === true) {
+      axios.get(`/api/conflict/?from=${date}&to=${endDateAndTime}&lng=${loc.lng}&lat=${loc.lat}`).then(result => {
+        console.log('results', result.data);
+        const conflict = false;
+        if (conflict === true) {
           setCreatePage(2);
         } else {
           setCreatePage(3);
         }
-      });
+      }).catch(err => { console.log('err: ', err); });
     }
     if (!date) {
       setNextClickAttempted(true);
@@ -253,8 +257,11 @@ const CreateEvent = ({ center }) => {
   };
 
   const handleImage = (img) => {
-    console.log('Upload Image button was clicked!');
     setEventImage(img);
+    setUploadMode(false);
+  };
+
+  const handleGoBack = () => {
     setUploadMode(false);
   };
 
@@ -299,6 +306,7 @@ const CreateEvent = ({ center }) => {
         handleDescription={handleDescription}
         handleTags={handleTags}
         handleImage={handleImage}
+        handleGoBack={handleGoBack}
         handleAddMyEvent={handleAddMyEvent}
         handleUploadMode={handleUploadMode}
         uploadMode={uploadMode}
