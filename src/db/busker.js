@@ -1,6 +1,18 @@
 import db from '.';
 import getLocations from './getLocations';
 
+const update = async function update({ sub, name, email, email_verified }) {
+  const query = `
+    INSERT INTO busker (id, name, email, email_verified)
+    VALUES ($1, $2, $3, $4)
+    ON CONFLICT (id) DO UPDATE SET
+      name = $2,
+      email = $3,
+      email_verified = $4
+  `;
+  return db.query(query, [sub, name, email, email_verified]);
+};
+
 const get = async function get(id) {
   const query = `
     WITH busker_events AS (
@@ -59,5 +71,5 @@ const get = async function get(id) {
   return profile;
 };
 
-const Profile = { get };
+const Profile = { get, update };
 export default Profile;
