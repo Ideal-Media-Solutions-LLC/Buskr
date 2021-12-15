@@ -12,6 +12,8 @@ export const getStaticProps = async function getStaticProps(context) {
   return event === undefined ? { notFound: true } : { props: { event } };
 };
 
+export const getStaticPaths = async () => ({ paths: [], fallback: 'blocking' });
+
 const EventRenderer = ({ event }) => <Event event={event} />;
 
 export default EventRenderer;
