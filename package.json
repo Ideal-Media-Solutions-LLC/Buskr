@@ -7,6 +7,8 @@
     "start": "next start",
     "lint": "next lint",
     "migrate": "db-migrate up",
+    "migrate:create": "db-migrate create",
+    "migrate:clean": "db-migrate down -c 100000 && db-migrate up",
     "seed": "node seed.js"
   },
   "dependencies": {
