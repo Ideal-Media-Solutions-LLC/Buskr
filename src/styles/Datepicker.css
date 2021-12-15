@@ -35,19 +35,6 @@
 
 /*//////// - Container - ////////*/
 
-.react-datepicker__month-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  width: 245px;
-}
-
-.react-datepicker__time-container {
-  float: right;
-  border-left: 1px solid var(--buskr-lightgray);
-  width: 85px;
-}
-
 .react-datepicker {
   display: flex;
   flex-direction: row;
@@ -59,6 +46,19 @@
   border: 1px solid var(--buskr-lightgray);
   border-radius: 5px;
   position: relative;
+}
+
+.react-datepicker__month-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: 245px;
+}
+
+.react-datepicker__time-container {
+  float: right;
+  border-left: 1px solid var(--buskr-lightgray);
+  width: 88px;
 }
 
 /*//////// - Navigation - ////////*/
