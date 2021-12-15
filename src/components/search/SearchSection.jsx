@@ -3,7 +3,6 @@ import axios from 'axios';
 import { FaSearch, FaMapMarkerAlt, FaRegCalendar } from 'react-icons/fa';
 import DatePicker from 'react-datepicker';
 // import AutoComplete from './Autocomplete';
-import 'react-datepicker/dist/react-datepicker.css';
 import styles from '../../styles/Search.module.css';
 import SearchContext from './SearchContext';
 
