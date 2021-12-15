@@ -1,7 +1,7 @@
 import db from '.';
 import getLocations from './getLocations';
 
-export default async function getProfile(id) {
+const get = async function get(id) {
   const query = `
     WITH busker_events AS (
     SELECT
@@ -57,4 +57,7 @@ export default async function getProfile(id) {
     await getLocations(profile.events);
   }
   return profile;
-}
+};
+
+const Profile = { get };
+export default Profile;
