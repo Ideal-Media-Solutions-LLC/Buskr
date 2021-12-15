@@ -2,7 +2,7 @@ import React from 'react';
 import ImageUploading from 'react-images-uploading';
 import styles from '../../styles/ImageUploader.module.css';
 
-const ImageUploader = ({ handleImage }) => {
+const ImageUploader = ({ handleImage, handleGoBack }) => {
   const [images, setImages] = React.useState([]);
   const maxNumber = 10;
   const onChange = (imageList, addUpdateIndex) => {
@@ -12,7 +12,7 @@ const ImageUploader = ({ handleImage }) => {
   };
 
   return (
-    <div>
+    <div className={styles.uploadImageViewContainer}>
       <ImageUploading
         multiple
         value={images}
@@ -43,8 +43,8 @@ const ImageUploader = ({ handleImage }) => {
               }
               &nbsp;
               <div className={styles.backRemoveButtonsContainer}>
-                  <button className={styles.skipThisStep}>Go Back</button>
-                  <button className={styles.removeAllImages} onClick={onImageRemoveAll}>
+                  <button className={styles.goBack} onClick={handleGoBack}>Go Back</button>
+                  <button className={styles.removeImage} onClick={onImageRemoveAll}>
                     Remove Image
                   </button>
               </div>
@@ -59,9 +59,9 @@ const ImageUploader = ({ handleImage }) => {
                 </div>
               ))} */}
             </div>
-            <button onClick={() => handleImage(images[images.length - 1].data_url)}className='master-button'>
-              Add Image
-            </button>
+            {images.length > 0 ? <button onClick={() => handleImage(images[images.length - 1].data_url)}className='master-button'>Add Image</button>
+              : <button className={styles.addImageGreyedOut}>Add Image</button>
+            }
           </div>
         )}
       </ImageUploading>
