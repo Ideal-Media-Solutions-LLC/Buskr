@@ -1,6 +1,5 @@
 import React from 'react';
 import Event from '../../components/Event';
-import getEvent from '../../db/getEvent';
 
 /**
  * @param {import('next').GetServerSidePropsContext} context
@@ -8,7 +7,7 @@ import getEvent from '../../db/getEvent';
  */
 export const getStaticProps = async function getStaticProps(context) {
   const { id } = context.query;
-  const event = await getEvent(id);
+  const event = await Event.get(id);
   return event === undefined ? { notFound: true } : { props: { event } };
 };
 
