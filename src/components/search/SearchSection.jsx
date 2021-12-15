@@ -7,15 +7,25 @@ import styles from '../../styles/Search.module.css';
 import SearchContext from './SearchContext';
 
 const SearchSection = () => {
+  const SearchbarContext = useContext(SearchContext);
   const dummyTags = ['Starting soon', 'Tomorrow', 'Near you', 'Dancers', 'Clowns', 'Magicians'];
   const geoLocation = { lat: 29.954767355989652, lng: -90.06911208674771 };
   const [searchTerm, setSearchTerm] = useState('');
+  // const [previousSearchTerm, setPreviousSearchTerm] = useState(searchTerm);
+  const [address, setAddress] = useState('');
   const [searchLocation, setSearchLocation] = useState(geoLocation);
   const [searchDate, setSearchDate] = useState(new Date());
   const [initialList, setInitialList] = useState([]);
   const { results, setResults } = useContext(SearchContext);
 
-  const onSearchSubmit = () => {
+  const onSearchSubmit = async () => {
+    SearchbarContext.setBarView(!SearchbarContext.isBarView);
+    if (address !== '') {
+      await axios.get('/api/search', { params: { address } })
+        .then((res) => {
+          setSearchLocation(res.data);
+        });
+    }
     axios.get('https://www.buskr.life/api/events', {
       params: {
         features: 'coords,location,photos,tags',
@@ -71,18 +81,13 @@ const SearchSection = () => {
     setSearchTerm(e.target.value);
   };
   const onSearchLocationChange = (e) => {
-    changeToCoords(e.target.value);
-    // what the results return
-    // setSearchLocation();
+    setAddress(e.target.value);
   };
+
   const onDateChange = (date) => {
     if (date !== null) {
       setSearchDate(date);
     }
-  };
-
-  const changeToCoords = (location) => {
-    // will send to https://www.buskr.life/api/searchLocation to retrieve coordinates
   };
 
   const onTagClick = (e) => {
@@ -136,7 +141,34 @@ const SearchSection = () => {
       );
     }
   };
+  if (SearchbarContext.isBarView) {
+    return (
+      <div id={styles.miniForm}>
+        <div className={styles.miniBar} id={styles.miniTermInput}>
+          {/* <AutoComplete className={styles.searchInput} suggestions={dummyTags} /> */}
+          <input className={styles.miniSearchInput}
+            onChange={onSearchTermChange}
+            placeholder="Search"
+          />
 
+          <button className={styles.miniInsideBtn}><FaSearch /></button>
+        </div>
+        <div className={styles.miniBar} id={styles.miniLocationInput}>
+          <input className={styles.miniSearchInput}
+            onChange={onSearchLocationChange}
+            placeholder="Location"
+          />
+          <button className={styles.miniInsideBtn}><FaMapMarkerAlt /></button>
+        </div>
+
+        {/* <div id={styles.datePicker}>
+
+        <DatePicker wrapperClassName={styles.datePicker} selected={searchDate}
+          onChange={onDateChange}
+          placeholderText='Select Date Here' /></div> */}
+        <button id={styles.miniSearchBtn} className="master-button" onClick={onSearchSubmit}><FaSearch /></button>
+      </div>);
+  }
   return (
     <div id={styles.searchContainer}>
       <label id={styles.title}>Find Your Next Performer:</label>
