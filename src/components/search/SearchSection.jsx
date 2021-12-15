@@ -12,7 +12,6 @@ const SearchSection = () => {
   const dummyTags = ['Starting soon', 'Tomorrow', 'Near you', 'Dancers', 'Clowns', 'Magicians'];
   const geoLocation = { lat: 29.954767355989652, lng: -90.06911208674771 };
   const [searchTerm, setSearchTerm] = useState('');
-  // const [previousSearchTerm, setPreviousSearchTerm] = useState(searchTerm);
   const [address, setAddress] = useState('');
   const [searchLocation, setSearchLocation] = useState(geoLocation);
   const [searchDate, setSearchDate] = useState(new Date());
@@ -21,6 +20,15 @@ const SearchSection = () => {
 
   const onSearchSubmit = async () => {
     SearchbarContext.setBarView(!SearchbarContext.isBarView);
+    setResults({
+      ...results,
+      filterWords: {
+        lat: searchLocation.lat,
+        lng: searchLocation.lng,
+        starts: searchDate,
+        keywords: searchTerm,
+      },
+    });
     if (address !== '') {
       await axios.get('/api/search', { params: { address } })
         .then((res) => {
