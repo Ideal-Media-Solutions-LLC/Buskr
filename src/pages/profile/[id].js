@@ -1,20 +1,11 @@
-import React from 'react';
-import { useRouter } from 'next/router';
 import Profile from '../../components/profile/Profile';
+import getProfile from '../../db/getProfile';
 
-const ProfileRenderer = () => {
-  const router = useRouter();
-  const { id } = router.query;
-
-  console.log('id in renderer: ', id);
-  if (id) {
-    return (
-      <Profile id={id}/>
-    );
-  }
-  return (
-    <div></div>
-  );
+export const getStaticProps = async function getStaticProps(context) {
+  const performer = await getProfile(context.params.id);
+  return performer === undefined ? { notFound: true } : { props: { performer } };
 };
 
-export default ProfileRenderer;
+export const getStaticPaths = async () => ({ paths: [], fallback: 'blocking' });
+
+export default Profile;
