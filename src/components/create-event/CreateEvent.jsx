@@ -115,6 +115,7 @@ const CreateEvent3 = ({
   submitAttempted,
   name,
   description,
+  tags,
 }) => {
   const [uploadView, setUploadView] = useState(false);
   useEffect(() => {
@@ -133,17 +134,17 @@ const CreateEvent3 = ({
               : styles.validationWarningHidden}>
                 Please enter an event name
               </div>
-              <input onChange={handleName} type='search' className={styles.masterSearchBar} placeholder='Enter Event Name'></input>
+              <input onChange={handleName} type='search' className={styles.masterSearchBar} placeholder='Enter Event Name' value={name}></input>
             <div className={styles.smallTitle}> Description: </div>
             <div className={submitAttempted && !description
               ? styles.validationWarning
               : styles.validationWarningHidden}> Please enter a description </div>
-              <textarea onChange={handleDescription} type='search' className={styles.descriptionField}placeholder='Enter Description'></textarea>
+              <textarea onChange={handleDescription} type='search' className={styles.descriptionField}placeholder='Enter Description' value={description}></textarea>
             <div className={styles.tagsDescription}>
               <div className={styles.smallTitle}> Tags </div>
               <div className={styles.tagSubtext}> (OPTIONAL - Separated By Comma)  </div>
             </div>
-              <input onChange={handleTags} type='search' className={styles.masterSearchBar}placeholder='Add Tags (separated by comma)'></input>
+              <input onChange={handleTags} type='search' className={styles.masterSearchBar}placeholder='Add Tags (separated by comma)' value={tags}></input>
           </form>
           {/* if image exists, render image, otherwise render button */}
           {image
@@ -243,7 +244,7 @@ const CreateEvent = ({ center }) => {
   const handleAddMyEvent = () => {
     console.log('ADD MY EVENT CLICKED!')
     if (name && description && image && date && endDateAndTime && loc) {
-      let data = {
+      const data = {
         // buskerID: How do I access performer ID - from context?
         name,
         description,
@@ -322,6 +323,7 @@ const CreateEvent = ({ center }) => {
         submitAttempted={submitAttempted}
         name={name}
         description={description}
+        tags={tags}
       />
     );
   }
