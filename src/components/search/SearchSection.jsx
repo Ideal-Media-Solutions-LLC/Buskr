@@ -78,7 +78,11 @@ const SearchSection = () => {
       </div>
       <div id={styles.tagContainer}>
         {dummyTags.map((tag, index) => {
-          return <button className={styles.searchTag} key={index} onClick={onTagClick} color="#5C4C4C" >{tag}</button>;
+          return <button
+              className={styles.searchTag}
+              key={index} onClick={onTagClick}>
+                {tag}
+            </button>;
         })}
       </div>
     </div>

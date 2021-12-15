@@ -36,7 +36,7 @@
   border:0;
   /* outline:none; */
   height:35px;
-
+  color: var(--buskr-purple)
 }
 /* .searchInput:focus{
   outline:1px solid var(--buskr-pink);
@@ -102,8 +102,8 @@
 
 .searchTag:focus{
   background-color: var(--buskr-purple);
-
 }
+
 .autocompleteInput {
   position: absolute;
   padding:5px;
@@ -112,6 +112,7 @@
   height:35px;
   background-color:transparent;
   border:0;
+  color: var(--buskr-purple);
 }
 .autocompleteInput:focus{
   outline: none;
@@ -166,6 +167,7 @@
   background-color:transparent;
   border:0;
   outline: none;
+  color: var(--buskr-purple);
 }
 .dateIcon {
   position:absolute;

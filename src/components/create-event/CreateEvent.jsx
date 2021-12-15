@@ -173,7 +173,7 @@ const CreateEvent3 = ({
 // }
 
 const CreateEvent = ({ center }) => {
-  const [createPage, setCreatePage] = useState(2);
+  const [createPage, setCreatePage] = useState(1);
   const [name, setEventName] = useState();
   const [description, setEventDescription] = useState();
   const [image, setEventImage] = useState();
@@ -221,13 +221,11 @@ const CreateEvent = ({ center }) => {
     setEventTags(e.target.value);
   };
 
-  // /api/conflict?from=blabla&to=blabla&lng=0.00&lat=0.01
-
   const handleNext = () => {
     if (date && endDateAndTime && loc) {
-      axios.get(`/api/conflict/?from=${date}&to=${endDateAndTime}&lng=${loc.lng}&lat=${loc.lat}`).then(result => {
+      axios.get(`https://buskr.life/api/conflicts?lat=${loc.lat}&lng=${loc.lng}&from=${date}&to=${endDateAndTime}`).then(result => {
         console.log('results', result.data);
-        const conflict = false;
+        const conflict = result.data;
         if (conflict === true) {
           setCreatePage(2);
         } else {
