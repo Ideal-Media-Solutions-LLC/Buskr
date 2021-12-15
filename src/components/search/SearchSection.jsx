@@ -110,14 +110,13 @@ const SearchSection = () => {
       );
     } else if (tagName === 'Near you') {
       const nearYouEvents = results.byDistance.slice().filter((event) => {
-        console.log(event.distance);
         return event.distance <= 100;
       });
       setResults(
         { byDistance: results.byDistance, byTime: results.byTime, filtered: nearYouEvents },
       );
     } else {
-      const bySearchTerm = results.byDistance.filter(
+      const bySearchTerm = results.byDistance.slice().filter(
         (event) => {
           const tags = ['Dancers', 'Clowns', 'Magicians'];
           for (const tag of tags) {
