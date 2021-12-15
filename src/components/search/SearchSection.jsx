@@ -4,18 +4,18 @@ import { FaSearch, FaMapMarkerAlt, FaRegCalendar } from 'react-icons/fa';
 import DatePicker from 'react-datepicker';
 // import AutoComplete from './Autocomplete';
 import styles from '../../styles/Search.module.css';
-import SearchContext from './SearchContext';
+import { LocationContext, SearchContext } from '../../contexts';
 
 const SearchSection = () => {
   const SearchbarContext = useContext(SearchContext);
+  const { results, setResults } = SearchbarContext;
+  const geoLocation = useContext(LocationContext);
   const dummyTags = ['Starting soon', 'Tomorrow', 'Near you', 'Dancers', 'Clowns', 'Magicians'];
-  const geoLocation = { lat: 29.954767355989652, lng: -90.06911208674771 };
   const [searchTerm, setSearchTerm] = useState('');
   const [address, setAddress] = useState('');
   const [searchLocation, setSearchLocation] = useState(geoLocation);
   const [searchDate, setSearchDate] = useState(new Date());
   const [initialList, setInitialList] = useState([]);
-  const { results, setResults } = useContext(SearchContext);
 
   const onSearchSubmit = async () => {
     SearchbarContext.setBarView(!SearchbarContext.isBarView);
@@ -69,22 +69,6 @@ const SearchSection = () => {
       });
     });
   };
-
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setSearchLocation({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          });
-        },
-      );
-    } else {
-      setSearchLocation(geoLocation);
-    }
-    onSearchSubmit();
-  }, []);
 
   const onSearchTermChange = (e) => {
     setSearchTerm(e.target.value);

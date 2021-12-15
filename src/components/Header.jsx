@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import React from 'react';
 import styles from '../styles/Header.module.css';
-import UserContext from '../contexts/user';
+import { UserContext } from '../contexts';
 
 const auth = process.env.NEXT_PUBLIC_AUTH_DOMAIN;
 const client = process.env.NEXT_PUBLIC_AWS_CLIENT;
@@ -31,7 +31,9 @@ const Header = () => (
   <div className={styles.headerContainer}>
     <div className={styles.hamburgerIconLogoContainer}>
       {/* <img className={styles.logo}src='/imgs/buskr-logo.png'/> */}
-      <div className={styles.logoText}>BUSKR</div>
+      <div className={styles.logoText}>
+        <Link href='/'>BUSKR</Link>
+      </div>
       <img className={styles.icon}src='/imgs/buskr-icon.gif' alt=''/>
       <div className={styles.hamburgerContainer}>
         <div className={styles.hamburgerLine}></div>

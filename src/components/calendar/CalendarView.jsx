@@ -2,7 +2,7 @@ import Calendar from 'react-calendar';
 import React, { useEffect, useState, useContext } from 'react';
 import { BsChevronRight, BsChevronLeft } from 'react-icons/bs';
 import axios from 'axios';
-import SearchContext from '../search/SearchContext';
+import { SearchContext } from '../../contexts';
 
 const CalendarView = () => {
   // grab the current location data through Conext when no location was entered - default location

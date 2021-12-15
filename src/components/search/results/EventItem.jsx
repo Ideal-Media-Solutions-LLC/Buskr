@@ -1,13 +1,14 @@
+import Link from 'next/link';
 import React from 'react';
 import moment from 'moment-timezone';
-import Link from 'next/link';
 import styles from '../../../styles/resultList.module.css';
 
 const EventItem = (props) => {
-  const event = props.event.properties;
   const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const time = moment.tz(event.starts, zone).format('ddd, MMM D [@] h:mA z');
-  const location = `${event.location.locality}, ${event.location.administrative_area_level_1}`;
+  const time = moment.tz(props.event.properties.starts, zone).format('ddd, MMM D [@] h:mA z');
+  const location = `${props.event.properties.location.locality}, ${props.event.properties.location.administrative_area_level_1}`;
+
+  const { name, id, buskerName, buskerId, photos } = props.event.properties;
 
   return (
     <div className={styles.eventItemContainer}>
@@ -17,12 +18,14 @@ const EventItem = (props) => {
             {time.toUpperCase()}
           </div>
           <div className={styles.eventItemName}>
-          <Link href={`/event/${event.id}`}>
-            {event.name}
+            <Link href={`/event/${id}`}>
+              { name }
             </Link>
           </div>
           <div className={styles.eventItemBusker}>
-            <Link href={`/profile/${event.buskerId}`}>{event.buskerName}</Link>
+            <Link href={`/profile/${buskerId}`}>
+              {buskerName}
+            </Link>
           </div>
           <div className={styles.eventItemLocation}>
             {location}
@@ -31,7 +34,7 @@ const EventItem = (props) => {
         <div className={styles.eventItemOther}>
           <img
             className={styles.eventItemImage}
-            src={event.photos[0]}
+            src={photos[0]}
             alt="event image"
           />
           <div className={styles.optionalButton}></div>

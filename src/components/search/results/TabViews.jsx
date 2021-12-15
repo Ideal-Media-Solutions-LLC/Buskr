@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { BsListUl, BsMap, BsCalendar3Week } from 'react-icons/bs';
 import EventList from './EventList';
 import styles from '../../../styles/resultList.module.css';
-import SearchContext from '../SearchContext';
+import { SearchContext } from '../../../contexts';
 import Map from '../../map/Map';
 import Calendar from '../../calendar/CalendarView';
 

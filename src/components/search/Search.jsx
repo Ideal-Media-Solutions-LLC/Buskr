@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import SearchSection from './SearchSection';
 import ResultSection from './results/ResultSection';
-import SearchContext from './SearchContext';
+import { SearchContext } from '../../contexts';
 
 const Search = () => {
   const [results, setResults] = useState({
