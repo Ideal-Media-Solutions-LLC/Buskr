@@ -16,7 +16,7 @@ const SearchSection = () => {
   const [initialList, setInitialList] = useState([]);
   const { results, setResults } = useContext(SearchContext);
 
-  const onSearchSubmit = async () => {
+  const onSearchSubmit = () => {
     axios.get('https://www.buskr.life/api/events', {
       params: {
         features: 'coords,location,photos,tags',
@@ -90,6 +90,7 @@ const SearchSection = () => {
     // filter based on initial list when rendered since it will not be visible after initial search
     const tagName = e.target.innerHTML;
     if (tagName === 'Starting soon') {
+      setSearchDate(new Date());
       setResults(
         { byDistance: results.byDistance, byTime: results.byTime, filtered: results.byTime },
       );
