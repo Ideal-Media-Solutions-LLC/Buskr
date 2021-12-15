@@ -17,7 +17,7 @@
 
 /* z-index so it will show in front of other components */
 .react-datepicker-popper {
-  z-index: 1;
+  z-index: 2;
 }
 /* modal offset */
 .react-datepicker-popper[data-placement^=bottom] {
