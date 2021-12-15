@@ -24,10 +24,8 @@ const SearchSection = () => {
       await axios.get('/api/search', { params: { address } })
         .then((res) => {
           setSearchLocation(res.data);
-        })
+        });
     }
-
-
     axios.get('https://www.buskr.life/api/events', {
       params: {
         features: 'coords,location,photos,tags',
@@ -62,7 +60,6 @@ const SearchSection = () => {
         }
         setResults({ byDistance: oneDate, byTime, filtered: bySearchTerm });
       });
-
   };
 
   useEffect(() => {
@@ -86,14 +83,6 @@ const SearchSection = () => {
   };
   const onSearchLocationChange = (e) => {
     setAddress(e.target.value);
-    // if (e.target.value !== '') {
-    //   axios.get('/api/search', { params: { address: e.target.value } })
-    //     .then((res) => {
-    //       setSearchLocation(res.data);
-    //     });
-    // } else {
-    //   setSearchLocation(geoLocation);
-    // }
   };
 
   const onDateChange = (date) => {
