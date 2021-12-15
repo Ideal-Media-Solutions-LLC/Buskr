@@ -172,7 +172,7 @@ const CreateEvent3 = ({
 // }
 
 const CreateEvent = ({ center }) => {
-  const [createPage, setCreatePage] = useState(3);
+  const [createPage, setCreatePage] = useState(1);
   const [name, setEventName] = useState();
   const [description, setEventDescription] = useState();
   const [image, setEventImage] = useState();
@@ -222,32 +222,48 @@ const CreateEvent = ({ center }) => {
 
   const handleNext = () => {
     if (date && endDateAndTime && loc) {
-      axios.get('endpoint that looks for conflicts').then(result => {
-        // might be .conflict, might just be true/false
-        if (result.data.conflict === true) {
-          setCreatePage(2);
-        } else {
-          setCreatePage(3);
-        }
-      });
-    }
-    if (!date) {
-      setNextClickAttempted(true);
-    }
-    if (!endDateAndTime) {
-      setNextClickAttempted(true);
+      setCreatePage(3)
+    //   axios.get('endpoint that looks for conflicts').then(result => {
+    //     // might be .conflict, might just be true/false
+    //     if (result.data.conflict === true) {
+    //       setCreatePage(2);
+    //     } else {
+    //       setCreatePage(3);
+    //     }
+    //   });
+    // }
+    // if (!date) {
+    //   setNextClickAttempted(true);
+    // }
+    // if (!endDateAndTime) {
+    //   setNextClickAttempted(true);
     }
   };
 
   const handleAddMyEvent = () => {
+    console.log('ADD MY EVENT CLICKED!')
     if (name && description && image && date && endDateAndTime && loc) {
-      // Check if there isConflict
-      // If yes
-      // axios query for all conflicts
-
-      // Build out object for query
-      // let eventInfo = {}
-      console.log('ADD MY EVENT CLICKED!');
+      let data = {
+        // buskerID: How do I access performer ID - from context?
+        name,
+        description,
+        tags: tags.split(','),
+        starts: date,
+        ends: endDateAndTime,
+        lat: loc.lat,
+        lng: loc.lng,
+        photos: image,
+      };
+      console.log('data', JSON.stringify(data));
+      axios.post('http://www.buskr.life/api/event', data)
+        .then((result) => {
+          console.log('results', result.data);
+          // Redirect user back to their profile
+          // Have profile re-render with event added to the list
+        })
+        .catch((err) => {
+          console.log('Error posting event to database:', err);
+        });
     }
     setSubmitAttempted(true);
   };
