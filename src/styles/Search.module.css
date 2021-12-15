@@ -176,4 +176,52 @@
 .searchBar:focus, .autocompleteInput, .autocompleteInput:focus, .searchInput:focus, .datePicker > div > input {
   border: none;
   box-shadow: none;
+
+#miniForm {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width:335px;
+}
+.miniBar {
+  margin:0px 0px;
+  width:150px;
+  height:30px;
+  border:1px solid #d9d9d9;
+}
+#miniTermInput{
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+
+}
+#miniLocationInput{
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+#miniSearchBtn {
+  width:50px;
+  margin-top:0px;
+  margin-bottom: 0px;
+  height:30px;
+  border-radius:5px;
+  padding:8px;
+  z-index:1;
+}
+.miniSearchInput{
+  position: absolute;
+  padding-left:30px;
+  width:150px;
+  background-color:transparent;
+  border:0;
+  outline:none;
+  height:30px;
+}
+.miniInsideBtn{
+  position: relative;
+  left:0;
+  top:5px;
+  background-color:transparent;
+  color:#d9d9d9;
+  border:0;
 }

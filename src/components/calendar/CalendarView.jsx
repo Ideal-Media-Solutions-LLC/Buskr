@@ -1,58 +1,92 @@
 import Calendar from 'react-calendar';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { BsChevronRight, BsChevronLeft } from 'react-icons/bs';
+import axios from 'axios';
+import SearchContext from '../search/SearchContext';
 
 const CalendarView = () => {
+  // grab the current location data through Conext when no location was entered - default location
+  // when the user clicks the Search button, then we would setSearchObj
+  // to the passed down filterObject from Search Team
+  const SearchbarContext = useContext(SearchContext);
+  const [searchObj, setSearchObj] = useState(SearchbarContext.results.filterWords);
   // updates when a date is clicked, will tie this with search function
   const [date, setDate] = useState(new Date());
-  const [initialStartDate, setInitialStartDate] = useState({
-    month: date.getMonth(),
-    year: date.getFullYear(),
-  });
-  const [currentStartDate, setCurrentStartDate] = useState(null);
-  // would make request for dates with events using startDate,
-  // which is an object with month and year values
-  // example: {month: 11, year: 2021}
-  // month range is 0-11
-  const [startDate, setStartDate] = useState(initialStartDate);
-  // fake event data, will replace with API data later
-  const [eventDates, setEventDates] = useState([1, 2, 4, 10, 20, 25, 31]);
+  const [calendarStartDate, setCalendarStartDate] = useState(null);
+  const filteredDate = searchObj.starts;
+  const [currentStartDate, setCurrentStartDate] = useState(
+    new Date(filteredDate.getFullYear(), filteredDate.getMonth(), 1),
+  );
+  const [currentEndDate, setCurrentEndDate] = useState(
+    new Date(currentStartDate.getFullYear(), currentStartDate.getMonth() + 1, 0),
+  );
+  const [queryData, setQueryData] = useState(null);
+  const [eventDates, setEventDates] = useState(new Set());
 
-  // Rendering the event dots:
-  // "2021-12-10T15:26:40.016685-08:00"
-  // 1. joined table -> like "2021-12*" - all the events on that month
-  // select *
-  // from foo
-  // where timestamp_field::date = '2015-04-15';
-  // will grab current month and year from activeStartDate
-  // use .getMonth() and .getFullYear() from what is returned,
-  // then make request using that information
-  // 2. makes all the "days" into an array/set
-  // 3. setEventDates to the result array
-
-  // updates currentStartDate whenever month is changed,
-  // which we grab month and year from for event date requests
+  // updates "from" and "to" dates when month is changed in calendar
   useEffect(() => {
-    if (currentStartDate !== null) {
-      setStartDate({
-        month: currentStartDate.activeStartDate.getMonth(),
-        year: currentStartDate.activeStartDate.getFullYear(),
-      });
+    if (calendarStartDate !== null) {
+      findStartEndDates();
     }
-  }, [currentStartDate]);
+  }, [calendarStartDate]);
+
+  // performs search with new "from" and "to" dates
+  useEffect(() => {
+    axios.get(`https://www.buskr.life/api/events?lng=${searchObj.lng}&lat=${searchObj.lat}&from=${currentStartDate}&to=${currentEndDate}&sort=time`)
+      .then(res => {
+        // do we need a state for queryData?
+        setQueryData(res.data);
+        return res.data;
+      })
+      .then(data => {
+        const tempEventDates = new Set();
+        data.features.forEach(event => {
+          const hasKeywords = searchObj.keywords.split(' ').every(keyword => {
+            if (event.properties.name.includes(keyword)
+              || event.properties.buskerName.includes(keyword)
+              || event.properties.description.includes(keyword)) {
+              return true;
+            }
+            return false;
+          });
+          if (hasKeywords) {
+            tempEventDates.add(parseInt(event.properties.starts.slice(8, 10), 10));
+          }
+        });
+        setEventDates(tempEventDates);
+        console.log(tempEventDates);
+      });
+  }, [currentStartDate, currentEndDate]);
+
+  const findStartEndDates = () => {
+    setCurrentStartDate(
+      new Date(
+        calendarStartDate.activeStartDate.getFullYear(),
+        calendarStartDate.activeStartDate.getMonth(),
+        1,
+      ),
+    );
+    setCurrentEndDate(
+      new Date(
+        calendarStartDate.activeStartDate.getFullYear(),
+        calendarStartDate.activeStartDate.getMonth() + 1,
+        0,
+      ),
+    );
+  };
 
   return (
     <div className='calendar-container'>
       <Calendar
         onClickDay={setDate}
         value={date}
-        tileContent={({ date, view }) => view === 'month' && eventDates.includes(date.getDate()) ? <div className="notification"></div> : null}
+        tileContent={({ date, view }) => view === 'month' && eventDates.has(date.getDate()) ? <div className="notification"></div> : null}
         prevLabel={<BsChevronLeft />}
         nextLabel={<BsChevronRight />}
         next2Label={null}
         prev2Label={null}
         showNeighboringMonth={false}
-        onActiveStartDateChange={setCurrentStartDate}
+        onActiveStartDateChange={setCalendarStartDate}
       />
     </div>
   );

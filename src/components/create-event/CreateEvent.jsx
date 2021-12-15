@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
 import ImageUploader from './UploadImage';
 import styles from '../../styles/CreateEvent.module.css';
 import Map from '../map/Map';
