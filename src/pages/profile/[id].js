@@ -1,8 +1,8 @@
 import Profile from '../../components/profile/Profile';
-import Busker from '../../db/busker';
+import BuskerController from '../../db/busker';
 
 export const getStaticProps = async function getStaticProps(context) {
-  const performer = await Busker.get(context.params.id);
+  const performer = await BuskerController.get(context.params.id);
   return performer === undefined ? { notFound: true } : { props: { performer } };
 };
 

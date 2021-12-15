@@ -1,5 +1,5 @@
 import handler, { HttpException } from '../../handler';
-import Busker from '../../../db/busker';
+import BuskerController from '../../../db/busker';
 
 /**
  * @param {import('http').IncomingMessage} req
@@ -7,7 +7,7 @@ import Busker from '../../../db/busker';
  */
 const GET = async function GET(req, res) {
   const id = req.intParam('id');
-  const profile = await Busker.get(id);
+  const profile = await BuskerController.get(id);
   if (profile === undefined) {
     throw new HttpException(400, 'Profile not found', id);
   }
