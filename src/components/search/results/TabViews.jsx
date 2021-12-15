@@ -3,6 +3,8 @@ import { BsListUl, BsMap, BsCalendar3Week } from 'react-icons/bs';
 import EventList from './EventList';
 import styles from '../../../styles/resultList.module.css';
 import SearchContext from '../SearchContext';
+import Map from '../../map/Map';
+import Calendar from '../../calendar/CalendarView';
 
 const TabViews = () => {
   const SearchbarContext = useContext(SearchContext);
@@ -35,10 +37,10 @@ const TabViews = () => {
           {view === 1 ? <EventList /> : <></>}
         </div>
         <div className={view === 2 ? styles.activeContent : styles.content}>
-          {view === 2 ? 'Map' : <></>}
+          {view === 2 ? 'map' : <></>}
         </div>
         <div className={view === 3 ? styles.activeContent : styles.content}>
-          {view === 3 ? 'Calendar' : <></>}
+          {view === 3 ? <Calendar/> : <></>}
         </div>
       </div>
     </div>
