@@ -1,6 +1,28 @@
 import db from '.';
 import getLocations from './getLocations';
 
+const findConflicts = async function findConflicts(
+  { lat, lng },
+  { from, to },
+) {
+  const query = `
+    SELECT
+      location <-> $1 AS distance,
+      busker.id,
+      busker.email
+    FROM event
+    JOIN busker ON busker.id = event.busker_id
+    WHERE starts >= $2 AND ends <= $3
+    ORDER BY distance ASC
+  `;
+  const { rows } = await db.query(query, [`SRID=4326;POINT(${lng} ${lat})`, from, to]);
+  const tooFar = rows.findIndex(row => row.distance > process.env.CONFLICT_METERS);
+  if (tooFar !== -1) {
+    rows.length = tooFar;
+  }
+  return rows;
+};
+
 const get = async function get(id, limit, offset) {
   const clauses = [];
   const args = [id];
@@ -161,6 +183,6 @@ const getAll = async function getAll(
   };
 };
 
-const Event = { get, getAll };
+const Event = { findConflicts, get, getAll };
 
 export default Event;

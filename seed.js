@@ -2,10 +2,11 @@
 require('dotenv').config({ path: '.env.local' });
 const { Client } = require('pg');
 const {
-  datatype: { float, number },
+  datatype: { float, number, uuid },
   date: { between },
   lorem: { sentences, words },
   image: { city, people },
+  internet: { email },
   name: { findName },
 } = require('faker');
 
@@ -25,13 +26,10 @@ const db = new Client({
   port: RDS_PORT,
 });
 
-const args = process.argv;
-console.log(args);
-const numBuskers = Number(args[2]);
-const [lng, lat] = args[3].split(',').map(Number);
-console.log(args[3].split(','));
-console.log(lng, lat);
-const maxDist = Number(args[4]);
+const numBuskers = 500;
+const lng = -90.06911208674771;
+const lat = 29.954767355989652;
+const maxDist = 0.015;
 const distRange = { min: -maxDist, max: maxDist };
 
 const dist = function dist(start) {
@@ -61,7 +59,7 @@ const maxTags = 5;
 const maxPhotos = 4;
 const minTime = new Date();
 const maxTime = new Date();
-maxTime.setMonth(maxTime.getMonth() + 2);
+maxTime.setMonth(maxTime.getMonth() + 1);
 
 const insertTag = async function insertTag(tag) {
   return db.query(
@@ -70,21 +68,48 @@ const insertTag = async function insertTag(tag) {
   );
 };
 
-const insertPhoto = async function insertPhoto(eventId) {
-  const { rows: [{ id }] } = await db.query(
-    'INSERT INTO photo (url) VALUES ($1) RETURNING id',
-    [city()],
+const insertStock = async function insertPhoto(url) {
+  return db.query(
+    'INSERT INTO photo (url) VALUES ($1)',
+    [url],
   );
+};
+
+const stockPhotos = [
+  'https://cdn.discordapp.com/attachments/920760358753419264/920760423500877844/busker2.jpeg',
+  'https://cdn.discordapp.com/attachments/920760358753419264/920760423727394826/busker.jpeg',
+];
+
+let photoI = 0;
+
+const insertPhoto = async function insertPhoto(eventId) {
+  console.log(eventId);
+  if (photoI < 2) {
+    await db.query(
+      'INSERT INTO photo (url) VALUES ($1)',
+      [stockPhotos[photoI]],
+    );
+  }
+  const photo = photoI % 2;
+  photoI += 1;
   return db.query(
     'INSERT INTO event_photo (event_id, photo_id) VALUES ($1, $2)',
-    [eventId, id],
+    [eventId, 1 + photo],
   );
 };
 
 const generate = async function generate(amount, generator) {
+  /*
   const promises = Array(amount).fill(undefined).map(generator);
 
   return Promise.all(promises);
+  */
+  const results = [];
+  for (let i = 0; i < amount; i += 1) {
+    // eslint-disable-next-line no-await-in-loop
+    results.push(await generator());
+  }
+  return results;
 };
 
 const createEvent = async function createEvent(buskerId) {
@@ -97,7 +122,7 @@ const createEvent = async function createEvent(buskerId) {
     RETURNING id`,
     [coords(), words(), sentences(), starts, ends, buskerId],
   );
-  const promises = [generate(number(maxPhotos), () => insertPhoto(id))];
+  const promises = [generate(1, () => insertPhoto(id))];
   const used = [];
   for (let i = 0; i < number(maxTags); i += 1) {
     const tag = number(tags.length - 1);
@@ -121,10 +146,10 @@ const createEvent = async function createEvent(buskerId) {
 };
 
 const createBusker = async function createBusker() {
-  const { rows: [{ id }] } = await db.query(
-    'INSERT INTO busker (name, photo, bio) VALUES ($1, $2, $3) RETURNING id',
-    [findName(), people(), sentences()],
-  );
+  const { rows: [{ id }] } = await db.query(`
+    INSERT INTO busker (id, name, email, photo, bio)
+    VALUES ($1, $2, $3, $4, $5)
+    RETURNING id`, [uuid(), findName(), email(), people(), sentences()]);
 
   return generate(number(maxEvents), () => createEvent(id));
 };
@@ -132,6 +157,7 @@ const createBusker = async function createBusker() {
 const main = async function main() {
   await db.connect();
   await Promise.all(tags.map(insertTag));
+  await Promise.all(stockPhotos.map(insertStock));
   await generate(numBuskers, createBusker);
   await db.end();
 };

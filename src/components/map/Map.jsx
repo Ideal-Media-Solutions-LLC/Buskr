@@ -6,7 +6,7 @@ import styles from '../../styles/Map.module.css';
 
 const InfoBox = function InfoBox(props) {
   const { feature } = props;
-  const id = feature.getProperty('buskerId');
+  const id = feature.getProperty('id');
   const name = feature.getProperty('name');
   const buskerId = feature.getProperty('buskerId');
   const buskerName = feature.getProperty('buskerName');

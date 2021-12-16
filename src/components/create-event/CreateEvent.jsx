@@ -223,7 +223,7 @@ const CreateEvent = ({ center }) => {
 
   const handleNext = () => {
     if (date && endDateAndTime && loc) {
-      axios.get(`https://buskr.life/api/conflicts?lat=${loc.lat}&lng=${loc.lng}&from=${date}&to=${endDateAndTime}`).then(result => {
+      axios.get(`${process.env.NEXT_PUBLIC_DOMAIN}/api/conflicts?lat=${loc.lat}&lng=${loc.lng}&from=${date}&to=${endDateAndTime}`).then(result => {
         console.log('results', result.data);
         const conflict = result.data;
         if (conflict === true) {

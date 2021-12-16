@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { BsListUl, BsMap, BsCalendar3Week } from 'react-icons/bs';
 import EventList from './EventList';
 import styles from '../../../styles/resultList.module.css';
-import SearchContext from '../SearchContext';
+import { SearchContext } from '../../../contexts';
 import Map from '../../map/Map';
 import Calendar from '../../calendar/CalendarView';
 
@@ -37,23 +37,20 @@ const TabViews = () => {
         </button>
       </div>
       <div className={SearchbarContext.isBarView ? styles.longtabsContent : styles.tabsContent}>
-        <div className={view === 1 ? styles.activeContent : styles.content}>
-          {view === 1 ? <EventList /> : null}
-        </div>
-        <div className={view === 2 ? styles.activeContent : styles.content}>
-          {view === 2 ? 'Map'
-            // <Map
-            //   events={{ features: SearchbarContext.results.filtered }}
-            //   containerStyle={mapStyle}
-            //   center={[-90.06911208674771, 29.954767355989652]}
-            //   />
-            : null}
-        </div>
-        <div className={view === 3 ? styles.activeContent : styles.content}>
-          {view === 3 ? <Calendar /> : null}
-        </div>
+        {view === 1 ? <div className={styles.activeContent}>
+          <EventList />
+        </div> : null}
+        {view === 2 ? <div className={styles.activeContent}>
+          <Map className='mapContainer'
+            events={{ features: SearchbarContext.results.filtered }}
+            containerStyle={mapStyle}
+            center={{ lat: 29.954767355989652, lng: -90.06911208674771 }}
+          /></div> : null}
+        {view === 3 ? <div className={styles.activeContent}>
+        <Calendar setview = {setView}/> : null
+        </div> : null}
       </div>
-    </div>
+    </div >
   );
 };
 

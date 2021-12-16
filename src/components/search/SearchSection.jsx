@@ -2,35 +2,38 @@ import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { FaSearch, FaMapMarkerAlt, FaRegCalendar } from 'react-icons/fa';
 import DatePicker from 'react-datepicker';
-// import AutoComplete from './Autocomplete';
+import AutoComplete from './Autocomplete';
 import styles from '../../styles/Search.module.css';
-import SearchContext from './SearchContext';
+import { LocationContext, SearchContext } from '../../contexts';
 
 const SearchSection = () => {
   const SearchbarContext = useContext(SearchContext);
+  const { results, setResults } = SearchbarContext;
+  const geoLocation = useContext(LocationContext);
   const dummyTags = ['Starting soon', 'Tomorrow', 'Near you', 'Dancers', 'Clowns', 'Magicians'];
-  const geoLocation = { lat: 29.954767355989652, lng: -90.06911208674771 };
   const [searchTerm, setSearchTerm] = useState('');
   const [address, setAddress] = useState('');
   const [searchLocation, setSearchLocation] = useState(geoLocation);
   const [searchDate, setSearchDate] = useState(new Date());
   const [initialList, setInitialList] = useState([]);
-  const { results, setResults } = useContext(SearchContext);
 
   const onSearchSubmit = async () => {
-    SearchbarContext.setBarView(!SearchbarContext.isBarView);
+    // SearchbarContext.setBarView(!SearchbarContext.isBarView);
     if (address !== '') {
       await axios.get('/api/search', { params: { address } })
         .then((res) => {
           setSearchLocation(res.data);
         });
     }
-    axios.get('https://www.buskr.life/api/events', {
+    const searchUntil = new Date(searchDate);
+    searchUntil.setDate(searchUntil.getDate() + 2);
+    axios.get(`${process.env.NEXT_PUBLIC_DOMAIN}/api/events`, {
       params: {
         features: 'coords,location,photos,tags',
         lat: searchLocation.lat,
         lng: searchLocation.lng,
         from: searchDate,
+        to: searchUntil,
       },
     }).then((result) => {
       setInitialList(result.data.features);
@@ -85,6 +88,12 @@ const SearchSection = () => {
     }
     onSearchSubmit();
   }, []);
+  useEffect(() => {
+    setSearchDate(SearchbarContext.calendarDate);
+  }, [SearchbarContext.calendarDate]);
+  useEffect(() => {
+    onSearchSubmit();
+  }, [searchDate]);
 
   const onSearchTermChange = (e) => {
     setSearchTerm(e.target.value);
@@ -101,7 +110,8 @@ const SearchSection = () => {
 
   const onTagClick = (e) => {
     // filter based on initial list when rendered since it will not be visible after initial search
-    const tagName = e.target.innerHTML;
+    SearchbarContext.setBarView(true);
+    const tagName = e.target.innerText;
     if (tagName === 'Starting soon') {
       setSearchDate(new Date());
       setResults(
@@ -130,19 +140,15 @@ const SearchSection = () => {
       );
     } else {
       const bySearchTerm = results.byDistance.slice().filter(
-        (event) => {
-          const tags = ['Dancers', 'Clowns', 'Magicians'];
-          for (const tag of tags) {
-            if (tagName === tag) {
-              const searchedTerm = tag.toLowerCase();
-              const filteredEvents = event.properties.name.toLowerCase()
-                .includes(searchedTerm)
-                || event.properties.buskerName.toLowerCase().includes(searchedTerm)
-                || event.properties.tags.indexOf(searchedTerm) !== -1;
-              return filteredEvents;
-            }
-          }
-          return [];
+        ({ properties: { name, buskerName, tags } }) => {
+          const lowerName = name.toLowerCase();
+          const lowerBuskerName = buskerName.toLowerCase();
+          const searchedTerm = tagName.toLowerCase();
+          const filteredEvents = lowerName
+            .includes(searchedTerm)
+            || lowerBuskerName.toLowerCase().includes(searchedTerm)
+            || tags.indexOf(searchedTerm) !== -1;
+          return filteredEvents;
         },
       );
       setResults(
@@ -150,15 +156,24 @@ const SearchSection = () => {
       );
     }
   };
+  const handleSearchBtnClick = () => {
+    SearchbarContext.setBarView(true);
+    onSearchSubmit();
+  };
   if (SearchbarContext.isBarView) {
     return (
       <div id={styles.miniForm}>
         <div className={styles.miniBar} id={styles.miniTermInput}>
-          {/* <AutoComplete className={styles.searchInput} suggestions={dummyTags} /> */}
-          <input className={styles.miniSearchInput}
+          <AutoComplete
+          isBarView = {SearchbarContext.isBarView}
+          suggestions={dummyTags}
+          className={styles.miniSearchInput}
+          onChange={onSearchTermChange}
+          placeholder="Search" />
+          {/* <input className={styles.miniSearchInput}
             onChange={onSearchTermChange}
             placeholder="Search"
-          />
+          /> */}
 
           <button className={styles.miniInsideBtn}><FaSearch /></button>
         </div>
@@ -175,7 +190,7 @@ const SearchSection = () => {
         <DatePicker wrapperClassName={styles.datePicker} selected={searchDate}
           onChange={onDateChange}
           placeholderText='Select Date Here' /></div> */}
-        <button id={styles.miniSearchBtn} className="master-button" onClick={onSearchSubmit}><FaSearch /></button>
+        <button id={styles.miniSearchBtn} onClick={onSearchSubmit}><FaSearch /></button>
       </div>);
   }
   return (
@@ -184,11 +199,14 @@ const SearchSection = () => {
 
       <div id={styles.searchForm}>
         <div className={styles.searchBar} id={styles.upperSearchBar}>
-          {/* <AutoComplete className={styles.searchInput} suggestions={dummyTags} /> */}
-          <input className={styles.searchInput}
+          <AutoComplete className={styles.searchInput}
+            suggestions={dummyTags}
+            onChange={onSearchTermChange}
+            placeholder="Search by event name" />
+          {/* <input className={styles.searchInput}
             onChange={onSearchTermChange}
             placeholder="Search by event name"
-          />
+          /> */}
 
           <button className={styles.insideBtn}><FaSearch /></button>
         </div>
@@ -213,13 +231,13 @@ const SearchSection = () => {
       <div id={styles.tagContainer}>
         {dummyTags.map((tag, index) => {
           return <button
-              className={styles.searchTag}
-              key={index} onClick={onTagClick}>
-                {tag}
-            </button>;
+            className={styles.searchTag}
+            key={index} onClick={onTagClick}>
+            {tag}
+          </button>;
         })}
       </div>
-      <button id={styles.searchBtn} className="master-button" onClick={onSearchSubmit}>Search</button>
+      <button id={styles.searchBtn} className="master-button" onClick={handleSearchBtnClick}>Search</button>
     </div>
   );
 };

@@ -122,14 +122,19 @@
   padding: 0.2rem;
 }
 .suggestions {
-  border: 1px solid #999;
+  margin: 0px;
+  position: absolute;
+  border: 1px solid var(--buskr-orange);
   list-style: none;
-  margin-top: 25px;
+  margin-top: 35px;
   max-height: 100px;
   overflow-y: auto;
-  padding-left: 0;
+  padding: 10px 0px 10px 25px;
   width: 335px;
-  z-index:20;
+  z-index: 99 !important;
+  color: var(--buskr-purple);
+  font-size: 12px;
+  background-color: white;
 }
 .suggestions li {
   padding: 0.1rem;
@@ -155,7 +160,7 @@
 .datePicker > div {
   width:335px;
   margin:0px 0px;
-  border:1px solid #d9d9d9;
+  border:1px solid var(--buskr-lightgray);
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
 
@@ -173,41 +178,52 @@
   position:absolute;
 }
 
-.searchBar:focus, .autocompleteInput, .autocompleteInput:focus, .searchInput:focus, .datePicker > div > input {
+.miniSearchInput:focus, .searchBar:focus, .autocompleteInput, .autocompleteInput:focus, .searchInput:focus, .datePicker > div > input {
   border: none;
   box-shadow: none;
 }
 
 #miniForm {
+  margin-top: 10px;
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
   width:335px;
 }
+
 .miniBar {
   margin:0px 0px;
   width:150px;
   height:30px;
-  border:1px solid #d9d9d9;
+  border:1px solid var(--buskr-lightgray);
 }
+
+.miniBar:focus-within {
+  border-color: var(--buskr-orange);
+  border-right: 1px solid var(--buskr-orange);
+  outline: none !important;
+  box-shadow: 0 0 10px var(--buskr-orange);
+}
+
+.miniBar:not(:focus-within) {
+  border-right: none;
+}
+
 #miniTermInput{
   border-top-left-radius: 5px;
   border-bottom-left-radius: 5px;
+}
 
-}
-#miniLocationInput{
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
-}
 #miniSearchBtn {
   width:50px;
-  margin-top:0px;
-  margin-bottom: 0px;
   height:30px;
-  border-radius:5px;
+  border-top-right-radius:5px;
+  border-bottom-right-radius:5px;
   padding:8px;
-  z-index:1;
+  color: white;
+  background-color: var(--buskr-pink);
+  border: none;
 }
 .miniSearchInput{
   position: absolute;

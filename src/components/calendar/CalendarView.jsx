@@ -2,13 +2,14 @@ import Calendar from 'react-calendar';
 import React, { useEffect, useState, useContext } from 'react';
 import { BsChevronRight, BsChevronLeft } from 'react-icons/bs';
 import axios from 'axios';
-import SearchContext from '../search/SearchContext';
+import { SearchContext } from '../../contexts';
 
-const CalendarView = () => {
+const CalendarView = (props) => {
   // grab the current location data through Conext when no location was entered - default location
   // when the user clicks the Search button, then we would setSearchObj
   // to the passed down filterObject from Search Team
   const SearchbarContext = useContext(SearchContext);
+  console.log(SearchbarContext);
   const [searchObj, setSearchObj] = useState(SearchbarContext.results.filterWords);
   // updates when a date is clicked, will tie this with search function
   const [date, setDate] = useState(new Date());
@@ -32,7 +33,7 @@ const CalendarView = () => {
 
   // performs search with new "from" and "to" dates
   useEffect(() => {
-    axios.get(`https://www.buskr.life/api/events?lng=${searchObj.lng}&lat=${searchObj.lat}&from=${currentStartDate}&to=${currentEndDate}&sort=time`)
+    axios.get(`${process.env.NEXT_PUBLIC_DOMAIN}/api/events?lng=${searchObj.lng}&lat=${searchObj.lat}&from=${currentStartDate}&to=${currentEndDate}&sort=time`)
       .then(res => {
         // do we need a state for queryData?
         setQueryData(res.data);
@@ -74,11 +75,16 @@ const CalendarView = () => {
       ),
     );
   };
+  const handleDayClick = (value) => {
+    setDate(value);
+    SearchbarContext.setCalendarDate(value);
+    props.setview(1);
+  };
 
   return (
     <div className='calendar-container'>
       <Calendar
-        onClickDay={setDate}
+        onClickDay={handleDayClick}
         value={date}
         tileContent={({ date, view }) => view === 'month' && eventDates.has(date.getDate()) ? <div className="notification"></div> : null}
         prevLabel={<BsChevronLeft />}
