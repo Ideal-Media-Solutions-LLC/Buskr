@@ -38,7 +38,7 @@ const Profile = ({ performer, user }) => {
             <img className ={styles.tipIcon} src='/imgs/tip-venmo-40px.png' alt ='venmo' onClick={() => onIconClick(venmoLink, performer.venmo)}/>
           </div>
         </div>
-        {(user !== undefined || performer.id === user.id)
+        {(user !== null && performer.id === user.id)
         && <button className='master-button' type='text' onClick={addEventClick}>Add Event</button>}
         <div className='master-title'>Upcoming Events:</div>
         <div className={styles.eventCardsContainer}>
