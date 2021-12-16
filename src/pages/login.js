@@ -2,7 +2,7 @@ import axios from 'axios';
 import querystring from 'querystring';
 import React from 'react';
 import { verifyIdToken } from '../auth';
-import Busker from '../db/busker';
+import BuskerController from '../db/busker';
 
 const secret = process.env.AWS_SECRET;
 const client_id = process.env.NEXT_PUBLIC_AWS_CLIENT;
@@ -26,7 +26,7 @@ export const getServerSideProps = async function getServerSideProps(context) {
 
     const idClaims = await verifyIdToken(id_token);
 
-    await Busker.update(idClaims);
+    await BuskerController.update(idClaims);
 
     context.res.setHeader('Set-Cookie', [
       `id_token=${id_token}`,
