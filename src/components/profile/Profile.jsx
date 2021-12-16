@@ -17,9 +17,7 @@ const Profile = ({ performer, user }) => {
     console.log('click');
     window.location.href = '/create';
   };
-  // console.log(performer.venmo);
-  // console.log(performer.paypal);
-  // console.log(performer);
+
   if (!qrcodeMode) {
     return (
       <div className={styles.profileContainer}>
@@ -53,7 +51,7 @@ const Profile = ({ performer, user }) => {
   return (
     <div className={styles.qrContainer}>
       <div className={styles.qrcode}>
-        <QRCode value={`${process.env.NEXT_PUBLIC_DOMAIN}/profile${performer.id}`}/>
+        <QRCode value={`${process.env.NEXT_PUBLIC_DOMAIN}/profile${performer.id}`} size={220}/>
       </div>
       <button className={styles.backButton} onClick={() => setQRCodeMode(false) }>Back</button>
     </div>
