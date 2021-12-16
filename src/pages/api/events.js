@@ -1,5 +1,6 @@
 import handler, { HttpException } from '../handler';
 import EventController from '../../db/event';
+import { getUser } from '../../auth';
 
 const validFeatures = new Set([
   'coords',
@@ -55,4 +56,14 @@ const GET = async function GET(req, res) {
   res.status(200).json(events);
 };
 
-export default handler({ GET });
+/**
+ * @param {import('http').IncomingMessage} req
+ * @param {import('http').ServerResponse} res
+ */
+const POST = async function POST(req, res) {
+  const { id: buskerId } = await getUser({ req });
+  const eventId = await EventController.create(buskerId, req.body);
+  res.status(204).json(eventId);
+};
+
+export default handler({ GET, POST });
