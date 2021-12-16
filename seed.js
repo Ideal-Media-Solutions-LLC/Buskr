@@ -106,6 +106,7 @@ const generate = async function generate(amount, generator) {
   */
   const results = [];
   for (let i = 0; i < amount; i += 1) {
+    // eslint-disable-next-line no-await-in-loop
     results.push(await generator());
   }
   return results;
