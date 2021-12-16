@@ -33,7 +33,7 @@ const CalendarView = (props) => {
 
   // performs search with new "from" and "to" dates
   useEffect(() => {
-    axios.get(`https://www.buskr.life/api/events?lng=${searchObj.lng}&lat=${searchObj.lat}&from=${currentStartDate}&to=${currentEndDate}&sort=time`)
+    axios.get(`${process.env.NEXT_PUBLIC_DOMAIN}/api/events?lng=${searchObj.lng}&lat=${searchObj.lat}&from=${currentStartDate}&to=${currentEndDate}&sort=time`)
       .then(res => {
         // do we need a state for queryData?
         setQueryData(res.data);
