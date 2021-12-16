@@ -30,7 +30,7 @@
 .tipsContainer {
   display: flex;
   flex-direction: row;
-  justify-content: flex-end;
+  justify-content: space-between;
 }
 
 .tipIcon {
@@ -43,9 +43,26 @@
 }
 
 .qrContainer {
-  display: flex;
+  /* display: flex;
   flex-direction: column;
   align-content: center;
+  height: 30px; */
+}
+
+.qrButtonContainer {
+  display: flex;
+  height: 30px;
+}
+
+.qrIcon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: solid;
+  border: 1px 0px 1px 0px;
+  border-color: var(--buskr-orange);
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
 }
 
 .qrcode {
@@ -60,13 +77,21 @@
   align-items: center;
   border: none;
   background-color: var(--buskr-orange);
-  padding: 5px 15px 5px 15px;
-  margin: 0px 5px 0px 0px;
-  border-radius: 10px;
+  padding: 5px 2px 5px 5px;
+  margin: 0px 0px 0px 0px;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
   color: white;
   font-size: 17px;
   font-weight: bold;
   cursor: pointer;
+}
+
+.qrButtonRight {
+  width: 10px;
+  background-color: var(--buskr-orange);
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
 }
 
 .backButton {
