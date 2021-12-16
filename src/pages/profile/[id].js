@@ -13,16 +13,11 @@ export const getServerSideProps = async function getServerSideProps(context) {
   return performer === undefined ? { notFound: true } : { props: { performer, user } };
 };
 
-const ProfilePage = ({ performer, user }) => {
-
-  console.log('user', user);
-
-  return (
+const ProfilePage = ({ performer, user }) => (
   <UserContext.Provider value={user}>
     <Header />
     <Profile performer={performer} user={user} />
   </UserContext.Provider>
-  )
-};
+);
 
 export default ProfilePage;

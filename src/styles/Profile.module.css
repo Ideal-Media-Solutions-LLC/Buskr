@@ -44,3 +44,43 @@
   height: 30px;
   width: 30px;
 }
+
+.qrContainer {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+}
+
+.qrcode {
+  align-self: center;
+  margin-top: 100px;
+  margin-bottom: 20px;
+}
+
+.qrButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  background-color: var(--buskr-orange);
+  padding: 5px 15px 5px 15px;
+  margin: 0px 5px 10px 0px;
+  border-radius: 10px;
+  color: white;
+  font-size: 17px;
+  font-weight: bold;
+}
+
+.backButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  background-color: var(--buskr-orange);
+  padding: 15px 15px 15px 15px;
+  margin: 20px 0px 20px 0px;
+  border-radius: 10px;
+  color: white;
+  font-size: 17px;
+  font-weight: bold;
+}
