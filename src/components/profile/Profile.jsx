@@ -28,7 +28,7 @@ const Profile = ({ performer, user }) => {
           <img className ={styles.tipIcon} src='/imgs/tip-cashapp-40px.png' alt='cashapp' onClick={() => onIconClick(cashappLink)}/>
           <img className ={styles.tipIcon} src='/imgs/tip-venmo-40px.png' alt ='venmo' onClick={() => onIconClick(venmoLink)}/>
         </div>
-        {(user !== undefined && performer.id === user.id)
+        {(user !== undefined || performer.id === user.id)
         && <button className='master-button' type='text'>Add Event</button>}
         <div className='master-title'>Upcoming Events:</div>
         <div className={styles.eventCardsContainer}>
