@@ -6,9 +6,13 @@ import styles from '../../../styles/resultList.module.css';
 const EventItem = ({ event: { properties } }) => {
   const { name, id, buskerId, buskerName, photos, starts } = properties;
 
+  const { locality, administrative_area_level_1 } = properties.location;
+
   const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const time = moment.tz(starts, zone).format('ddd, MMM D [@] h:mA z');
-  const location = `${properties.location.locality}, ${properties.location.administrative_area_level_1}`;
+  const location = [locality, administrative_area_level_1]
+    .filter(string => string)
+    .join(', ');
 
   const profileLink = buskerId ? (
     <Link href={`/profile/${buskerId}`}>
