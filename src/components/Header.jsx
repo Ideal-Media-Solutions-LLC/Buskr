@@ -30,7 +30,6 @@ const UserLinks = ({ user }) => (
 const Header = () => (
   <div className={styles.headerContainer}>
     <div className={styles.hamburgerIconLogoContainer}>
-      {/* <img className={styles.logo}src='/imgs/buskr-logo.png'/> */}
       <div className={styles.logoText}>
         <Link href='/'>BUSKR</Link>
       </div>

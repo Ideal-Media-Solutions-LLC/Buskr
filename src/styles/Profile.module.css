@@ -7,7 +7,7 @@
   width: auto;
   height: 200px;
   background-color: lightgrey;
-  margin: 10px 0px 10px 0px;
+  margin: 0px 0px 10px 0px;
   object-fit: cover;
   border-radius: 10px;
 }
