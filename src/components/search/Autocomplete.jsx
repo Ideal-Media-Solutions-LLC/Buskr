@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styles from '../../styles/Search.module.css';
 
-const AutoComplete = ({ suggestions }) => {
+const AutoComplete = ({ suggestions, placeholder, isBarView }) => {
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
   const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(0);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -40,14 +40,14 @@ const AutoComplete = ({ suggestions }) => {
       <li className={styles.noSuggestions}>
         <em>No Result</em>
       </li>
-      </ul>
+    </ul>
     );
   };
   return (
     <>
       <input
-        className={styles.autocompleteInput}
-        placeholder='Seach for "Clown"'
+        className={isBarView ? styles.miniSearchInput : styles.autocompleteInput}
+        placeholder={placeholder}
         type="text"
         onChange={onChange}
         value={input}

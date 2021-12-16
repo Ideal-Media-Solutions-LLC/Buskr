@@ -47,7 +47,7 @@ const TabViews = () => {
             center={{ lat: 29.954767355989652, lng: -90.06911208674771 }}
           /></div> : null}
         {view === 3 ? <div className={styles.activeContent}>
-          <Calendar />
+        <Calendar setview = {setView}/> : null
         </div> : null}
       </div>
     </div >

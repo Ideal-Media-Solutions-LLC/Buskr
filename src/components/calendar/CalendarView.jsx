@@ -4,7 +4,7 @@ import { BsChevronRight, BsChevronLeft } from 'react-icons/bs';
 import axios from 'axios';
 import { SearchContext } from '../../contexts';
 
-const CalendarView = () => {
+const CalendarView = (props) => {
   // grab the current location data through Conext when no location was entered - default location
   // when the user clicks the Search button, then we would setSearchObj
   // to the passed down filterObject from Search Team
@@ -75,11 +75,16 @@ const CalendarView = () => {
       ),
     );
   };
+  const handleDayClick = (value) => {
+    setDate(value);
+    SearchbarContext.setCalendarDate(value);
+    props.setview(1);
+  };
 
   return (
     <div className='calendar-container'>
       <Calendar
-        onClickDay={setDate}
+        onClickDay={handleDayClick}
         value={date}
         tileContent={({ date, view }) => view === 'month' && eventDates.has(date.getDate()) ? <div className="notification"></div> : null}
         prevLabel={<BsChevronLeft />}
