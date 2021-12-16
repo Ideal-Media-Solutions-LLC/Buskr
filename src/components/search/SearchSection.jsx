@@ -162,6 +162,7 @@ const SearchSection = () => {
       <div id={styles.miniForm}>
         <div className={styles.miniBar} id={styles.miniTermInput}>
           <AutoComplete
+          isBarView = {SearchbarContext.isBarView}
           suggestions={dummyTags}
           className={styles.miniSearchInput}
           onChange={onSearchTermChange}
