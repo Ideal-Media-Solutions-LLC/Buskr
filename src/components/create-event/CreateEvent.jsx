@@ -172,7 +172,7 @@ const CreateEvent3 = ({
 //   tags: ''
 // }
 
-const CreateEvent = ({ center }) => {
+const CreateEvent = ({ center, user }) => {
   const [createPage, setCreatePage] = useState(1);
   const [name, setEventName] = useState();
   const [description, setEventDescription] = useState();
@@ -240,12 +240,11 @@ const CreateEvent = ({ center }) => {
       setNextClickAttempted(true);
     }
   };
-
+  console.log('user', user);
   const handleAddMyEvent = () => {
     console.log('ADD MY EVENT CLICKED!')
     if (name && description && image && date && endDateAndTime && loc) {
       const data = {
-        // buskerID: How do I access performer ID - from context?
         name,
         description,
         tags: tags.split(','),
@@ -265,6 +264,7 @@ const CreateEvent = ({ center }) => {
         .catch((err) => {
           console.log('Error posting event to database:', err);
         });
+      window.location.href = `/profile/${user.id}`;
     }
     setSubmitAttempted(true);
   };
@@ -328,6 +328,7 @@ const CreateEvent = ({ center }) => {
         name={name}
         description={description}
         tags={tags}
+        user={user}
       />
     );
   }
