@@ -3,6 +3,12 @@ import EventItem from '../search/results/EventItem';
 import styles from '../../styles/Profile.module.css';
 
 const Profile = ({ performer }) => {
+  const onIconClick = (e) => {
+    // e.preventDefault();
+    console.log('click');
+    window.location.href = 'https://paypal.me/yosefgroener';
+  };
+
   return (
     <div className={styles.profileContainer}>
       <div className='master-title'>{performer?.name}</div>
@@ -10,7 +16,7 @@ const Profile = ({ performer }) => {
       <div className={styles.profileBio}>{performer?.bio}</div>
       <div className={styles.tipsContainer}>
         {/* change these to links that lead to tips URLs */}
-        <img className ={styles.tipIcon} src='/imgs/tip-paypal-40px.png' alt='paypal'/>
+        <img className ={styles.tipIcon} src='/imgs/tip-paypal-40px.png' alt='paypal' onClick={() => onIconClick()}/>
         <img className ={styles.tipIcon} src='/imgs/tip-cashapp-40px.png' alt='cashapp'/>
         <img className ={styles.tipIcon} src='/imgs/tip-venmo-40px.png' alt ='venmo'/>
       </div>
