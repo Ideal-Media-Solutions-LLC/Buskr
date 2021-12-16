@@ -5,11 +5,6 @@ import ImageUploader from './UploadImage';
 import styles from '../../styles/CreateEvent.module.css';
 import Map from '../map/Map';
 
-// const center = {
-//   lng: -90.06911208674771,
-//   lat: 29.954767355989652,
-// };
-
 const CreateEvent1 = ({
   center, handleDate, handleLocation, handleNext,
   handleEndDate, nextClickAttempted, date, endDateAndTime, loc,
@@ -161,17 +156,6 @@ const CreateEvent3 = ({
   return <ImageUploader handleImage={handleImage} handleGoBack={handleGoBack}/>;
 };
 
-// const dummyEventInfo = {
-//   name: '',
-//   description: '',
-//   image: '',
-//   date: '',
-//   start: '',
-//   end: '',
-//   loc: '',
-//   tags: ''
-// }
-
 const CreateEvent = ({ center, user }) => {
   const [createPage, setCreatePage] = useState(1);
   const [name, setEventName] = useState();
@@ -205,19 +189,16 @@ const CreateEvent = ({ center, user }) => {
 
   const handleName = (e) => {
     e.preventDefault();
-    console.log(e.target.value);
     setEventName(e.target.value);
   };
 
   const handleDescription = (e) => {
     e.preventDefault();
-    console.log(e.target.value);
     setEventDescription(e.target.value);
   };
 
   const handleTags = (e) => {
     e.preventDefault();
-    console.log(e.target.value);
     setEventTags(e.target.value);
   };
 
@@ -242,7 +223,7 @@ const CreateEvent = ({ center, user }) => {
   };
   console.log('user', user);
   const handleAddMyEvent = () => {
-    console.log('ADD MY EVENT CLICKED!')
+    console.log('ADD MY EVENT CLICKED!');
     if (name && description && image && date && endDateAndTime && loc) {
       const data = {
         name,
@@ -255,7 +236,7 @@ const CreateEvent = ({ center, user }) => {
         photos: image,
       };
       console.log('data', JSON.stringify(data));
-      axios.post('http://www.buskr.life/api/event', data)
+      axios.post('api/events', data)
         .then((result) => {
           console.log('results', result.data);
           // Redirect user back to their profile
