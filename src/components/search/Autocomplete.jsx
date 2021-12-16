@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styles from '../../styles/Search.module.css';
 
-const AutoComplete = ({ suggestions, placeholder, isBarView, onInputChange}) => {
+const AutoComplete = ({ suggestions, placeholder, isBarView, onInputChange }) => {
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
   const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(0);
   const [showSuggestions, setShowSuggestions] = useState(false);
