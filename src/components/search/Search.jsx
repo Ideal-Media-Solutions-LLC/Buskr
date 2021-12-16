@@ -10,7 +10,7 @@ const Search = () => {
     filtered: [],
     filterWords: {},
   });
-  const [isBarView, setBarView] = useState(true);
+  const [isBarView, setBarView] = useState(false);
   const [calendarDate, setCalendarDate] = useState(new Date());
   return (
     <div id='searchContainer'>

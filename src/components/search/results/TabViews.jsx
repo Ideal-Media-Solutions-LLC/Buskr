@@ -50,7 +50,7 @@ const TabViews = () => {
             : null}
         </div>
         <div className={view === 3 ? styles.activeContent : styles.content}>
-          {view === 3 ? <Calendar /> : null}
+          {view === 3 ? <Calendar setview = {setView}/> : null}
         </div>
       </div>
     </div>

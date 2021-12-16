@@ -18,7 +18,7 @@ const SearchSection = () => {
   const { results, setResults } = useContext(SearchContext);
 
   const onSearchSubmit = async () => {
-    SearchbarContext.setBarView(!SearchbarContext.isBarView);
+    // SearchbarContext.setBarView(!SearchbarContext.isBarView);
     if (address !== '') {
       await axios.get('/api/search', { params: { address } })
         .then((res) => {
@@ -87,8 +87,10 @@ const SearchSection = () => {
   }, []);
   useEffect(() => {
     setSearchDate(SearchbarContext.calendarDate);
-    onSearchSubmit();
   }, [SearchbarContext.calendarDate]);
+  useEffect(() => {
+    onSearchSubmit();
+  }, [searchDate]);
 
   const onSearchTermChange = (e) => {
     setSearchTerm(e.target.value);
@@ -105,6 +107,7 @@ const SearchSection = () => {
 
   const onTagClick = (e) => {
     // filter based on initial list when rendered since it will not be visible after initial search
+    SearchbarContext.setBarView(true);
     const tagName = e.target.innerHTML;
     if (tagName === 'Starting soon') {
       setSearchDate(new Date());
@@ -154,15 +157,23 @@ const SearchSection = () => {
       );
     }
   };
+  const handleSearchBtnClick = () => {
+    SearchbarContext.setBarView(true);
+    onSearchSubmit();
+  };
   if (SearchbarContext.isBarView) {
     return (
       <div id={styles.miniForm}>
         <div className={styles.miniBar} id={styles.miniTermInput}>
-          {/* <AutoComplete className={styles.searchInput} suggestions={dummyTags} /> */}
-          <input className={styles.miniSearchInput}
+          <AutoComplete
+          suggestions={dummyTags}
+          className={styles.miniSearchInput}
+          onChange={onSearchTermChange}
+          placeholder="Search" />
+          {/* <input className={styles.miniSearchInput}
             onChange={onSearchTermChange}
             placeholder="Search"
-          />
+          /> */}
 
           <button className={styles.miniInsideBtn}><FaSearch /></button>
         </div>
@@ -189,9 +200,9 @@ const SearchSection = () => {
       <div id={styles.searchForm}>
         <div className={styles.searchBar} id={styles.upperSearchBar}>
           <AutoComplete className={styles.searchInput}
-          suggestions={dummyTags}
-          onChange={onSearchTermChange}
-          placeholder="Search by event name" />
+            suggestions={dummyTags}
+            onChange={onSearchTermChange}
+            placeholder="Search by event name" />
           {/* <input className={styles.searchInput}
             onChange={onSearchTermChange}
             placeholder="Search by event name"
@@ -220,13 +231,13 @@ const SearchSection = () => {
       <div id={styles.tagContainer}>
         {dummyTags.map((tag, index) => {
           return <button
-              className={styles.searchTag}
-              key={index} onClick={onTagClick}>
-                {tag}
-            </button>;
+            className={styles.searchTag}
+            key={index} onClick={onTagClick}>
+            {tag}
+          </button>;
         })}
       </div>
-      <button id={styles.searchBtn} className="master-button" onClick={onSearchSubmit}>Search</button>
+      <button id={styles.searchBtn} className="master-button" onClick={handleSearchBtnClick}>Search</button>
     </div>
   );
 };

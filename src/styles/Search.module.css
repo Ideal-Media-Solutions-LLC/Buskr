@@ -122,14 +122,19 @@
   padding: 0.2rem;
 }
 .suggestions {
-  border: 1px solid #999;
+  margin: 0px;
+  position: absolute;
+  border: 1px solid var(--buskr-orange);
   list-style: none;
-  margin-top: 25px;
+  margin-top: 35px;
   max-height: 100px;
   overflow-y: auto;
-  padding-left: 0;
+  padding: 10px 0px 10px 25px;
   width: 335px;
-  z-index:20;
+  z-index: 99 !important;
+  color: var(--buskr-purple);
+  font-size: 12px;
+  background-color: white;
 }
 .suggestions li {
   padding: 0.1rem;
