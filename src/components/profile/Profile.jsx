@@ -14,11 +14,11 @@ const Profile = ({ performer, user }) => {
     console.log('click');
     window.location.href = link;
   };
-  // const addEventClick = (e) => {
-  //   e.preventDefault();
-  //   console.log('click');
-  //   // window.location.href = '/create';
-  // };
+  const addEventClick = (e) => {
+    e.preventDefault();
+    console.log('click');
+    window.location.href = '/create';
+  };
 
   if (!qrcodeMode) {
     return (
@@ -34,7 +34,7 @@ const Profile = ({ performer, user }) => {
           <img className ={styles.tipIcon} src='/imgs/tip-venmo-40px.png' alt ='venmo' onClick={() => onIconClick(venmoLink)}/>
         </div>
         {(user !== undefined && performer.id === user.id)
-        && <button className='master-button' type='text'>Add Event</button>}
+        && <button className='master-button' type='text' onClick={addEventClick}>Add Event</button>}
         <div className='master-title'>Upcoming Events:</div>
         <div className={styles.eventCardsContainer}>
           {performer?.events.map((event, i) => <EventItem key={i} event={event}/>)}
