@@ -7,7 +7,7 @@ const EventItem = ({ event: { properties } }) => {
   const { name, id, buskerId, buskerName, photos, starts } = properties;
 
   const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const time = moment.tz(starts, zone).format('ddd, MMM D [@] h:mA z');
+  const time = moment.tz(starts, zone).format('ddd, MMM D [@] h:mmA z');
   const location = `${properties.location.locality}, ${properties.location.administrative_area_level_1}`;
 
   const profileLink = buskerId ? (

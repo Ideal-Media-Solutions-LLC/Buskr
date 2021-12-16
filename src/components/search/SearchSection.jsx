@@ -16,6 +16,7 @@ const SearchSection = () => {
   const [searchLocation, setSearchLocation] = useState(geoLocation);
   const [searchDate, setSearchDate] = useState(new Date());
   const [initialList, setInitialList] = useState([]);
+  const [suggestions, setSuggestions] = useState([]);
 
   const onSearchSubmit = async () => {
     // SearchbarContext.setBarView(!SearchbarContext.isBarView);
@@ -56,6 +57,23 @@ const SearchSection = () => {
           },
         );
       }
+      const autoSuggestions = [];
+      bySearchTerm.forEach(
+        (event) => {
+          if (autoSuggestions.indexOf(event.properties.name) === -1) {
+            autoSuggestions.push(event.properties.name);
+          }
+          if (autoSuggestions.indexOf(event.properties.buskerName) === -1) {
+            autoSuggestions.push(event.properties.buskerName);
+          }
+          for (let i = 0; i < event.properties.tags.length; i++) {
+            if (autoSuggestions.indexOf(event.properties.tags[i]) === -1) {
+              autoSuggestions.push(event.properties.tags[i]);
+            }
+          }
+        },
+      );
+      setSuggestions(autoSuggestions);
       setResults({
         byDistance: oneDate,
         byTime,
@@ -93,7 +111,11 @@ const SearchSection = () => {
   }, [searchDate]);
 
   const onSearchTermChange = (e) => {
-    setSearchTerm(e.target.value);
+    if (e.target.value) {
+      setSearchTerm(e.target.value);
+    } else {
+      setSearchTerm(e.target.innerText);
+    }
   };
   const onSearchLocationChange = (e) => {
     setAddress(e.target.value);
@@ -162,11 +184,11 @@ const SearchSection = () => {
       <div id={styles.miniForm}>
         <div className={styles.miniBar} id={styles.miniTermInput}>
           <AutoComplete
-          isBarView = {SearchbarContext.isBarView}
-          suggestions={dummyTags}
-          className={styles.miniSearchInput}
-          onChange={onSearchTermChange}
-          placeholder="Search" />
+            isBarView={SearchbarContext.isBarView}
+            suggestions={suggestions}
+            className={styles.miniSearchInput}
+            onInputChange={onSearchTermChange}
+            placeholder="Search" />
           {/* <input className={styles.miniSearchInput}
             onChange={onSearchTermChange}
             placeholder="Search"
@@ -197,9 +219,9 @@ const SearchSection = () => {
       <div id={styles.searchForm}>
         <div className={styles.searchBar} id={styles.upperSearchBar}>
           <AutoComplete className={styles.searchInput}
-            suggestions={dummyTags}
-            onChange={onSearchTermChange}
-            placeholder="Search by event name" />
+            suggestions={suggestions}
+            onInputChange={onSearchTermChange}
+            placeholder="Search name, performer or type of events" />
           {/* <input className={styles.searchInput}
             onChange={onSearchTermChange}
             placeholder="Search by event name"
