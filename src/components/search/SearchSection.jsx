@@ -31,7 +31,6 @@ const SearchSection = () => {
         lat: searchLocation.lat,
         lng: searchLocation.lng,
         from: searchDate,
-        to: searchUntil,
       },
     }).then((result) => {
       setInitialList(result.data.features);

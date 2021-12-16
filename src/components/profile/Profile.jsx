@@ -3,23 +3,23 @@ import QRCode from 'qrcode.react';
 import EventItem from '../search/results/EventItem';
 import styles from '../../styles/Profile.module.css';
 
-const paypalLink = 'https://paypal.me/yosefgroener';
-const venmoLink = 'https://venmo.com/u/Yosef-groener-1';
-const cashappLink = 'https://cash.app/$yosefgroener';
-
 const Profile = ({ performer, user }) => {
   const [qrcodeMode, setQRCodeMode] = useState(false);
-
-  const onIconClick = (link) => {
+  const paypalLink = 'https://paypal.me/';
+  const venmoLink = 'https://venmo.com/u/';
+  const cashappLink = 'https://cash.app/';
+  const onIconClick = (link, username) => {
     console.log('click');
-    window.location.href = link;
+    window.location.href = link + username;
   };
   const addEventClick = (e) => {
     e.preventDefault();
     console.log('click');
     window.location.href = '/create';
   };
-
+  console.log(performer.venmo)
+  console.log(performer.paypal)
+  console.log(performer)
   if (!qrcodeMode) {
     return (
       <div className={styles.profileContainer}>
@@ -29,11 +29,11 @@ const Profile = ({ performer, user }) => {
         <div className={styles.tipsContainer}>
           <button className={styles.qrButton} onClick={() => setQRCodeMode(true)}>QR Code</button>
           {/* change these to links that lead to tips URLs */}
-          <img className ={styles.tipIcon} src='/imgs/tip-paypal-40px.png' alt='paypal' onClick={() => onIconClick(paypalLink)}/>
-          <img className ={styles.tipIcon} src='/imgs/tip-cashapp-40px.png' alt='cashapp' onClick={() => onIconClick(cashappLink)}/>
-          <img className ={styles.tipIcon} src='/imgs/tip-venmo-40px.png' alt ='venmo' onClick={() => onIconClick(venmoLink)}/>
+          <img className ={styles.tipIcon} src='/imgs/tip-paypal-40px.png' alt='paypal' onClick={() => onIconClick(paypalLink, performer.paypal)}/>
+          <img className ={styles.tipIcon} src='/imgs/tip-cashapp-40px.png' alt='cashapp' onClick={() => onIconClick(cashappLink, performer.cashapp)}/>
+          <img className ={styles.tipIcon} src='/imgs/tip-venmo-40px.png' alt ='venmo' onClick={() => onIconClick(venmoLink, performer.venmo)}/>
         </div>
-        {(user !== undefined && performer.id === user.id)
+        {(user !== undefined || performer.id === user.id)
         && <button className='master-button' type='text' onClick={addEventClick}>Add Event</button>}
         <div className='master-title'>Upcoming Events:</div>
         <div className={styles.eventCardsContainer}>
