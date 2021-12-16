@@ -43,6 +43,7 @@
   border-radius: 5px;
   height: 30px;
   width: 30px;
+  cursor: pointer;
 }
 
 .qrContainer {
@@ -64,11 +65,12 @@
   border: none;
   background-color: var(--buskr-orange);
   padding: 5px 15px 5px 15px;
-  margin: 0px 5px 10px 0px;
+  margin: 0px 5px 0px 0px;
   border-radius: 10px;
   color: white;
   font-size: 17px;
   font-weight: bold;
+  cursor: pointer;
 }
 
 .backButton {
@@ -83,4 +85,5 @@
   color: white;
   font-size: 17px;
   font-weight: bold;
+  cursor: pointer;
 }

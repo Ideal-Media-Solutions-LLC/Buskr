@@ -14,6 +14,11 @@ const Profile = ({ performer, user }) => {
     console.log('click');
     window.location.href = link;
   };
+  // const addEventClick = (e) => {
+  //   e.preventDefault();
+  //   console.log('click');
+  //   // window.location.href = '/create';
+  // };
 
   if (!qrcodeMode) {
     return (
