@@ -186,6 +186,7 @@ const SearchSection = () => {
           <AutoComplete
             isBarView={SearchbarContext.isBarView}
             suggestions={suggestions}
+            showValue={searchTerm}
             className={styles.miniSearchInput}
             onInputChange={onSearchTermChange}
             placeholder="Search" />
@@ -200,6 +201,7 @@ const SearchSection = () => {
           <input className={styles.miniSearchInput}
             onChange={onSearchLocationChange}
             placeholder="Location"
+            value = {address}
           />
           <button className={styles.miniInsideBtn}><FaMapMarkerAlt /></button>
         </div>
@@ -219,6 +221,7 @@ const SearchSection = () => {
       <div id={styles.searchForm}>
         <div className={styles.searchBar} id={styles.upperSearchBar}>
           <AutoComplete className={styles.searchInput}
+            showValue ={searchTerm}
             suggestions={suggestions}
             onInputChange={onSearchTermChange}
             placeholder="Search name, performer or type of events" />
@@ -233,6 +236,7 @@ const SearchSection = () => {
           <input className={styles.searchInput}
             onChange={onSearchLocationChange}
             placeholder="Location"
+            value={address}
           />
           <button className={styles.insideBtn}><FaMapMarkerAlt /></button>
         </div>
