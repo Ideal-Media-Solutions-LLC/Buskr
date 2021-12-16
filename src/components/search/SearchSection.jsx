@@ -26,12 +26,13 @@ const SearchSection = () => {
           setSearchLocation(res.data);
         });
     }
-    axios.get('https://www.buskr.life/api/events', {
+    axios.get(`${process.env.NEXT_PUBLIC_DOMAIN}/api/events`, {
       params: {
         features: 'coords,location,photos,tags',
         lat: searchLocation.lat,
         lng: searchLocation.lng,
         from: searchDate,
+        to: searchUntil,
       },
     }).then((result) => {
       setInitialList(result.data.features);
