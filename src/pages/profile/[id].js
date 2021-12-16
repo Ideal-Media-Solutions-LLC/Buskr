@@ -16,7 +16,7 @@ export const getServerSideProps = async function getServerSideProps(context) {
 const ProfilePage = ({ performer, user }) => (
   <UserContext.Provider value={user}>
     <Header />
-    <Profile performer={performer} />
+    <Profile performer={performer} user={user} />
   </UserContext.Provider>
 );
 
