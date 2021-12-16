@@ -41,12 +41,12 @@ const TabViews = () => {
           {view === 1 ? <EventList /> : null}
         </div>
         <div className={view === 2 ? styles.activeContent : styles.content}>
-          {view === 2 ? 'Map'
-            // <Map
-            //   events={{ features: SearchbarContext.results.filtered }}
-            //   containerStyle={mapStyle}
-            //   center={[-90.06911208674771, 29.954767355989652]}
-            //   />
+          {view === 2
+            ? <Map
+                events={{ features: SearchbarContext.results.filtered }}
+                containerStyle={mapStyle}
+                center={{ lng: -90.06911208674771, lat: 29.954767355989652 }}
+              />
             : null}
         </div>
         <div className={view === 3 ? styles.activeContent : styles.content}>

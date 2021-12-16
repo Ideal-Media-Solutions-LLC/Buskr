@@ -1,44 +1,92 @@
+.eventPageContainer {
+  color: var(--buskr-purple);
+}
+
 .eventImage {
+  margin: 20px 0px 5px 0px;
   height: 20vh;
   object-fit: cover;
   width: 100%;
+  border-radius: 10px;
 }
 
 .buskerNameContainer {
   display: flex;
   flex-direction: row;
-  flex-basis: auto;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 5px;
+}
+
+.buskerName {
+  color: var(--buskr-purple);
+  font-weight: bold;
 }
 
 .socialIcon {
   height: 50%;
+  height: 30px;
+  width: auto;
+  border-radius: 10px;
+  margin-left: 5px;
 }
 
 .timeAndLocContainer {
   display: flex;
   flex-direction: column;
   border: var(--buskr-lightgray);
-  border-width: 2px 0px 2px 0px;
+  border-width: 1px 0px 0px 0px;
   border-style: solid;
   padding: 10px;
-  gap: 20px;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--buskr-gray);
+  margin-bottom: 0px;
 }
 
 .timeContainer {
   display: flex;
   flex-direction: row;
+  align-items: center;
   gap: 10px;
 }
 
 .locContainer {
   display: flex;
   flex-direction: row;
+  align-items: center;
   gap: 10px;
+}
+
+/* lol */
+.mapContainerContainer{
+  height: 335px;
+  width: 100%;
 }
 
 .mapContainer {
   border: var(--buskr-lightgray);
   border-style: solid;
-  border-width: 0px 0px 2px 0px;
-  margin: 0px 0px 10px 0px;
+  border-width: 1px;
+  border-radius: 5px;
+  /* height: 100%; */
+}
+
+.hashTags {
+  color: var(--buskr-pink);
+}
+
+.details {
+  height: 120px;
+  overflow-y: scroll;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.detailsTitle {
+  font-weight: bold;
+}
+
+.icon {
+  color: var(--buskr-orange);
 }
