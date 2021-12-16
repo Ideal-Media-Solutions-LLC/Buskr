@@ -17,7 +17,7 @@ const CreateEvent1 = ({
 }) => {
   const mapContainerStyle = {
     height: '300px',
-    width: 'auto',
+    width: '100%',
   };
 
   const [startDate, setStartDate] = useState();
@@ -70,7 +70,7 @@ const CreateEvent1 = ({
          ? `Lat: ${coords.lat.toFixed(4)}, Lng: ${coords.lng.toFixed(4)}`
          : ''} ></input>
       </form>
-      <div className='mapContainer'>
+      <div className={styles.mapContainer}>
         <Map center={center} onDrop={setEventLoc}
         containerStyle={mapContainerStyle} withInfoBoxes={false}/>
       </div>
