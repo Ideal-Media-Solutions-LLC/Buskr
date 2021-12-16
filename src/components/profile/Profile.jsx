@@ -17,9 +17,7 @@ const Profile = ({ performer, user }) => {
     console.log('click');
     window.location.href = '/create';
   };
-  // console.log(performer.venmo);
-  // console.log(performer.paypal);
-  // console.log(performer);
+
   if (!qrcodeMode) {
     return (
       <div className={styles.profileContainer}>
@@ -40,7 +38,7 @@ const Profile = ({ performer, user }) => {
             <img className ={styles.tipIcon} src='/imgs/tip-venmo-40px.png' alt ='venmo' onClick={() => onIconClick(venmoLink, performer.venmo)}/>
           </div>
         </div>
-        {(user !== undefined || performer.id === user.id)
+        {(user !== null && performer.id === user.id)
         && <button className='master-button' type='text' onClick={addEventClick}>Add Event</button>}
         <div className='master-title'>Upcoming Events:</div>
         <div className={styles.eventCardsContainer}>
@@ -53,7 +51,7 @@ const Profile = ({ performer, user }) => {
   return (
     <div className={styles.qrContainer}>
       <div className={styles.qrcode}>
-        <QRCode value={`${process.env.NEXT_PUBLIC_DOMAIN}/profile${performer.id}`}/>
+        <QRCode value={`${process.env.NEXT_PUBLIC_DOMAIN}/profile${performer.id}`} size={220}/>
       </div>
       <button className={styles.backButton} onClick={() => setQRCodeMode(false) }>Back</button>
     </div>
