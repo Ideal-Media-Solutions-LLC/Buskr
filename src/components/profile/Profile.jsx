@@ -41,7 +41,7 @@ const Profile = ({ performer, user }) => {
   return (
     <div className={styles.qrContainer}>
       <div className={styles.qrcode}>
-        <QRCode value={`https://development.buskr.life/profile${performer.id}`}/>
+        <QRCode value={`${process.env.NEXT_PUBLIC_DOMAIN}/profile${performer.id}`}/>
       </div>
       <button className={styles.backButton} onClick={() => setQRCodeMode(false) }>Back</button>
     </div>
