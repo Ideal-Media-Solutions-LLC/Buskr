@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import CreateEvent from '../components/create-event/CreateEvent';
 import { getUser } from '../auth';
 import { LocationContext, UserContext } from '../contexts';
@@ -9,13 +9,14 @@ export const getServerSideProps = async function getServerSideProps(context) {
   return { props: { user } };
 };
 
-const CreateEventRenderer = ({ user }) => (
-  <UserContext.Provider value={user}>
-    <Header />
-    <LocationContext.Subscriber>
-      {center => <CreateEvent center={center}/>}
-    </LocationContext.Subscriber>
-  </UserContext.Provider>
-);
+const CreateEventRenderer = ({ user }) => {
+  const center = useContext(LocationContext);
+  return (
+    <UserContext.Provider value={user}>
+      <Header />
+      <CreateEvent center={center}/>
+    </UserContext.Provider>
+  );
+};
 
 export default CreateEventRenderer;
