@@ -54,6 +54,9 @@ const get = async function get(id) {
     busker.name,
     busker.photo,
     busker.bio,
+    busker.paypal,
+    busker.cashapp,
+    busker.venmo,
     coalesce(
       array_agg(eventObj) FILTER (WHERE busker_events.busker_id IS NOT NULL),
       '{}'
