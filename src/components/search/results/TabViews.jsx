@@ -37,7 +37,6 @@ const TabViews = () => {
         </button>
       </div>
       <div className={SearchbarContext.isBarView ? styles.longtabsContent : styles.tabsContent}>
-<<<<<<< HEAD
         {view === 1 ? <div className={styles.activeContent}>
           <EventList />
         </div> : null}
@@ -50,23 +49,6 @@ const TabViews = () => {
         {view === 3 ? <div className={styles.activeContent}>
         <Calendar setview = {setView}/> : null
         </div> : null}
-=======
-        <div className={view === 1 ? styles.activeContent : styles.content}>
-          {view === 1 ? <EventList /> : null}
-        </div>
-        <div className={view === 2 ? styles.activeContent : styles.content}>
-          {view === 2
-            ? <Map
-                events={{ features: SearchbarContext.results.filtered }}
-                containerStyle={mapStyle}
-                center={{ lng: -90.06911208674771, lat: 29.954767355989652 }}
-              />
-            : null}
-        </div>
-        <div className={view === 3 ? styles.activeContent : styles.content}>
-          {view === 3 ? <Calendar /> : null}
-        </div>
->>>>>>> b16bf65fe347a8d13a6c4640fc45e5f5c6f7ab54
       </div>
     </div >
   );
