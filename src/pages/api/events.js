@@ -1,5 +1,5 @@
 import handler, { HttpException } from '../handler';
-import Event from '../../db/event';
+import EventController from '../../db/event';
 
 const validFeatures = new Set([
   'coords',
@@ -44,7 +44,7 @@ const GET = async function GET(req, res) {
     );
   }
 
-  const events = await Event.getAll(
+  const events = await EventController.getAll(
     { lat, lng },
     { from, to },
     limit,

@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import EventItem from './EventItem';
-import SearchContext from '../SearchContext';
+import { SearchContext } from '../../../contexts';
 import styles from '../../../styles/resultList.module.css';
 
 const EventList = () => {

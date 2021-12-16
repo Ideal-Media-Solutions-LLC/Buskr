@@ -40,3 +40,16 @@ export const lookupAttributes = async function lookupAttributes(AccessToken) {
   const { UserAttributes } = await provider.send(new GetUserCommand({ AccessToken }));
   return Object.fromEntries(UserAttributes.map(({ Name, Value }) => [Name, Value]));
 };
+
+export const getUser = async function getUser({ req: { cookies: { id_token } } }) {
+  if (id_token === undefined) {
+    return null;
+  }
+  try {
+    const { email, name, sub } = await verifyIdToken(id_token);
+    return { id: sub, email, name };
+  } catch (error) {
+    console.warn(error);
+    return null;
+  }
+};
