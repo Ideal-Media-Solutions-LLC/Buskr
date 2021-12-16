@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import axios from 'axios';
 import {
   FacebookIcon,
@@ -19,6 +20,7 @@ const Event = function Event({ event }) {
     name,
     tags,
     photos,
+    buskerId,
     buskerName,
     description,
     location: { address, locality, administrative_area_level_1 },
@@ -41,7 +43,11 @@ const Event = function Event({ event }) {
       <img className={styles.eventImage} src={photos[0]} alt={name}/>
       <div className='master-title'>{name}</div>
       <section className={styles.buskerNameContainer}>
-      <div className={styles.buskerName}>By {buskerName}</div>
+      <div className={styles.buskerName}>
+      <Link href={`/profile/${buskerId}`}>
+        { buskerName }
+      </Link>
+      </div>
         <div>
           <FacebookShareButton url={url}>
             <FacebookIcon className={styles.socialIcon}/>
