@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { FaSearch, FaMapMarkerAlt, FaRegCalendar } from 'react-icons/fa';
 import DatePicker from 'react-datepicker';
-// import AutoComplete from './Autocomplete';
+import AutoComplete from './Autocomplete';
 import styles from '../../styles/Search.module.css';
 import { LocationContext, SearchContext } from '../../contexts';
 
@@ -18,7 +18,7 @@ const SearchSection = () => {
   const [initialList, setInitialList] = useState([]);
 
   const onSearchSubmit = async () => {
-    SearchbarContext.setBarView(!SearchbarContext.isBarView);
+    // SearchbarContext.setBarView(!SearchbarContext.isBarView);
     if (address !== '') {
       await axios.get('/api/search', { params: { address } })
         .then((res) => {
@@ -31,6 +31,7 @@ const SearchSection = () => {
         lat: searchLocation.lat,
         lng: searchLocation.lng,
         from: searchDate,
+        to: searchUntil,
       },
     }).then((result) => {
       setInitialList(result.data.features);
@@ -70,7 +71,27 @@ const SearchSection = () => {
     });
   };
 
-  useEffect(() => onSearchSubmit(), []);
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setSearchLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
+        },
+      );
+    } else {
+      setSearchLocation(geoLocation);
+    }
+    onSearchSubmit();
+  }, []);
+  useEffect(() => {
+    setSearchDate(SearchbarContext.calendarDate);
+  }, [SearchbarContext.calendarDate]);
+  useEffect(() => {
+    onSearchSubmit();
+  }, [searchDate]);
 
   const onSearchTermChange = (e) => {
     setSearchTerm(e.target.value);
@@ -87,6 +108,7 @@ const SearchSection = () => {
 
   const onTagClick = (e) => {
     // filter based on initial list when rendered since it will not be visible after initial search
+    SearchbarContext.setBarView(true);
     const tagName = e.target.innerText;
     if (tagName === 'Starting soon') {
       setSearchDate(new Date());
@@ -132,15 +154,24 @@ const SearchSection = () => {
       );
     }
   };
+  const handleSearchBtnClick = () => {
+    SearchbarContext.setBarView(true);
+    onSearchSubmit();
+  };
   if (SearchbarContext.isBarView) {
     return (
       <div id={styles.miniForm}>
         <div className={styles.miniBar} id={styles.miniTermInput}>
-          {/* <AutoComplete className={styles.searchInput} suggestions={dummyTags} /> */}
-          <input className={styles.miniSearchInput}
+          <AutoComplete
+          isBarView = {SearchbarContext.isBarView}
+          suggestions={dummyTags}
+          className={styles.miniSearchInput}
+          onChange={onSearchTermChange}
+          placeholder="Search" />
+          {/* <input className={styles.miniSearchInput}
             onChange={onSearchTermChange}
             placeholder="Search"
-          />
+          /> */}
 
           <button className={styles.miniInsideBtn}><FaSearch /></button>
         </div>
@@ -166,11 +197,14 @@ const SearchSection = () => {
 
       <div id={styles.searchForm}>
         <div className={styles.searchBar} id={styles.upperSearchBar}>
-          {/* <AutoComplete className={styles.searchInput} suggestions={dummyTags} /> */}
-          <input className={styles.searchInput}
+          <AutoComplete className={styles.searchInput}
+            suggestions={dummyTags}
+            onChange={onSearchTermChange}
+            placeholder="Search by event name" />
+          {/* <input className={styles.searchInput}
             onChange={onSearchTermChange}
             placeholder="Search by event name"
-          />
+          /> */}
 
           <button className={styles.insideBtn}><FaSearch /></button>
         </div>
@@ -195,13 +229,13 @@ const SearchSection = () => {
       <div id={styles.tagContainer}>
         {dummyTags.map((tag, index) => {
           return <button
-              className={styles.searchTag}
-              key={index} onClick={onTagClick}>
-                {tag}
-            </button>;
+            className={styles.searchTag}
+            key={index} onClick={onTagClick}>
+            {tag}
+          </button>;
         })}
       </div>
-      <button id={styles.searchBtn} className="master-button" onClick={onSearchSubmit}>Search</button>
+      <button id={styles.searchBtn} className="master-button" onClick={handleSearchBtnClick}>Search</button>
     </div>
   );
 };
