@@ -35,22 +35,32 @@ const Event = function Event({ event }) {
   const startTime = moment(starts).format(timeFormat);
   const dateString = moment(starts).format(dateFormat);
   const timeString = `${startTime} - ${endTime}`;
+  const hashTags = tags.map((tag) => `#${tag}`).join(' ');
   return (
-    <div>
+    <div className={styles.eventPageContainer}>
       <img className={styles.eventImage} src={photos[0]} alt={name}/>
       <div className='master-title'>{name}</div>
       <section className={styles.buskerNameContainer}>
       <div className={styles.buskerName}>By {buskerName}</div>
-        <FacebookShareButton url={url}>
-          <FacebookIcon size={32} round className={styles.socialIcon}/>
-        </FacebookShareButton>
-        <TwitterShareButton url={url} >
-          <TwitterIcon size={32} round className={styles.socialIcon}/>
-        </TwitterShareButton>
+        <div>
+          <FacebookShareButton url={url}>
+            <FacebookIcon className={styles.socialIcon}/>
+          </FacebookShareButton>
+          <TwitterShareButton url={url} >
+            <TwitterIcon className={styles.socialIcon}/>
+          </TwitterShareButton>
+        </div>
+      </section>
+      <section className={styles.details}>
+        {/* <div className={styles.buskerName}>Details</div> */}
+        <div className={styles.hashTags}>
+          <div>{hashTags}</div>
+        </div>
+        <div className={styles.description}>{description}</div>
       </section>
       <section className={styles.timeAndLocContainer}>
         <div className={styles.timeContainer}>
-          <FaClock className={styles.timeIcon}/>
+          <FaClock className={styles.icon}/>
           <div className={styles.timeStringContainer}>
             <div>{dateString}</div>
             <div>{timeString}</div>
