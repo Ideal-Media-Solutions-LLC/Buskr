@@ -3,12 +3,18 @@ import React from 'react';
 import moment from 'moment-timezone';
 import styles from '../../../styles/resultList.module.css';
 
-const EventItem = (props) => {
-  const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const time = moment.tz(props.event.properties.starts, zone).format('ddd, MMM D [@] h:mA z');
-  const location = `${props.event.properties.location.locality}, ${props.event.properties.location.administrative_area_level_1}`;
+const EventItem = ({ event: { properties } }) => {
+  const { name, id, buskerId, buskerName, photos, starts } = properties;
 
-  const { name, id, buskerName, buskerId, photos } = props.event.properties;
+  const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const time = moment.tz(starts, zone).format('ddd, MMM D [@] h:mA z');
+  const location = `${properties.location.locality}, ${properties.location.administrative_area_level_1}`;
+
+  const profileLink = buskerId ? (
+    <Link href={`/profile/${buskerId}`}>
+      { buskerName }
+    </Link>
+  ) : null;
 
   return (
     <div className={styles.eventItemContainer}>
@@ -23,9 +29,7 @@ const EventItem = (props) => {
             </Link>
           </div>
           <div className={styles.eventItemBusker}>
-            <Link href={`/profile/${buskerId}`}>
-              {buskerName}
-            </Link>
+            { profileLink }
           </div>
           <div className={styles.eventItemLocation}>
             {location}
