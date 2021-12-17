@@ -1,4 +1,5 @@
-import NextCors from 'nextjs-cors';
+import compression from 'compression';
+import cors from 'cors';
 
 export class HttpException extends Error {
   constructor(status, message, payload) {
@@ -52,13 +53,19 @@ const intParam = function intParam(key, orElse) {
   });
 };
 
+// Helper method to wait for a middleware to execute before continuing
+// And to throw an error when an error happens in a middleware
+const runMiddleware = (req, res, fn) => new Promise((resolve, reject) => {
+  fn(req, res, res => res instanceof Error ? reject(res) : resolve(res));
+});
+
+const compressionWare = compression();
+const corsWare = cors();
+
 /* eslint no-await-in-loop: ["off"] */
 const middleware = async function middleware(req, res) {
-  await NextCors(req, res, {
-    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
-    origin: '*',
-    optionsSuccessStatus: 200,
-  });
+  await runMiddleware(req, res, corsWare);
+  await runMiddleware(req, res, compressionWare);
   req.dateParam = dateParam;
   req.intParam = intParam;
   req.numParam = numParam;
