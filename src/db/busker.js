@@ -2,6 +2,12 @@ import db from '.';
 import getLocations from './getLocations';
 
 const update = async function update({ sub, name, email, email_verified, picture }) {
+  if (picture.startsWith('https://lh3.googleusercontent.com')) {
+    const lastEquals = picture.lastIndexOf('=');
+    if (lastEquals !== -1) {
+      picture = picture.substring(0, lastEquals);
+    }
+  }
   const query = `
     INSERT INTO busker (id, name, email, email_verified, photo)
     VALUES ($1, $2, $3, $4, $5)
