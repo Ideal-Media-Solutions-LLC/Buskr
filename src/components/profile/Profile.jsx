@@ -3,16 +3,19 @@ import QRCode from 'qrcode.react';
 import EventItem from '../search/results/EventItem';
 import styles from '../../styles/Profile.module.css';
 
-const paypalLink = 'https://paypal.me/yosefgroener';
-const venmoLink = 'https://venmo.com/u/Yosef-groener-1';
-const cashappLink = 'https://cash.app/$yosefgroener';
-
 const Profile = ({ performer, user }) => {
   const [qrcodeMode, setQRCodeMode] = useState(false);
-
-  const onIconClick = (link) => {
+  const paypalLink = 'https://paypal.me/';
+  const venmoLink = 'https://venmo.com/u/';
+  const cashappLink = 'https://cash.app/';
+  const onIconClick = (link, username) => {
     console.log('click');
-    window.location.href = link;
+    window.location.href = link + username;
+  };
+  const addEventClick = (e) => {
+    e.preventDefault();
+    console.log('click');
+    window.location.href = '/create';
   };
 
   if (!qrcodeMode) {
@@ -22,14 +25,21 @@ const Profile = ({ performer, user }) => {
         <img className={styles.profileImage} src={performer?.photo} alt='profile-image'/>
         <div className={styles.profileBio}>{performer?.bio}</div>
         <div className={styles.tipsContainer}>
-          <button className={styles.qrButton} onClick={() => setQRCodeMode(true)}>QR Code</button>
+          <div className={styles.qrButtonContainer} onClick={() => setQRCodeMode(true)}>
+            {/* <div className={styles.qrButtonRight}></div> */}
+            <button className={styles.qrButton}>QR</button>
+            <img className={styles.qrIcon} src='/imgs/qr-code.png' alt='qr-icon'/>
+          </div>
+
           {/* change these to links that lead to tips URLs */}
-          <img className ={styles.tipIcon} src='/imgs/tip-paypal-40px.png' alt='paypal' onClick={() => onIconClick(paypalLink)}/>
-          <img className ={styles.tipIcon} src='/imgs/tip-cashapp-40px.png' alt='cashapp' onClick={() => onIconClick(cashappLink)}/>
-          <img className ={styles.tipIcon} src='/imgs/tip-venmo-40px.png' alt ='venmo' onClick={() => onIconClick(venmoLink)}/>
+          <div>
+            <img className ={styles.tipIcon} src='/imgs/tip-paypal-40px.png' alt='paypal' onClick={() => onIconClick(paypalLink, performer.paypal)}/>
+            <img className ={styles.tipIcon} src='/imgs/tip-cashapp-40px.png' alt='cashapp' onClick={() => onIconClick(cashappLink, performer.cashapp)}/>
+            <img className ={styles.tipIcon} src='/imgs/tip-venmo-40px.png' alt ='venmo' onClick={() => onIconClick(venmoLink, performer.venmo)}/>
+          </div>
         </div>
-        {(user !== undefined && performer.id === user.id)
-        && <button className='master-button' type='text'>Add Event</button>}
+        {(user !== null && performer.id === user.id)
+        && <button className='master-button' type='text' onClick={addEventClick}>Add Event</button>}
         <div className='master-title'>Upcoming Events:</div>
         <div className={styles.eventCardsContainer}>
           {performer?.events.map((event, i) => <EventItem key={i} event={event}/>)}
@@ -41,7 +51,7 @@ const Profile = ({ performer, user }) => {
   return (
     <div className={styles.qrContainer}>
       <div className={styles.qrcode}>
-        <QRCode value={`${process.env.NEXT_PUBLIC_DOMAIN}/profile${performer.id}`}/>
+        <QRCode value={`${process.env.NEXT_PUBLIC_DOMAIN}/profile${performer.id}`} size={220}/>
       </div>
       <button className={styles.backButton} onClick={() => setQRCodeMode(false) }>Back</button>
     </div>

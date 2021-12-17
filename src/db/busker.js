@@ -1,16 +1,23 @@
 import db from '.';
 import getLocations from './getLocations';
 
-const update = async function update({ sub, name, email, email_verified }) {
+const update = async function update({ sub, name, email, email_verified, picture }) {
+  if (picture.startsWith('https://lh3.googleusercontent.com')) {
+    const lastEquals = picture.lastIndexOf('=');
+    if (lastEquals !== -1) {
+      picture = picture.substring(0, lastEquals);
+    }
+  }
   const query = `
-    INSERT INTO busker (id, name, email, email_verified)
-    VALUES ($1, $2, $3, $4)
+    INSERT INTO busker (id, name, email, email_verified, photo)
+    VALUES ($1, $2, $3, $4, $5)
     ON CONFLICT (id) DO UPDATE SET
       name = $2,
       email = $3,
-      email_verified = $4
+      email_verified = $4,
+      photo = $5
   `;
-  return db.query(query, [sub, name, email, email_verified]);
+  return db.query(query, [sub, name, email, email_verified, picture]);
 };
 
 const get = async function get(id) {

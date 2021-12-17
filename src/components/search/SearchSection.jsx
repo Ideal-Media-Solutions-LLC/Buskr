@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
-import { FaSearch, FaMapMarkerAlt, FaRegCalendar } from 'react-icons/fa';
+import { FaSearch, FaMapMarkerAlt, FaRegCalendar, FaLongArrowAltLeft } from 'react-icons/fa';
 import DatePicker from 'react-datepicker';
 import AutoComplete from './Autocomplete';
 import styles from '../../styles/Search.module.css';
@@ -16,6 +16,7 @@ const SearchSection = () => {
   const [searchLocation, setSearchLocation] = useState(geoLocation);
   const [searchDate, setSearchDate] = useState(new Date());
   const [initialList, setInitialList] = useState([]);
+  const [suggestions, setSuggestions] = useState([]);
 
   const onSearchSubmit = async () => {
     // SearchbarContext.setBarView(!SearchbarContext.isBarView);
@@ -31,7 +32,6 @@ const SearchSection = () => {
         lat: searchLocation.lat,
         lng: searchLocation.lng,
         from: searchDate,
-        to: searchUntil,
       },
     }).then((result) => {
       setInitialList(result.data.features);
@@ -57,6 +57,23 @@ const SearchSection = () => {
           },
         );
       }
+      const autoSuggestions = [];
+      bySearchTerm.forEach(
+        (event) => {
+          if (autoSuggestions.indexOf(event.properties.name) === -1) {
+            autoSuggestions.push(event.properties.name);
+          }
+          if (autoSuggestions.indexOf(event.properties.buskerName) === -1) {
+            autoSuggestions.push(event.properties.buskerName);
+          }
+          for (let i = 0; i < event.properties.tags.length; i++) {
+            if (autoSuggestions.indexOf(event.properties.tags[i]) === -1) {
+              autoSuggestions.push(event.properties.tags[i]);
+            }
+          }
+        },
+      );
+      setSuggestions(autoSuggestions);
       setResults({
         byDistance: oneDate,
         byTime,
@@ -94,7 +111,11 @@ const SearchSection = () => {
   }, [searchDate]);
 
   const onSearchTermChange = (e) => {
-    setSearchTerm(e.target.value);
+    if (e.target.value) {
+      setSearchTerm(e.target.value);
+    } else {
+      setSearchTerm(e.target.innerText);
+    }
   };
   const onSearchLocationChange = (e) => {
     setAddress(e.target.value);
@@ -158,16 +179,24 @@ const SearchSection = () => {
     SearchbarContext.setBarView(true);
     onSearchSubmit();
   };
+  const handleBackBtnClick = () => {
+    SearchbarContext.setBarView(false);
+  };
   if (SearchbarContext.isBarView) {
     return (
       <div id={styles.miniForm}>
+         <button id={styles.miniBackBtn}
+          onClick={handleBackBtnClick}
+        ><FaLongArrowAltLeft/>
+        </button>
         <div className={styles.miniBar} id={styles.miniTermInput}>
           <AutoComplete
-          isBarView = {SearchbarContext.isBarView}
-          suggestions={dummyTags}
-          className={styles.miniSearchInput}
-          onChange={onSearchTermChange}
-          placeholder="Search" />
+            isBarView={SearchbarContext.isBarView}
+            suggestions={suggestions}
+            showValue={searchTerm}
+            className={styles.miniSearchInput}
+            onInputChange={onSearchTermChange}
+            placeholder="Search" />
           {/* <input className={styles.miniSearchInput}
             onChange={onSearchTermChange}
             placeholder="Search"
@@ -179,6 +208,7 @@ const SearchSection = () => {
           <input className={styles.miniSearchInput}
             onChange={onSearchLocationChange}
             placeholder="Location"
+            value={address}
           />
           <button className={styles.miniInsideBtn}><FaMapMarkerAlt /></button>
         </div>
@@ -188,7 +218,11 @@ const SearchSection = () => {
         <DatePicker wrapperClassName={styles.datePicker} selected={searchDate}
           onChange={onDateChange}
           placeholderText='Select Date Here' /></div> */}
-        <button id={styles.miniSearchBtn} onClick={onSearchSubmit}><FaSearch /></button>
+        <button id={styles.miniSearchBtn}
+          onClick={onSearchSubmit}
+        ><FaSearch />
+        </button>
+
       </div>);
   }
   return (
@@ -198,9 +232,10 @@ const SearchSection = () => {
       <div id={styles.searchForm}>
         <div className={styles.searchBar} id={styles.upperSearchBar}>
           <AutoComplete className={styles.searchInput}
-            suggestions={dummyTags}
-            onChange={onSearchTermChange}
-            placeholder="Search by event name" />
+            showValue={searchTerm}
+            suggestions={suggestions}
+            onInputChange={onSearchTermChange}
+            placeholder="Search name, performer or type of events" />
           {/* <input className={styles.searchInput}
             onChange={onSearchTermChange}
             placeholder="Search by event name"
@@ -212,6 +247,7 @@ const SearchSection = () => {
           <input className={styles.searchInput}
             onChange={onSearchLocationChange}
             placeholder="Location"
+            value={address}
           />
           <button className={styles.insideBtn}><FaMapMarkerAlt /></button>
         </div>

@@ -39,6 +39,7 @@
 - [PostgreSQL](postgresql.org)
 - [PostGIS](postgis.net)
 - [Redis](redis.io)
+- [Cmake](cmake.org)
 
 ## Setup
 

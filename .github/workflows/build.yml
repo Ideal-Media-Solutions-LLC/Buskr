@@ -8,6 +8,7 @@ jobs:
     container: node:14
 
     steps:
+      - uses: lukka/get-cmake@latest
       - uses: actions/checkout@v2-beta
         with:
           ref: ${{ github.event.pull_request.head.sha }}
