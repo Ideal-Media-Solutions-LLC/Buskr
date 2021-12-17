@@ -117,6 +117,11 @@
 
 /*//////// - Currently Selected Tile - ////////*/
 
+.react-calendar__tile--now {
+  color: var(--buskr-pink);
+  font-weight: 600;
+}
+
 .react-calendar__tile--active, .react-calendar__tile--hasActive {
   background: var(--buskr-pink);
   border-radius: 50%;
