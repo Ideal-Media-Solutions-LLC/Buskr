@@ -26,14 +26,13 @@ const UserLinks = ({ user }) => (
     </a>
   </>
 );
-
 const Header = () => (
   <div className={styles.headerContainer}>
     <div className={styles.hamburgerIconLogoContainer}>
       <div className={styles.logoText}>
         <Link href='/'>BUSKR</Link>
       </div>
-      <img className={styles.icon}src='/imgs/buskr-icon.gif' alt=''/>
+      <img className={styles.icon} src='/imgs/buskr-icon.gif' alt='' />
       <div className={styles.hamburgerContainer}>
         <div className={styles.hamburgerLine}></div>
         <div className={styles.hamburgerLine}></div>
