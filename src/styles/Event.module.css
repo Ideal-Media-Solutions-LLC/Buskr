@@ -56,23 +56,35 @@
   flex-direction: row;
   align-items: center;
   gap: 10px;
+  color: var(--buskr-purple);
 }
 
 .description {
   color: var(--buskr-gray);
 }
 
-/* lol */
-.mapContainerContainer{
-  height: 335px;
-  width: 100%;
-}
-
 .mapContainer {
   border: var(--buskr-lightgray);
   border-style: solid;
-  border-width: 0px 0px 2px 0px;
-  margin: 0px 0px 10px 0px;
-  position: relative;
-  height: 20vh;
+  border-width: 1px;
+  border-radius: 5px;
+  height: 100%;
+}
+
+.hashTags {
+  color: var(--buskr-pink);
+}
+
+.details {
+  height: 120px;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.detailsTitle {
+  font-weight: bold;
+}
+
+.icon {
+  color: var(--buskr-orange);
 }

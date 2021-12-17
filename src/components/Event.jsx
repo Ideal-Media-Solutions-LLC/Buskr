@@ -73,7 +73,7 @@ const Event = function Event({ event }) {
           </div>
         </div>
         <div className={styles.locContainer}>
-          <FaMapMarkerAlt className={styles.locIcon}/>
+          <FaMapMarkerAlt className={styles.icon}/>
           { address && <div>{`${address} • ${locality}, ${administrative_area_level_1}`}</div> }
         </div>
       </section>
@@ -83,11 +83,6 @@ const Event = function Event({ event }) {
           center={center}
           events={{ features: [event] }}
         />
-      </section>
-      <section>
-        <div className='master-title'>Details</div>
-        <p>{description}</p>
-        <p>{tags.map(tag => `#${tag}`).join('\t')}</p>
       </section>
     </div>
   );
