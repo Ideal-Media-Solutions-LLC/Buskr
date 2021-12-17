@@ -22,7 +22,7 @@ const Profile = ({ performer, user }) => {
     return (
       <div className={styles.profileContainer}>
         <div className='master-title'>{performer?.name}</div>
-        {performer?.photo === null ? <img className={styles.defaultProfileImage} src="/imgs/combined instruments with circle.svg" alt="default profile image"/>
+        {performer?.photo === null ? <img className={styles.defaultProfileImage} src="/imgs/combined instruments with circle thicker outline.svg" alt="default profile image"/>
           : <img className={styles.profileImage} src={performer?.photo} alt='profile-image'/>}
         <div className={styles.profileBio}>{performer?.bio}</div>
         <div className={styles.tipsContainer}>
