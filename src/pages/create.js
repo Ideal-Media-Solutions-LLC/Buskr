@@ -14,7 +14,7 @@ const CreateEventRenderer = ({ user }) => {
   return (
     <UserContext.Provider value={user}>
       <Header />
-      <CreateEvent center={center}/>
+      <CreateEvent center={center} user={user}/>
     </UserContext.Provider>
   );
 };

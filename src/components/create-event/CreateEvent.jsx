@@ -5,11 +5,6 @@ import ImageUploader from './UploadImage';
 import styles from '../../styles/CreateEvent.module.css';
 import Map from '../map/Map';
 
-// const center = {
-//   lng: -90.06911208674771,
-//   lat: 29.954767355989652,
-// };
-
 const CreateEvent1 = ({
   center, handleDate, handleLocation, handleNext,
   handleEndDate, nextClickAttempted, date, endDateAndTime, loc,
@@ -115,6 +110,7 @@ const CreateEvent3 = ({
   submitAttempted,
   name,
   description,
+  tags,
 }) => {
   const [uploadView, setUploadView] = useState(false);
   useEffect(() => {
@@ -133,17 +129,17 @@ const CreateEvent3 = ({
               : styles.validationWarningHidden}>
                 Please enter an event name
               </div>
-              <input onChange={handleName} type='search' className={styles.masterSearchBar} placeholder='Enter Event Name'></input>
+              <input onChange={handleName} type='search' className={styles.masterSearchBar} placeholder='Enter Event Name' value={name}></input>
             <div className={styles.smallTitle}> Description: </div>
             <div className={submitAttempted && !description
               ? styles.validationWarning
               : styles.validationWarningHidden}> Please enter a description </div>
-              <textarea onChange={handleDescription} type='search' className={styles.descriptionField}placeholder='Enter Description'></textarea>
+              <textarea onChange={handleDescription} type='search' className={styles.descriptionField}placeholder='Enter Description' value={description}></textarea>
             <div className={styles.tagsDescription}>
               <div className={styles.smallTitle}> Tags </div>
               <div className={styles.tagSubtext}> (OPTIONAL - Separated By Comma)  </div>
             </div>
-              <input onChange={handleTags} type='search' className={styles.masterSearchBar}placeholder='Add Tags (separated by comma)'></input>
+              <input onChange={handleTags} type='search' className={styles.masterSearchBar}placeholder='Add Tags (separated by comma)' value={tags}></input>
           </form>
           {/* if image exists, render image, otherwise render button */}
           {image
@@ -160,18 +156,7 @@ const CreateEvent3 = ({
   return <ImageUploader handleImage={handleImage} handleGoBack={handleGoBack}/>;
 };
 
-// const dummyEventInfo = {
-//   name: '',
-//   description: '',
-//   image: '',
-//   date: '',
-//   start: '',
-//   end: '',
-//   loc: '',
-//   tags: ''
-// }
-
-const CreateEvent = ({ center }) => {
+const CreateEvent = ({ center, user }) => {
   const [createPage, setCreatePage] = useState(1);
   const [name, setEventName] = useState();
   const [description, setEventDescription] = useState();
@@ -204,19 +189,16 @@ const CreateEvent = ({ center }) => {
 
   const handleName = (e) => {
     e.preventDefault();
-    console.log(e.target.value);
     setEventName(e.target.value);
   };
 
   const handleDescription = (e) => {
     e.preventDefault();
-    console.log(e.target.value);
     setEventDescription(e.target.value);
   };
 
   const handleTags = (e) => {
     e.preventDefault();
-    console.log(e.target.value);
     setEventTags(e.target.value);
   };
 
@@ -241,14 +223,25 @@ const CreateEvent = ({ center }) => {
   };
 
   const handleAddMyEvent = () => {
+    console.log('ADD MY EVENT CLICKED!');
     if (name && description && image && date && endDateAndTime && loc) {
-      // Check if there isConflict
-      // If yes
-      // axios query for all conflicts
-
-      // Build out object for query
-      // let eventInfo = {}
-      console.log('ADD MY EVENT CLICKED!');
+      const data = {
+        name,
+        description,
+        tags: tags.split(','),
+        starts: date,
+        ends: endDateAndTime,
+        lat: loc.lat,
+        lng: loc.lng,
+        photos: image,
+      };
+      axios.post('api/events', data)
+        .then((res) => {
+          window.location.href = `/event/${res.data.id}`;
+        })
+        .catch((err) => {
+          console.log('Error posting event to database:', err);
+        });
     }
     setSubmitAttempted(true);
   };
@@ -311,6 +304,8 @@ const CreateEvent = ({ center }) => {
         submitAttempted={submitAttempted}
         name={name}
         description={description}
+        tags={tags}
+        user={user}
       />
     );
   }

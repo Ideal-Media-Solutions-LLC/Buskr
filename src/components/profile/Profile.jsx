@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import QRCode from 'qrcode.react';
 import EventItem from '../search/results/EventItem';
 import styles from '../../styles/Profile.module.css';
