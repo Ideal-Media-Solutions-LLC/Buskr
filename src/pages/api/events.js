@@ -63,7 +63,7 @@ const GET = async function GET(req, res) {
 const POST = async function POST(req, res) {
   const { id: buskerId } = await getUser({ req });
   const eventId = await EventController.create(buskerId, req.body);
-  res.status(204).json(eventId);
+  res.status(201).json({ id: eventId });
 };
 
 export default handler({ GET, POST });

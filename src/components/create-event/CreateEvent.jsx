@@ -235,17 +235,18 @@ const CreateEvent = ({ center, user }) => {
         lng: loc.lng,
         photos: image,
       };
-      console.log('data', JSON.stringify(data));
       axios.post('api/events', data)
-        .then((result) => {
-          console.log('results', result.data);
-          // Redirect user back to their profile
-          // Have profile re-render with event added to the list
+        .then((res) => {
+          window.location.href = `/event/${res.data.id}`;
+          // axios.get(`api/profile/${user.id}`)
+          //   .then((result) => {
+          //     console.log('User:', result.data);
+          //   });
         })
         .catch((err) => {
           console.log('Error posting event to database:', err);
         });
-      window.location.href = `/profile/${user.id}`;
+      // window.location.href = `/profile/${user.id}`;
     }
     setSubmitAttempted(true);
   };
