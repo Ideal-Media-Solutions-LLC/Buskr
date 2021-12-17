@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import QRCode from 'qrcode.react';
-import axios from 'axios';
 import EventItem from '../search/results/EventItem';
 import styles from '../../styles/Profile.module.css';
 
@@ -18,21 +17,6 @@ const Profile = ({ performer, user }) => {
     console.log('click');
     window.location.href = '/create';
   };
-
-  const [performerObject, setPerformerObject] = useState(performer);
-
-  // useEffect(() => {
-  //   console.log('here');
-  //   console.log(user);
-  //   axios.get(`api/profile/${user.id}`)
-  //     .then((result) => {
-  //       console.log('User:', result.data);
-  //     })
-  //     .catch((err) => {
-  //       console.log('errrrrror', err);
-  //     });
-  // });
-  console.log('performer object:', performerObject);
 
   if (!qrcodeMode) {
     return (

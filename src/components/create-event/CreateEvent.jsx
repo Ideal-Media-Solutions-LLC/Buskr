@@ -221,7 +221,7 @@ const CreateEvent = ({ center, user }) => {
       setNextClickAttempted(true);
     }
   };
-  console.log('user', user);
+
   const handleAddMyEvent = () => {
     console.log('ADD MY EVENT CLICKED!');
     if (name && description && image && date && endDateAndTime && loc) {
