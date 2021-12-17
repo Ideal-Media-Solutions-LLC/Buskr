@@ -1,11 +1,23 @@
+import React from 'react';
 import Profile from '../../components/profile/Profile';
-import Busker from '../../db/busker';
+import BuskerController from '../../db/busker';
+import { getUser } from '../../auth';
+import { UserContext } from '../../contexts';
+import Header from '../../components/Header';
 
-export const getStaticProps = async function getStaticProps(context) {
-  const performer = await Busker.get(context.params.id);
-  return performer === undefined ? { notFound: true } : { props: { performer } };
+export const getServerSideProps = async function getServerSideProps(context) {
+  const [user, performer] = await Promise.all([
+    getUser(context),
+    BuskerController.get(context.params.id),
+  ]);
+  return performer === undefined ? { notFound: true } : { props: { performer, user } };
 };
 
-export const getStaticPaths = async () => ({ paths: [], fallback: 'blocking' });
+const ProfilePage = ({ performer, user }) => (
+  <UserContext.Provider value={user}>
+    <Header />
+    <Profile performer={performer} />
+  </UserContext.Provider>
+);
 
-export default Profile;
+export default ProfilePage;

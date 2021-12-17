@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
-import SearchContext from '../search/SearchContext';
 import Calendar from 'react-calendar';
+import { SearchContext } from '../../contexts';
 import { BsChevronRight, BsChevronLeft } from 'react-icons/bs';
 
 const CalendarView = () => {

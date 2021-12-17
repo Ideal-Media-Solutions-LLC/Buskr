@@ -6,7 +6,7 @@ import styles from '../../styles/Map.module.css';
 
 const InfoBox = function InfoBox(props) {
   const { feature } = props;
-  const id = feature.getProperty('buskerId');
+  const id = feature.getProperty('id');
   const name = feature.getProperty('name');
   const buskerId = feature.getProperty('buskerId');
   const buskerName = feature.getProperty('buskerName');
@@ -63,6 +63,9 @@ const Map = function Map({ containerStyle, center, onDrop, events }) {
   const [infoFeature, setInfoFeature] = useState(null);
   const onLoad = useCallback((/** @type {google.maps.Map} */ map) => {
     setMap(map);
+    map.data.setStyle({
+      icon: '/imgs/marker.png',
+    })
     /* eslint-disable-next-line no-new */
     new google.maps.Marker({
       map,
@@ -72,8 +75,9 @@ const Map = function Map({ containerStyle, center, onDrop, events }) {
         fillColor: '#ff7585',
         fillOpacity: 1,
         path: google.maps.SymbolPath.CIRCLE,
-        strokeColor: '#ff7585',
-        scale: 5,
+        strokeWeight: 2,
+        strokeColor: 'white',
+        scale: 8,
       },
     });
     map.addListener('click', ({ latLng: { lng, lat } }) => {

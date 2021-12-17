@@ -2,10 +2,11 @@
 require('dotenv').config({ path: '.env.local' });
 const { Client } = require('pg');
 const {
-  datatype: { float, number },
+  datatype: { float, number, uuid },
   date: { between },
   lorem: { sentences, words },
   image: { city, people },
+  internet: { email },
   name: { findName },
 } = require('faker');
 
@@ -58,7 +59,7 @@ const maxTags = 5;
 const maxPhotos = 4;
 const minTime = new Date();
 const maxTime = new Date();
-maxTime.setMonth(maxTime.getMonth() + 2);
+maxTime.setMonth(maxTime.getMonth() + 1);
 
 const insertTag = async function insertTag(tag) {
   return db.query(
@@ -118,10 +119,10 @@ const createEvent = async function createEvent(buskerId) {
 };
 
 const createBusker = async function createBusker() {
-  const { rows: [{ id }] } = await db.query(
-    'INSERT INTO busker (name, photo, bio) VALUES ($1, $2, $3) RETURNING id',
-    [findName(), people(), sentences()],
-  );
+  const { rows: [{ id }] } = await db.query(`
+    INSERT INTO busker (id, name, email, photo, bio)
+    VALUES ($1, $2, $3, $4, $5)
+    RETURNING id`, [uuid(), findName(), email(), people(), sentences()]);
 
   return generate(number(maxEvents), () => createEvent(id));
 };
