@@ -71,6 +71,7 @@
   flex-direction: row;
   flex-wrap: wrap;
   align-items: baseline;
+  justify-content: space-evenly;
   width:100%
 }
 
@@ -199,6 +200,7 @@
   border:1px solid var(--buskr-lightgray);
 }
 
+
 .miniBar:focus-within {
   border-color: var(--buskr-orange);
   border-right: 1px solid var(--buskr-orange);
@@ -216,7 +218,7 @@
 }
 
 #miniSearchBtn {
-  width:50px;
+  width:30px;
   height:30px;
   border-top-right-radius:5px;
   border-bottom-right-radius:5px;
@@ -224,6 +226,17 @@
   color: white;
   background-color: var(--buskr-pink);
   border: none;
+}
+#miniBackBtn{
+  width:30px;
+  height:30px;
+  border-radius:5px;
+  padding:3px 8px;
+  color: white;
+  background-color: var(--buskr-orange);
+  border: none;
+  margin-right: 5px;
+
 }
 .miniSearchInput{
   position: absolute;
