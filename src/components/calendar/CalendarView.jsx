@@ -9,7 +9,6 @@ const CalendarView = (props) => {
   // when the user clicks the Search button, then we would setSearchObj
   // to the passed down filterObject from Search Team
   const SearchbarContext = useContext(SearchContext);
-  console.log(SearchbarContext);
   const [searchObj, setSearchObj] = useState(SearchbarContext.results.filterWords);
   // updates when a date is clicked, will tie this with search function
   const [date, setDate] = useState(new Date());
@@ -21,8 +20,10 @@ const CalendarView = (props) => {
   const [currentEndDate, setCurrentEndDate] = useState(
     new Date(currentStartDate.getFullYear(), currentStartDate.getMonth() + 1, 0),
   );
-  const [queryData, setQueryData] = useState(null);
   const [eventDates, setEventDates] = useState(new Set());
+  // faking dates for research, gets rid of lag using permanent "from" and "to" dates shown below
+  const [fakeStartDate, setFakeStartDate] = useState(new Date('2010-01-01'));
+  const [fakeEndDate, setFakeEndDate] = useState(new Date('2040-01-01'));
 
   // updates "from" and "to" dates when month is changed in calendar
   useEffect(() => {
@@ -33,10 +34,8 @@ const CalendarView = (props) => {
 
   // performs search with new "from" and "to" dates
   useEffect(() => {
-    axios.get(`${process.env.NEXT_PUBLIC_DOMAIN}/api/events?lng=${searchObj.lng}&lat=${searchObj.lat}&from=${currentStartDate}&to=${currentEndDate}&sort=time`)
+    axios.get(`${process.env.NEXT_PUBLIC_DOMAIN}/api/events?lng=${searchObj.lng}&lat=${searchObj.lat}&from=${fakeStartDate}&to=${fakeEndDate}&sort=time`)
       .then(res => {
-        // do we need a state for queryData?
-        setQueryData(res.data);
         return res.data;
       })
       .then(data => {
@@ -52,12 +51,11 @@ const CalendarView = (props) => {
           });
           if (hasKeywords) {
             tempEventDates.add(
-              parseInt(new Date(event.properties.starts).toString().slice(8, 10), 10),
+              (new Date(event.properties.starts.toString().slice(0, 10))).toString().slice(4, 15),
             );
           }
         });
         setEventDates(tempEventDates);
-        console.log(tempEventDates);
       });
   }, [currentStartDate, currentEndDate]);
 
@@ -88,7 +86,7 @@ const CalendarView = (props) => {
       <Calendar
         onClickDay={handleDayClick}
         value={date}
-        tileContent={({ date, view }) => view === 'month' && eventDates.has(date.getDate()) ? <div className="notification"></div> : null}
+        tileContent={({ date, view }) => view === 'month' && eventDates.has(date.toString().slice(4, 15)) ? <div className="notification"></div> : null}
         prevLabel={<BsChevronLeft />}
         nextLabel={<BsChevronRight />}
         next2Label={null}
