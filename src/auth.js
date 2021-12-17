@@ -46,8 +46,8 @@ export const getUser = async function getUser({ req: { cookies: { id_token } } }
     return null;
   }
   try {
-    const { email, name, sub } = await verifyIdToken(id_token);
-    return { id: sub, email, name };
+    const { email, name, sub, picture } = await verifyIdToken(id_token);
+    return { id: sub, email, name, picture };
   } catch (error) {
     console.warn(error);
     return null;

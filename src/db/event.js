@@ -1,5 +1,99 @@
 import db from '.';
 import getLocations from './getLocations';
+import upload from './upload';
+
+const sqlLocation = function sqlLocation({ lng, lat }) {
+  return `SRID=4326;POINT(${lng} ${lat})`;
+};
+
+const insertPhoto = async function insertPhoto(eventId, photo) {
+  // const url = await upload(`event-${eventId}-${i}`, photo);
+  const { rows: [{ id: photoId }] } = await db.query(
+    'INSERT INTO photo (url) VALUES ($1) RETURNING id',
+    [photo],
+  );
+  await db.query(
+    'INSERT INTO event_photo (event_id, photo_id) VALUES ($1, $2)',
+    [eventId, photoId],
+  );
+};
+
+const insertTag = async function insertTag(eventId, tag) {
+  tag = tag.trim().toLowerCase();
+  let tagId;
+  const { rows: [result] } = await db.query(
+    'INSERT INTO tag (name) VALUES ($1) ON CONFLICT DO NOTHING RETURNING id',
+    [tag],
+  );
+  if (result === undefined) {
+    const { rows: [{ id }] } = await db.query(
+      'SELECT id FROM tag WHERE name = $1',
+      [tag],
+    );
+    tagId = id;
+  } else {
+    tagId = result.id;
+  }
+  await db.query(
+    'INSERT INTO event_tag (event_id, tag_id) VALUES ($1, $2)',
+    [eventId, tagId],
+  );
+};
+
+const create = async function create(buskerId, {
+  name,
+  description,
+  tags = [],
+  starts,
+  ends,
+  lat,
+  lng,
+  photos = [],
+}) {
+  const createQuery = `
+    INSERT INTO event (location, name, description, starts, ends, busker_id)
+    VALUES ($1, $2, $3, $4, $5, $6)
+    RETURNING id
+  `;
+  const { rows: [{ id }] } = await db.query(
+    createQuery,
+    [sqlLocation({ lng, lat }), name, description, starts, ends, buskerId],
+  );
+  const promises = [];
+  if (!Array.isArray(photos)) {
+    photos = [photos];
+  }
+  for (let i = 0; i < photos.length; i += 1) {
+    promises.push(insertPhoto(id, photos[i], i));
+  }
+  for (const tag of tags) {
+    promises.push(insertTag(id, tag));
+  }
+  await Promise.all(promises);
+  return id;
+};
+
+const findConflicts = async function findConflicts(
+  { lat, lng },
+  { from, to },
+) {
+  const query = `
+    SELECT
+      location <-> $1 AS distance,
+      busker.id,
+      busker.email
+    FROM event
+    JOIN busker ON busker.id = event.busker_id
+    WHERE starts >= $2 AND ends <= $3
+    ORDER BY distance ASC
+  `;
+  const { rows } = await db.query(query, [`SRID=4326;POINT(${lng} ${lat})`, from, to]);
+  const tooFar = rows.findIndex(row => row.distance > process.env.CONFLICT_METERS);
+  if (tooFar !== -1) {
+    rows.length = tooFar;
+  }
+  return rows;
+};
 
 const findConflicts = async function findConflicts(
   { lat, lng },
@@ -81,7 +175,7 @@ const get = async function get(id, limit, offset) {
 };
 
 const getAll = async function getAll(
-  { lat, lng },
+  location,
   { from, to },
   limit,
   offset,
@@ -90,7 +184,7 @@ const getAll = async function getAll(
 ) {
   const clauses = [];
   const wheres = [];
-  const args = [`SRID=4326;POINT(${lng} ${lat})`];
+  const args = [sqlLocation(location)];
 
   if (from !== null) {
     args.push(from);
@@ -183,6 +277,10 @@ const getAll = async function getAll(
   };
 };
 
+<<<<<<< HEAD
 const Event = { findConflicts, get, getAll };
+=======
+const Event = { create, findConflicts, get, getAll };
+>>>>>>> 0a11943ae0972765ce271324209f335930a6618e
 
 export default Event;

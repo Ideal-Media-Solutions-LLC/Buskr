@@ -17,7 +17,7 @@ const CreateEvent1 = ({
 }) => {
   const mapContainerStyle = {
     height: '300px',
-    width: 'auto',
+    width: '100%',
   };
 
   const [startDate, setStartDate] = useState();
@@ -70,7 +70,7 @@ const CreateEvent1 = ({
          ? `Lat: ${coords.lat.toFixed(4)}, Lng: ${coords.lng.toFixed(4)}`
          : ''} ></input>
       </form>
-      <div className='mapContainer'>
+      <div className={styles.mapContainer}>
         <Map center={center} onDrop={setEventLoc}
         containerStyle={mapContainerStyle} withInfoBoxes={false}/>
       </div>
@@ -222,7 +222,7 @@ const CreateEvent = ({ center }) => {
 
   const handleNext = () => {
     if (date && endDateAndTime && loc) {
-      axios.get(`https://buskr.life/api/conflicts?lat=${loc.lat}&lng=${loc.lng}&from=${date}&to=${endDateAndTime}`).then(result => {
+      axios.get(`${process.env.NEXT_PUBLIC_DOMAIN}/api/conflicts?lat=${loc.lat}&lng=${loc.lng}&from=${date}&to=${endDateAndTime}`).then(result => {
         console.log('results', result.data);
         const conflict = result.data;
         if (conflict === true) {

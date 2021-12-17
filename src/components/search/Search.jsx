@@ -17,9 +17,12 @@ const Search = () => {
     },
   });
   const [isBarView, setBarView] = useState(false);
+  const [calendarDate, setCalendarDate] = useState(new Date());
   return (
     <div id='searchContainer'>
-      <SearchContext.Provider value={{ results, setResults, isBarView, setBarView }}>
+      <SearchContext.Provider value={{
+        results, setResults, isBarView, setBarView, calendarDate, setCalendarDate,
+      }}>
         <SearchSection />
         <ResultSection />
       </SearchContext.Provider>

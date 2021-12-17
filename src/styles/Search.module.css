@@ -71,6 +71,7 @@
   flex-direction: row;
   flex-wrap: wrap;
   align-items: baseline;
+  justify-content: space-evenly;
   width:100%
 }
 
@@ -122,14 +123,19 @@
   padding: 0.2rem;
 }
 .suggestions {
-  border: 1px solid #999;
+  margin: 0px;
+  position: absolute;
+  border: 1px solid var(--buskr-orange);
   list-style: none;
-  margin-top: 25px;
+  margin-top: 35px;
   max-height: 100px;
   overflow-y: auto;
-  padding-left: 0;
+  padding: 10px 0px 10px 25px;
   width: 335px;
-  z-index:20;
+  z-index: 99 !important;
+  color: var(--buskr-purple);
+  font-size: 12px;
+  background-color: white;
 }
 .suggestions li {
   padding: 0.1rem;
@@ -194,6 +200,7 @@
   border:1px solid var(--buskr-lightgray);
 }
 
+
 .miniBar:focus-within {
   border-color: var(--buskr-orange);
   border-right: 1px solid var(--buskr-orange);
@@ -211,7 +218,7 @@
 }
 
 #miniSearchBtn {
-  width:50px;
+  width:30px;
   height:30px;
   border-top-right-radius:5px;
   border-bottom-right-radius:5px;
@@ -219,6 +226,17 @@
   color: white;
   background-color: var(--buskr-pink);
   border: none;
+}
+#miniBackBtn{
+  width:30px;
+  height:30px;
+  border-radius:5px;
+  padding:3px 8px;
+  color: white;
+  background-color: var(--buskr-orange);
+  border: none;
+  margin-right: 5px;
+
 }
 .miniSearchInput{
   position: absolute;
