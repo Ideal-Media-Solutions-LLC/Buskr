@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
-import { FaSearch, FaMapMarkerAlt, FaRegCalendar } from 'react-icons/fa';
+import { FaSearch, FaMapMarkerAlt, FaRegCalendar, FaLongArrowAltLeft } from 'react-icons/fa';
 import DatePicker from 'react-datepicker';
 import AutoComplete from './Autocomplete';
 import styles from '../../styles/Search.module.css';
@@ -179,9 +179,16 @@ const SearchSection = () => {
     SearchbarContext.setBarView(true);
     onSearchSubmit();
   };
+  const handleBackBtnClick = () => {
+    SearchbarContext.setBarView(false);
+  };
   if (SearchbarContext.isBarView) {
     return (
       <div id={styles.miniForm}>
+         <button id={styles.miniBackBtn}
+          onClick={handleBackBtnClick}
+        ><FaLongArrowAltLeft/>
+        </button>
         <div className={styles.miniBar} id={styles.miniTermInput}>
           <AutoComplete
             isBarView={SearchbarContext.isBarView}
@@ -201,7 +208,7 @@ const SearchSection = () => {
           <input className={styles.miniSearchInput}
             onChange={onSearchLocationChange}
             placeholder="Location"
-            value = {address}
+            value={address}
           />
           <button className={styles.miniInsideBtn}><FaMapMarkerAlt /></button>
         </div>
@@ -211,7 +218,11 @@ const SearchSection = () => {
         <DatePicker wrapperClassName={styles.datePicker} selected={searchDate}
           onChange={onDateChange}
           placeholderText='Select Date Here' /></div> */}
-        <button id={styles.miniSearchBtn} onClick={onSearchSubmit}><FaSearch /></button>
+        <button id={styles.miniSearchBtn}
+          onClick={onSearchSubmit}
+        ><FaSearch />
+        </button>
+
       </div>);
   }
   return (
@@ -221,7 +232,7 @@ const SearchSection = () => {
       <div id={styles.searchForm}>
         <div className={styles.searchBar} id={styles.upperSearchBar}>
           <AutoComplete className={styles.searchInput}
-            showValue ={searchTerm}
+            showValue={searchTerm}
             suggestions={suggestions}
             onInputChange={onSearchTermChange}
             placeholder="Search name, performer or type of events" />
