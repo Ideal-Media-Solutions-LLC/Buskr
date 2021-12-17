@@ -238,15 +238,10 @@ const CreateEvent = ({ center, user }) => {
       axios.post('api/events', data)
         .then((res) => {
           window.location.href = `/event/${res.data.id}`;
-          // axios.get(`api/profile/${user.id}`)
-          //   .then((result) => {
-          //     console.log('User:', result.data);
-          //   });
         })
         .catch((err) => {
           console.log('Error posting event to database:', err);
         });
-      // window.location.href = `/profile/${user.id}`;
     }
     setSubmitAttempted(true);
   };
