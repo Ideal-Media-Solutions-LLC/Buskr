@@ -42,16 +42,18 @@ const CalendarView = (props) => {
       .then(data => {
         const tempEventDates = new Set();
         data.features.forEach(event => {
-          const hasKeywords = searchObj.keywords.split(' ').every(keyword => {
-            if (event.properties.name.includes(keyword)
-              || event.properties.buskerName.includes(keyword)
-              || event.properties.description.includes(keyword)) {
+          const hasKeywords = searchObj.keywords.toLowerCase().split(' ').every(keyword => {
+            if (event.properties.name.toLowerCase().includes(keyword)
+              || event.properties.buskerName.toLowerCase().includes(keyword)
+              || event.properties.description.toLowerCase().includes(keyword)) {
               return true;
             }
             return false;
           });
           if (hasKeywords) {
-            tempEventDates.add(parseInt(event.properties.starts.slice(8, 10), 10));
+            tempEventDates.add(
+              parseInt(new Date(event.properties.starts).toString().slice(8, 10), 10),
+            );
           }
         });
         setEventDates(tempEventDates);
