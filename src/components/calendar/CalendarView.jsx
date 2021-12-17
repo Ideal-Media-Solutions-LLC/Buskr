@@ -11,7 +11,7 @@ const CalendarView = (props) => {
   const SearchbarContext = useContext(SearchContext);
   const [searchObj, setSearchObj] = useState(SearchbarContext.results.filterWords);
   // updates when a date is clicked, will tie this with search function
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState(searchObj.starts);
   const [calendarStartDate, setCalendarStartDate] = useState(null);
   const filteredDate = searchObj.starts;
   const [currentStartDate, setCurrentStartDate] = useState(
