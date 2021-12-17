@@ -12,6 +12,15 @@
   border-radius: 10px;
 }
 
+.defaultProfileImage {
+  width: auto;
+  height: 200px;
+  background-color: lightgrey;
+  margin: 10px 0px 10px 0px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
 .profileBio {
   margin-bottom: 15px;
   color: var(--buskr-gray);

@@ -22,7 +22,8 @@ const Profile = ({ performer, user }) => {
     return (
       <div className={styles.profileContainer}>
         <div className='master-title'>{performer?.name}</div>
-        <img className={styles.profileImage} src={performer?.photo} alt='profile-image'/>
+        {performer?.photo === null ? <img className={styles.defaultProfileImage} src="/imgs/combined instruments with circle thicker outline.svg" alt="default profile image"/>
+          : <img className={styles.profileImage} src={performer?.photo} alt='profile-image'/>}
         <div className={styles.profileBio}>{performer?.bio}</div>
         <div className={styles.tipsContainer}>
           <div className={styles.qrButtonContainer} onClick={() => setQRCodeMode(true)}>
