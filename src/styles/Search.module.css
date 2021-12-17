@@ -213,8 +213,9 @@
 }
 
 #miniTermInput{
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
+  /* border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px; */
+  border-left: none;
 }
 
 #miniSearchBtn {
@@ -228,15 +229,18 @@
   border: none;
 }
 #miniBackBtn{
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width:30px;
   height:30px;
-  border-radius:5px;
-  padding:3px 8px;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+  /* padding:3px 8px; */
   color: white;
   background-color: var(--buskr-orange);
   border: none;
-  margin-right: 5px;
-
+  font-size: 16px;
 }
 .miniSearchInput{
   position: absolute;

@@ -48,6 +48,7 @@ const TabViews = () => {
           /></div> : null}
         {view === 3 ? <div className={styles.activeContent}>
         <Calendar setview = {setView}/>
+        {SearchbarContext.isBarView && <img className={styles.buskrArt} src='/imgs/buskr-art.png' alt=''/>}
         </div> : null}
       </div>
     </div >
