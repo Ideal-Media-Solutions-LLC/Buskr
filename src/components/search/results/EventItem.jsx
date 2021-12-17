@@ -5,20 +5,12 @@ import styles from '../../../styles/resultList.module.css';
 
 const EventItem = ({ event: { properties } }) => {
   const { name, id, buskerId, buskerName, photos, starts } = properties;
-<<<<<<< HEAD
-
-  const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const time = moment.tz(starts, zone).format('ddd, MMM D [@] h:mA z');
-  const location = `${properties.location.locality}, ${properties.location.administrative_area_level_1}`;
-
-=======
   const { locality, administrative_area_level_1 } = properties.location;
   const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const time = moment.tz(starts, zone).format('ddd, MMM D [@] h:mmA z');
   const location = [locality, administrative_area_level_1]
     .filter(string => string)
     .join(', ');
->>>>>>> 0a11943ae0972765ce271324209f335930a6618e
   const profileLink = buskerId ? (
     <Link href={`/profile/${buskerId}`}>
       { buskerName }
