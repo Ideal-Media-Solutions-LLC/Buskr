@@ -71,26 +71,8 @@
 .mapContainer {
   border: var(--buskr-lightgray);
   border-style: solid;
-  border-width: 1px;
-  border-radius: 5px;
-  /* height: 100%; */
-}
-
-.hashTags {
-  color: var(--buskr-pink);
-}
-
-.details {
-  height: 120px;
-  overflow-y: scroll;
-  font-size: 14px;
-  margin-bottom: 10px;
-}
-
-.detailsTitle {
-  font-weight: bold;
-}
-
-.icon {
-  color: var(--buskr-orange);
+  border-width: 0px 0px 2px 0px;
+  margin: 0px 0px 10px 0px;
+  position: relative;
+  height: 20vh;
 }
