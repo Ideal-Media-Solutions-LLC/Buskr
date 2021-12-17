@@ -44,9 +44,20 @@ const SearchSection = () => {
       const byTime = oneDate.slice().sort(
         (a, b) => new Date(a.properties.starts) - new Date(b.properties.starts),
       );
-      let bySearchTerm = oneDate;
+      const byLocation = oneDate.slice().filter(
+        ({ properties }) => {
+          const searchedPlace = address.toLowerCase();
+          if (properties.location.address) {
+            return searchedPlace === properties.location.address.toLowerCase()
+              || searchedPlace === properties.location.locality.toLowerCase()
+              || searchedPlace === properties.location.administrative_area_level_1.toLowerCase();
+          }
+          return null;
+        },
+      );
+      let bySearchTerm = address === '' ? oneDate : byLocation;
       if (searchTerm) {
-        bySearchTerm = oneDate.filter(
+        bySearchTerm = bySearchTerm.slice().filter(
           (event) => {
             const searchedTerm = searchTerm.toLowerCase();
             const filteredEvents = event.properties.name.toLowerCase()
@@ -185,22 +196,23 @@ const SearchSection = () => {
   if (SearchbarContext.isBarView) {
     return (
       <div id={styles.miniForm}>
-         <button id={styles.miniBackBtn}
+        <button id={styles.miniBackBtn}
           onClick={handleBackBtnClick}
-        ><FaLongArrowAltLeft/>
+        ><FaLongArrowAltLeft />
         </button>
         <div className={styles.miniBar} id={styles.miniTermInput}>
-          <AutoComplete
+          {/* <AutoComplete
             isBarView={SearchbarContext.isBarView}
             suggestions={suggestions}
             showValue={searchTerm}
             className={styles.miniSearchInput}
             onInputChange={onSearchTermChange}
-            placeholder="Search" />
-          {/* <input className={styles.miniSearchInput}
+            placeholder="Search" /> */}
+          <input className={styles.miniSearchInput}
             onChange={onSearchTermChange}
             placeholder="Search"
-          /> */}
+            value = {searchTerm}
+          />
 
           <button className={styles.miniInsideBtn}><FaSearch /></button>
         </div>
