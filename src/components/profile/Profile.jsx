@@ -52,7 +52,7 @@ const Profile = ({ performer, user }) => {
   return (
     <div className={styles.qrContainer}>
       <div className={styles.qrcode}>
-        <QRCode value={`${process.env.NEXT_PUBLIC_DOMAIN}/profile${performer.id}`} size={220}/>
+        <QRCode value={`${process.env.NEXT_PUBLIC_DOMAIN}/profile/${performer.id}`} size={220}/>
       </div>
       <button className={styles.backButton} onClick={() => setQRCodeMode(false) }>Back</button>
     </div>
