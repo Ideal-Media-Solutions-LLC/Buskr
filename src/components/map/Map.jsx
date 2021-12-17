@@ -65,7 +65,7 @@ const Map = function Map({ containerStyle, center, onDrop, events }) {
     setMap(map);
     map.data.setStyle({
       icon: '/imgs/marker.png',
-    })
+    });
     /* eslint-disable-next-line no-new */
     new google.maps.Marker({
       map,
