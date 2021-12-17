@@ -10,7 +10,7 @@ const SearchSection = () => {
   const SearchbarContext = useContext(SearchContext);
   const { results, setResults } = SearchbarContext;
   const geoLocation = useContext(LocationContext);
-  const dummyTags = ['Starting soon', 'Tomorrow', 'Near you', 'Dancers', 'Clowns', 'Magicians'];
+  const dummyTags = ['Starting soon', 'Tomorrow', 'Near you', 'Dance', 'Magic', 'Clowns'];
   const [searchTerm, setSearchTerm] = useState('');
   const [address, setAddress] = useState('');
   const [searchLocation, setSearchLocation] = useState(geoLocation);
