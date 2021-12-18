@@ -5,6 +5,7 @@ import DatePicker from 'react-datepicker';
 import AutoComplete from './Autocomplete';
 import styles from '../../styles/Search.module.css';
 import { LocationContext, SearchContext } from '../../contexts';
+import { geolocate, getEvents } from '../../interface';
 
 const SearchSection = () => {
   const SearchbarContext = useContext(SearchContext);
@@ -21,21 +22,16 @@ const SearchSection = () => {
   const onSearchSubmit = async () => {
     // SearchbarContext.setBarView(!SearchbarContext.isBarView);
     if (address !== '') {
-      await axios.get('/api/search', { params: { address } })
-        .then((res) => {
-          setSearchLocation(res.data);
-        });
+      await geolocate(address).then(setSearchLocation);
     }
-    axios.get(`${process.env.NEXT_PUBLIC_DOMAIN}/api/events`, {
-      params: {
-        features: 'coords,location,photos,tags',
-        lat: searchLocation.lat,
-        lng: searchLocation.lng,
-        from: searchDate,
-      },
-    }).then((result) => {
-      setInitialList(result.data.features);
-      const oneDate = result.data.features.slice().filter((event) => {
+    getEvents({
+      features: ['coords', 'location', 'photos', 'tags'],
+      lat: searchLocation.lat,
+      lng: searchLocation.lng,
+      from: searchDate,
+    }).then(events => {
+      setInitialList(events.features);
+      const oneDate = events.features.slice().filter((event) => {
         const eventDate = new Date(event.properties.starts);
         return searchDate.getDate() === eventDate.getDate()
           && searchDate.getMonth() === eventDate.getMonth()

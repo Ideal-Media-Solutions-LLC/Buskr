@@ -1,8 +1,8 @@
 import Calendar from 'react-calendar';
 import React, { useEffect, useState, useContext } from 'react';
 import { BsChevronRight, BsChevronLeft } from 'react-icons/bs';
-import axios from 'axios';
 import { SearchContext } from '../../contexts';
+import { getEvents } from '../../interface';
 
 const CalendarView = (props) => {
   // grab the current location data through Conext when no location was entered - default location
@@ -34,29 +34,31 @@ const CalendarView = (props) => {
 
   // performs search with new "from" and "to" dates
   useEffect(() => {
-    axios.get(`${process.env.NEXT_PUBLIC_DOMAIN}/api/events?lng=${searchObj.lng}&lat=${searchObj.lat}&from=${fakeStartDate}&to=${fakeEndDate}&sort=time`)
-      .then(res => {
-        return res.data;
-      })
-      .then(data => {
-        const tempEventDates = new Set();
-        data.features.forEach(event => {
-          const hasKeywords = searchObj.keywords.toLowerCase().split(' ').every(keyword => {
-            if (event.properties.name.toLowerCase().includes(keyword)
-              || event.properties.buskerName.toLowerCase().includes(keyword)
-              || event.properties.description.toLowerCase().includes(keyword)) {
-              return true;
-            }
-            return false;
-          });
-          if (hasKeywords) {
-            tempEventDates.add(
-              (new Date(event.properties.starts.toString().slice(0, 10))).toString().slice(4, 15),
-            );
+    getEvents({
+      lng: searchObj.lng,
+      lat: searchObj.lat,
+      from: fakeStartDate,
+      to: fakeEndDate,
+      sort: 'time',
+    }).then(data => {
+      const tempEventDates = new Set();
+      data.features.forEach(event => {
+        const hasKeywords = searchObj.keywords.toLowerCase().split(' ').every(keyword => {
+          if (event.properties.name.toLowerCase().includes(keyword)
+            || event.properties.buskerName.toLowerCase().includes(keyword)
+            || event.properties.description.toLowerCase().includes(keyword)) {
+            return true;
           }
+          return false;
         });
-        setEventDates(tempEventDates);
+        if (hasKeywords) {
+          tempEventDates.add(
+            (new Date(event.properties.starts.toString().slice(0, 10))).toString().slice(4, 15),
+          );
+        }
       });
+      setEventDates(tempEventDates);
+    });
   }, [currentStartDate, currentEndDate]);
 
   const findStartEndDates = () => {

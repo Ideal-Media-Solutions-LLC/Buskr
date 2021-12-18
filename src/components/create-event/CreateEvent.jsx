@@ -4,6 +4,7 @@ import DatePicker from 'react-datepicker';
 import ImageUploader from './UploadImage';
 import styles from '../../styles/CreateEvent.module.css';
 import Map from '../map/Map';
+import { createEvent, findConflicts } from '../../interface';
 
 const CreateEvent1 = ({
   center, handleDate, handleLocation, handleNext,
@@ -204,10 +205,14 @@ const CreateEvent = ({ center, user }) => {
 
   const handleNext = () => {
     if (date && endDateAndTime && loc) {
-      axios.get(`${process.env.NEXT_PUBLIC_DOMAIN}/api/conflicts?lat=${loc.lat}&lng=${loc.lng}&from=${date}&to=${endDateAndTime}`).then(result => {
-        console.log('results', result.data);
-        const conflict = result.data;
-        if (conflict === true) {
+      findConflicts({
+        lng: loc.lng,
+        lat: loc.lat,
+        from: date,
+        to: endDateAndTime,
+      }).then(conflict => {
+        console.log('results', conflict);
+        if (conflict.length !== 0) {
           setCreatePage(2);
         } else {
           setCreatePage(3);
@@ -235,10 +240,9 @@ const CreateEvent = ({ center, user }) => {
         lng: loc.lng,
         photos: image,
       };
-      axios.post('api/events', data)
-        .then((res) => {
-          window.location.href = `/event/${res.data.id}`;
-        })
+      createEvent(data).then(id => {
+        window.location.href = `/event/${id}`;
+      })
         .catch((err) => {
           console.log('Error posting event to database:', err);
         });

@@ -7,9 +7,7 @@ import EventController from '../../../db/event';
  */
 const GET = async function GET(req, res) {
   const id = req.intParam('id');
-  const limit = req.intParam('limit', null);
-  const offset = req.intParam('offset', null);
-  const event = await EventController.get(id, limit, offset);
+  const event = await EventController.get(id);
   if (event === undefined) {
     throw new HttpException(404, 'Event not found', id);
   }

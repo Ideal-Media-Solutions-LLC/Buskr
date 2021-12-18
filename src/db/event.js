@@ -1,6 +1,5 @@
 import db from '.';
 import getLocations from './getLocations';
-import upload from './upload';
 
 const sqlLocation = function sqlLocation({ lng, lat }) {
   return `SRID=4326;POINT(${lng} ${lat})`;
@@ -73,14 +72,16 @@ const create = async function create(buskerId, {
   return id;
 };
 
-const findConflicts = async function findConflicts(
-  { lat, lng },
-  { from, to },
-) {
+const findConflicts = async function findConflicts({
+  lng,
+  lat,
+  from,
+  to,
+  dist,
+}) {
   const query = `
     SELECT
       location <-> $1 AS distance,
-      busker.id,
       busker.email
     FROM event
     JOIN busker ON busker.id = event.busker_id
@@ -88,26 +89,15 @@ const findConflicts = async function findConflicts(
     ORDER BY distance ASC
   `;
   const { rows } = await db.query(query, [`SRID=4326;POINT(${lng} ${lat})`, from, to]);
-  const tooFar = rows.findIndex(row => row.distance > process.env.CONFLICT_METERS);
+  const tooFar = rows.findIndex(row => row.distance > dist);
   if (tooFar !== -1) {
     rows.length = tooFar;
   }
   return rows;
 };
 
-const get = async function get(id, limit, offset) {
-  const clauses = [];
+const get = async function get(id) {
   const args = [id];
-
-  if (limit !== null) {
-    args.push(limit);
-    clauses.push(`LIMIT $${args.length}`);
-  }
-
-  if (offset !== null) {
-    args.push(offset);
-    clauses.push(`OFFSET $${args.length}`);
-  }
 
   const query = `
     SELECT
@@ -142,7 +132,6 @@ const get = async function get(id, limit, offset) {
   WHERE event.id = $1
   GROUP BY event.id, busker.id
   ORDER BY starts ASC
-  ${clauses.join('\n')}
   `;
   const { rows } = await db.query(query, args);
   const [event] = rows;
@@ -152,17 +141,20 @@ const get = async function get(id, limit, offset) {
   return event;
 };
 
-const getAll = async function getAll(
-  location,
-  { from, to },
+const getAll = async function getAll({
+  lng,
+  lat,
+  from,
+  to,
   limit,
   offset,
   features,
   orderBy,
-) {
+  dist,
+}) {
   const clauses = [];
   const wheres = [];
-  const args = [sqlLocation(location)];
+  const args = [sqlLocation({ lng, lat })];
 
   if (from !== null) {
     args.push(from);
@@ -246,9 +238,18 @@ const getAll = async function getAll(
     ${clauses.join('\n    ')}
   `;
   const { rows } = await db.query(query, args);
+
+  if (dist !== undefined) {
+    const tooFar = rows.findIndex(row => row.distance > dist);
+    if (tooFar !== -1) {
+      rows.length = tooFar;
+    }
+  }
+
   if (getLocation) {
     await getLocations(rows);
   }
+
   return {
     type: 'FeatureCollection',
     features: rows,

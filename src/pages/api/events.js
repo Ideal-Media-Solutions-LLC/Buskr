@@ -45,14 +45,16 @@ const GET = async function GET(req, res) {
     );
   }
 
-  const events = await EventController.getAll(
-    { lat, lng },
-    { from, to },
+  const events = await EventController.getAll({
+    lng,
+    lat,
+    from,
+    to,
     limit,
     offset,
-    parsedFeatures,
+    features: parsedFeatures,
     orderBy,
-  );
+  });
   res.status(200).json(events);
 };
 
