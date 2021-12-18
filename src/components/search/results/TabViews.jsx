@@ -6,7 +6,7 @@ import { SearchContext } from '../../../contexts';
 import Map from '../../map/Map';
 import Calendar from '../../calendar/CalendarView';
 
-const TabViews = () => {
+const TabViews = ({ location }) => {
   const SearchbarContext = useContext(SearchContext);
   const [view, setView] = useState(1);
   const changeView = (index) => {
@@ -44,7 +44,7 @@ const TabViews = () => {
           <Map className='mapContainer'
             events={{ features: SearchbarContext.results.filtered }}
             containerStyle={mapStyle}
-            center={{ lat: 29.954767355989652, lng: -90.06911208674771 }}
+            center={location}
           /></div> : null}
         {view === 3 ? <div className={styles.activeContent}>
         <Calendar setview = {setView}/>

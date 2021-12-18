@@ -1,10 +1,10 @@
 import React from 'react';
 import TabViews from './TabViews';
 
-const ResultSection = () => {
+const ResultSection = ({ location }) => {
   return (
     <div className="resultContainer">
-      <TabViews />
+      <TabViews location={location} />
     </div>
   );
 };

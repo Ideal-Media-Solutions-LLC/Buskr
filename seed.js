@@ -26,14 +26,15 @@ const db = new Client({
   port: RDS_PORT,
 });
 
-const numBuskers = 500;
-const lng = -90.06911208674771;
-const lat = 29.954767355989652;
-const maxDist = 0.015;
+const numBuskers = 50;
+const lng = -73.986301;
+const lat = 40.7579586;
+
+const maxDist = 0.01;
 const distRange = { min: -maxDist, max: maxDist };
 
 const dist = function dist(start) {
-  return float(distRange) + start;
+  return Math.random() * maxDist * 2 - maxDist + start;
 };
 
 const coords = function coords() {
@@ -59,7 +60,7 @@ const maxTags = 5;
 const maxPhotos = 4;
 const minTime = new Date();
 const maxTime = new Date();
-maxTime.setMonth(maxTime.getMonth() + 1);
+maxTime.setDate(maxTime.getDate() + 1);
 
 const insertTag = async function insertTag(tag) {
   return db.query(

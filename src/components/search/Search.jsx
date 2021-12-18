@@ -1,17 +1,19 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import SearchSection from './SearchSection';
 import ResultSection from './results/ResultSection';
 import { LocationContext, SearchContext } from '../../contexts';
 
 const Search = () => {
-  const location = useContext(LocationContext);
+  const baseLocation = useContext(LocationContext);
+  const [location, setLocation] = useState(baseLocation);
+  useEffect(() => setLocation(baseLocation), [baseLocation]);
   const [results, setResults] = useState({
     byDistance: [],
     byTime: [],
     filtered: [],
     filterWords: {
-      lat: location.lat,
-      lng: location.lng,
+      lat: baseLocation.lat,
+      lng: baseLocation.lng,
       starts: new Date(),
       keywords: '',
     },
@@ -23,8 +25,8 @@ const Search = () => {
       <SearchContext.Provider value={{
         results, setResults, isBarView, setBarView, calendarDate, setCalendarDate,
       }}>
-        <SearchSection />
-        <ResultSection />
+        <SearchSection setLocation={setLocation} />
+        <ResultSection location={location} />
       </SearchContext.Provider>
     </div>
   );

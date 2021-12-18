@@ -6,7 +6,7 @@ import AutoComplete from './Autocomplete';
 import styles from '../../styles/Search.module.css';
 import { LocationContext, SearchContext } from '../../contexts';
 
-const SearchSection = () => {
+const SearchSection = ({ setLocation }) => {
   const SearchbarContext = useContext(SearchContext);
   const { results, setResults } = SearchbarContext;
   const geoLocation = useContext(LocationContext);
@@ -18,43 +18,44 @@ const SearchSection = () => {
   const [initialList, setInitialList] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
 
-  const onSearchSubmit = async () => {
+  const onSearchSubmit = React.useCallback(async (collapseBar) => {
     // SearchbarContext.setBarView(!SearchbarContext.isBarView);
+    let location = searchLocation;
     if (address !== '') {
-      await axios.get('/api/search', { params: { address } })
-        .then((res) => {
-          setSearchLocation(res.data);
-        });
+      const { data } = await axios.get('/api/search', { params: { address } });
+      if (data) {
+        location = data;
+      }
+      setLocation(data);
     }
+    console.log(searchDate);
+    const tomorrow = new Date(searchDate);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0);
+    tomorrow.setMinutes(0);
+    tomorrow.setSeconds(0);
     axios.get(`${process.env.NEXT_PUBLIC_DOMAIN}/api/events`, {
       params: {
         features: 'coords,location,photos,tags',
-        lat: searchLocation.lat,
-        lng: searchLocation.lng,
+        lat: location.lat,
+        lng: location.lng,
         from: searchDate,
+        to: tomorrow,
       },
     }).then((result) => {
       setInitialList(result.data.features);
-      const oneDate = result.data.features.slice().filter((event) => {
-        const eventDate = new Date(event.properties.starts);
-        return searchDate.getDate() === eventDate.getDate()
-          && searchDate.getMonth() === eventDate.getMonth()
-          && searchDate.getFullYear() === eventDate.getFullYear();
+      const tooFar = result.data.features.findIndex(event => {
+        const [lng, lat] = event.geometry.coordinates;
+        return Math.exp(location.lng - lng, 2) + Math.exp(location.lat - lat, 2) > 10;
       });
+      if (tooFar !== -1) {
+        result.data.features.length = tooFar;
+      }
+      const oneDate = result.data.features.slice();
       const byTime = oneDate.slice().sort(
         (a, b) => new Date(a.properties.starts) - new Date(b.properties.starts),
       );
-      const byLocation = oneDate.slice().filter(
-        ({ properties }) => {
-          const searchedPlace = address.toLowerCase();
-          if (properties.location.address) {
-            return searchedPlace === properties.location.address.toLowerCase()
-              || searchedPlace === properties.location.locality.toLowerCase()
-              || searchedPlace === properties.location.administrative_area_level_1.toLowerCase();
-          }
-          return null;
-        },
-      );
+      const byLocation = tooFar === -1 ? oneDate.slice() : oneDate.slice(0, tooFar);
       let bySearchTerm = address === '' ? oneDate : byLocation;
       if (searchTerm) {
         bySearchTerm = bySearchTerm.slice().filter(
@@ -90,30 +91,17 @@ const SearchSection = () => {
         byTime,
         filtered: bySearchTerm,
         filterWords: {
-          lat: searchLocation.lat,
-          lng: searchLocation.lng,
+          lat: location.lat,
+          lng: location.lng,
           starts: searchDate,
           keywords: searchTerm,
         },
       });
+      if (collapseBar) {
+        SearchbarContext.setBarView(true);
+      }
     });
-  };
-
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setSearchLocation({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          });
-        },
-      );
-    } else {
-      setSearchLocation(geoLocation);
-    }
-    onSearchSubmit();
-  }, []);
+  }, [searchDate, searchLocation, address, searchTerm, setResults, SearchbarContext]);
   useEffect(() => {
     setSearchDate(SearchbarContext.calendarDate);
   }, [SearchbarContext.calendarDate]);
@@ -187,8 +175,7 @@ const SearchSection = () => {
     }
   };
   const handleSearchBtnClick = () => {
-    SearchbarContext.setBarView(true);
-    onSearchSubmit();
+    onSearchSubmit(true);
   };
   const handleBackBtnClick = () => {
     SearchbarContext.setBarView(false);

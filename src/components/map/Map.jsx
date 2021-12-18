@@ -27,7 +27,7 @@ const InfoBox = function InfoBox(props) {
         </div>
         <div className={styles.infoboxBuskerName}>
           <span className={styles.infoboxTime}>
-            {time.format('MMM DDD YYYY')}
+            {time.format('MMM DD YYYY')}
           </span>
           <Link href={`/profile/${buskerId}`}>{buskerName}</Link>
         </div>
