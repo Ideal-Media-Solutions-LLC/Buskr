@@ -63,7 +63,7 @@ export const getEvent = async function getEvent(id) {
  * @param {Object} params
  * @param {number} params.lng
  * @param {number} params.lat
- * @param {('coords' | 'location' | 'tags' | 'photos')[]=} params.features
+ * @param {string=} params.search
  * @param {Date=} params.from
  * @param {Date=} params.to
  * @param {number=} params.limit
@@ -73,9 +73,6 @@ export const getEvent = async function getEvent(id) {
  * @returns {Promise<GeoJSON>}
  */
 export const getEvents = async function getEvents(params) {
-  if (params.features) {
-    params.features = params.features.join(',');
-  }
   const { data } = await client.get('events', { params });
   for (const event of data.features) {
     loadDates(event);

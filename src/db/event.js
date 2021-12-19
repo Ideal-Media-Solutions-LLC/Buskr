@@ -2,6 +2,13 @@ import db from '.';
 import getLocations from './getLocations';
 import { loadDates } from '../interface';
 
+const generateSearch = (event, user, tags) => [
+  ...tags,
+  event.name,
+  event.description,
+  user.name,
+].join(' ');
+
 const sqlLocation = function sqlLocation({ lng, lat }) {
   return `SRID=4326;POINT(${lng} ${lat})`;
 };
@@ -40,7 +47,7 @@ const insertTag = async function insertTag(eventId, tag) {
   );
 };
 
-const create = async function create(buskerId, {
+const create = async function create(user, {
   name,
   description,
   tags = [],
@@ -50,14 +57,15 @@ const create = async function create(buskerId, {
   lng,
   photos = [],
 }) {
+  const search = generateSearch({ name, description }, user, tags);
   const createQuery = `
-    INSERT INTO event (location, name, description, starts, ends, busker_id)
-    VALUES ($1, $2, $3, $4, $5, $6)
+    INSERT INTO event (location, name, description, starts, ends, busker_id, search)
+    VALUES ($1, $2, $3, $4, $5, $6, $7::tsvector)
     RETURNING id
   `;
   const { rows: [{ id }] } = await db.query(
     createQuery,
-    [sqlLocation({ lng, lat }), name, description, starts, ends, buskerId],
+    [sqlLocation({ lng, lat }), name, description, starts, ends, user.id, search],
   );
   const promises = [];
   for (let i = 0; i < photos.length; i += 1) {
@@ -148,25 +156,30 @@ const getAll = async function getAll({
   to,
   limit,
   offset,
-  features,
   orderBy,
+  search,
   dist,
 }) {
   const clauses = [];
   const wheres = [];
   const args = [sqlLocation({ lng, lat })];
 
-  if (from !== null) {
+  if (from) {
     args.push(from);
     wheres.push(`starts >= $${args.length}`);
   }
 
-  if (to !== null) {
+  if (to) {
     args.push(to);
     wheres.push(`ends <= $${args.length}`);
   }
 
-  if (limit !== null) {
+  if (typeof search === 'string') {
+    args.push(search);
+    wheres.push(`search @@ $${args.length}::tsquery`);
+  }
+
+  if (typeof limit === 'number') {
     args.push(limit);
     clauses.push(`LIMIT $${args.length}`);
   }
@@ -176,61 +189,36 @@ const getAll = async function getAll({
     clauses.push(`OFFSET $${args.length}`);
   }
 
-  let coordsQuery = '';
-  let photosQuery = '';
-  let photosJoin = '';
-  let tagsQuery = '';
-  let tagsJoin = '';
-  let getLocation = false;
-
-  for (const feature of features) {
-    if (feature === 'coords') {
-      coordsQuery = `
-        'Feature' as type,
-        jsonb_build_object(
-          'type', 'Point',
-          'coordinates', ARRAY[ST_X(location::geometry), ST_Y(location::geometry)]
-        ) as geometry,
-      `;
-    } else if (feature === 'location') {
-      getLocation = true;
-    } else if (feature === 'photos') {
-      photosQuery = `
-        'photos', coalesce(array_agg(DISTINCT photo.url) FILTER (WHERE photo.url IS NOT NULL), '{}'),
-      `;
-      photosJoin = `
-        LEFT JOIN event_photo ON event_photo.event_id = event.id
-        LEFT JOIN photo ON event_photo.photo_id = photo.id
-      `;
-    } else if (feature === 'tags') {
-      tagsQuery = `
-        'tags', coalesce(array_agg(DISTINCT tag.name) FILTER (WHERE tag.name IS NOT NULL), '{}'),
-      `;
-      tagsJoin = `
-        LEFT JOIN event_tag ON event_tag.event_id = event.id
-        LEFT JOIN tag ON event_tag.tag_id = tag.id
-      `;
-    }
-  }
-
   const query = `
     SELECT
       location <-> $1 AS distance,
-      ${coordsQuery}
+      'Feature' as type,
+      jsonb_build_object(
+        'type', 'Point',
+        'coordinates', ARRAY[ST_X(location::geometry), ST_Y(location::geometry)]
+      ) as geometry,
       jsonb_build_object(
         'id', event.id,
         'name', event.name,
         'description', event.description,
         'buskerId', busker.id,
         'buskerName', busker.name,
-        ${photosQuery}
-        ${tagsQuery}
+        'photos', coalesce(
+          array_agg(DISTINCT photo.url) FILTER (WHERE photo.url IS NOT NULL),
+          '{}'
+        ),
+        'tags', coalesce(
+          array_agg(DISTINCT tag.name) FILTER (WHERE tag.name IS NOT NULL),
+          '{}'
+        ),
         'starts', event.starts,
         'ends', event.ends
       ) as properties
     FROM event
-    ${photosJoin}
-    ${tagsJoin}
+    LEFT JOIN event_photo ON event_photo.event_id = event.id
+    LEFT JOIN photo ON event_photo.photo_id = photo.id
+    LEFT JOIN event_tag ON event_tag.event_id = event.id
+    LEFT JOIN tag ON event_tag.tag_id = tag.id
     JOIN busker ON busker.id = event.busker_id
     ${wheres.length > 0 ? `WHERE ${wheres.join(' AND ')}` : ''}
     GROUP BY event.id, busker.id
@@ -246,9 +234,7 @@ const getAll = async function getAll({
     }
   }
 
-  if (getLocation) {
-    await getLocations(rows);
-  }
+  await getLocations(rows);
 
   for (const event of rows) {
     loadDates(event);
