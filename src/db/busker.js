@@ -1,5 +1,6 @@
 import db from '.';
 import getLocations from './getLocations';
+import { loadDates } from '../interface';
 
 const update = async function update({ sub, name, email, email_verified, picture }) {
   if (picture.startsWith('https://lh3.googleusercontent.com')) {
@@ -59,6 +60,7 @@ const get = async function get(id) {
   SELECT
     busker.id,
     busker.name,
+    busker.email,
     busker.photo,
     busker.bio,
     busker.paypal,
@@ -76,6 +78,9 @@ const get = async function get(id) {
   `;
   const { rows: [profile] } = await db.query(query, [id]);
   if (profile !== undefined) {
+    for (const event of profile.events) {
+      loadDates(event);
+    }
     await getLocations(profile.events);
   }
   return profile;

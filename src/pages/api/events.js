@@ -55,6 +55,7 @@ const GET = async function GET(req, res) {
     features: parsedFeatures,
     orderBy,
   });
+
   res.status(200).json(events);
 };
 

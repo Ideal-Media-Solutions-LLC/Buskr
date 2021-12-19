@@ -14,16 +14,20 @@ const CalendarView = (props) => {
   const [date, setDate] = useState(searchObj.starts);
   const [calendarStartDate, setCalendarStartDate] = useState(null);
   const filteredDate = searchObj.starts;
-  const [currentStartDate, setCurrentStartDate] = useState(
-    new Date(filteredDate.getFullYear(), filteredDate.getMonth(), 1),
-  );
-  const [currentEndDate, setCurrentEndDate] = useState(
-    new Date(currentStartDate.getFullYear(), currentStartDate.getMonth() + 1, 0),
-  );
+  const [currentStartDate, setCurrentStartDate] = useState(() => new Date(
+    filteredDate.getFullYear(),
+    filteredDate.getMonth(),
+    1,
+  ));
+  const [currentEndDate, setCurrentEndDate] = useState(() => new Date(
+    filteredDate.getFullYear(),
+    filteredDate.getMonth() + 1,
+    0,
+  ));
   const [eventDates, setEventDates] = useState(new Set());
   // faking dates for research, gets rid of lag using permanent "from" and "to" dates shown below
-  const [fakeStartDate, setFakeStartDate] = useState(new Date('2010-01-01'));
-  const [fakeEndDate, setFakeEndDate] = useState(new Date('2040-01-01'));
+  const [fakeStartDate, setFakeStartDate] = useState(() => new Date(2010, 1, 1));
+  const [fakeEndDate, setFakeEndDate] = useState(() => new Date(2040, 1, 1));
 
   // updates "from" and "to" dates when month is changed in calendar
   useEffect(() => {
@@ -42,19 +46,21 @@ const CalendarView = (props) => {
       sort: 'time',
     }).then(data => {
       const tempEventDates = new Set();
-      data.features.forEach(event => {
+      data.features.forEach(({ properties: { name, buskerName, description, starts } }) => {
         const hasKeywords = searchObj.keywords.toLowerCase().split(' ').every(keyword => {
-          if (event.properties.name.toLowerCase().includes(keyword)
-            || event.properties.buskerName.toLowerCase().includes(keyword)
-            || event.properties.description.toLowerCase().includes(keyword)) {
+          if (name.toLowerCase().includes(keyword)
+            || buskerName.toLowerCase().includes(keyword)
+            || description.toLowerCase().includes(keyword)) {
             return true;
           }
           return false;
         });
         if (hasKeywords) {
-          tempEventDates.add(
-            (new Date(event.properties.starts.toString().slice(0, 10))).toString().slice(4, 15),
-          );
+          tempEventDates.add(new Date(
+            starts.getFullYear(),
+            starts.getMonth(),
+            starts.getDate(),
+          ).getTime());
         }
       });
       setEventDates(tempEventDates);
@@ -62,20 +68,10 @@ const CalendarView = (props) => {
   }, [currentStartDate, currentEndDate]);
 
   const findStartEndDates = () => {
-    setCurrentStartDate(
-      new Date(
-        calendarStartDate.activeStartDate.getFullYear(),
-        calendarStartDate.activeStartDate.getMonth(),
-        1,
-      ),
-    );
-    setCurrentEndDate(
-      new Date(
-        calendarStartDate.activeStartDate.getFullYear(),
-        calendarStartDate.activeStartDate.getMonth() + 1,
-        0,
-      ),
-    );
+    const { activeStartDate: start } = calendarStartDate;
+
+    setCurrentStartDate(new Date(start.getFullYear(), start.getMonth(), 1));
+    setCurrentEndDate(new Date(start.getFullYear(), start.getMonth() + 1, 0));
   };
   const handleDayClick = (value) => {
     setDate(value);
@@ -88,7 +84,7 @@ const CalendarView = (props) => {
       <Calendar
         onClickDay={handleDayClick}
         value={date}
-        tileContent={({ date, view }) => view === 'month' && eventDates.has(date.toString().slice(4, 15)) ? <div className="notification"></div> : null}
+        tileContent={({ date, view }) => view === 'month' && eventDates.has(date.getTime()) ? <div className="notification"></div> : null}
         prevLabel={<BsChevronLeft />}
         nextLabel={<BsChevronRight />}
         next2Label={null}

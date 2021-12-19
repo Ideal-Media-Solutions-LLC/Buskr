@@ -1,11 +1,16 @@
 import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
 import { FaSearch, FaMapMarkerAlt, FaRegCalendar, FaLongArrowAltLeft } from 'react-icons/fa';
 import DatePicker from 'react-datepicker';
 import AutoComplete from './Autocomplete';
 import styles from '../../styles/Search.module.css';
 import { LocationContext, SearchContext } from '../../contexts';
 import { geolocate, getEvents } from '../../interface';
+
+const nearYouDistance = Number(process.env.NEXT_PUBLIC_CONFLICT_METERS);
+
+const sameDay = (a, b) => a.getDate() === b.getDate()
+  && a.getMonth() === b.getMonth()
+  && a.getFullYear() === b.getFullYear();
 
 const SearchSection = () => {
   const SearchbarContext = useContext(SearchContext);
@@ -24,63 +29,51 @@ const SearchSection = () => {
     if (address !== '') {
       await geolocate(address).then(setSearchLocation);
     }
+    const searchedPlace = address.toLowerCase();
+    const searchedTerm = searchTerm.toLowerCase();
     getEvents({
       features: ['coords', 'location', 'photos', 'tags'],
       lat: searchLocation.lat,
       lng: searchLocation.lng,
       from: searchDate,
-    }).then(events => {
-      setInitialList(events.features);
-      const oneDate = events.features.slice().filter((event) => {
-        const eventDate = new Date(event.properties.starts);
-        return searchDate.getDate() === eventDate.getDate()
-          && searchDate.getMonth() === eventDate.getMonth()
-          && searchDate.getFullYear() === eventDate.getFullYear();
-      });
-      const byTime = oneDate.slice().sort(
-        (a, b) => new Date(a.properties.starts) - new Date(b.properties.starts),
-      );
-      const byLocation = oneDate.slice().filter(
-        ({ properties }) => {
-          const searchedPlace = address.toLowerCase();
-          if (properties.location.address) {
-            return searchedPlace === properties.location.address.toLowerCase()
-              || searchedPlace === properties.location.locality.toLowerCase()
-              || searchedPlace === properties.location.administrative_area_level_1.toLowerCase();
-          }
-          return null;
-        },
-      );
+    }).then(({ features, properties }) => {
+      setInitialList(features);
+
+      const oneDate = features
+        .slice()
+        .filter(event => sameDay(searchDate, event.properties.starts));
+
+      const byTime = oneDate
+        .slice()
+        .sort((a, b) => a.properties.starts - b.properties.starts);
+
+      const byLocation = oneDate
+        .slice()
+        .filter(({ properties: { location } }) => location.address && (
+          searchedPlace === location.address.toLowerCase()
+          || searchedPlace === location.locality.toLowerCase()
+          || searchedPlace === location.administrative_area_level_1.toLowerCase()
+        ));
+
       let bySearchTerm = address === '' ? oneDate : byLocation;
       if (searchTerm) {
-        bySearchTerm = bySearchTerm.slice().filter(
-          (event) => {
-            const searchedTerm = searchTerm.toLowerCase();
-            const filteredEvents = event.properties.name.toLowerCase()
-              .includes(searchedTerm)
+        bySearchTerm = bySearchTerm
+          .slice()
+          .filter(event => event.properties.name.toLowerCase().includes(searchedTerm)
               || event.properties.buskerName.toLowerCase().includes(searchedTerm)
-              || event.properties.tags.indexOf(searchedTerm) !== -1;
-            return filteredEvents;
-          },
-        );
+              || event.properties.tags.indexOf(searchedTerm) !== -1);
       }
-      const autoSuggestions = [];
+      const autoSuggestions = new Set();
       bySearchTerm.forEach(
-        (event) => {
-          if (autoSuggestions.indexOf(event.properties.name) === -1) {
-            autoSuggestions.push(event.properties.name);
-          }
-          if (autoSuggestions.indexOf(event.properties.buskerName) === -1) {
-            autoSuggestions.push(event.properties.buskerName);
-          }
-          for (let i = 0; i < event.properties.tags.length; i++) {
-            if (autoSuggestions.indexOf(event.properties.tags[i]) === -1) {
-              autoSuggestions.push(event.properties.tags[i]);
-            }
+        ({ properties: { name, buskerName, tags } }) => {
+          autoSuggestions.add(name);
+          autoSuggestions.add(buskerName);
+          for (const tag of tags) {
+            autoSuggestions.add(tag);
           }
         },
       );
-      setSuggestions(autoSuggestions);
+      setSuggestions(Array.from(autoSuggestions));
       setResults({
         byDistance: oneDate,
         byTime,
@@ -145,34 +138,31 @@ const SearchSection = () => {
       );
     } else if (tagName === 'Tomorrow') {
       const today = new Date();
-      const tomorrow = new Date();
-      tomorrow.setDate(today.getDate() + 1);
-      const tomorrowEvents = initialList.slice().filter((event) => {
-        const eventDate = new Date(event.properties.starts);
-        return tomorrow.getDate() === eventDate.getDate()
-          && tomorrow.getMonth() === eventDate.getMonth()
-          && tomorrow.getFullYear() === eventDate.getFullYear();
-      });
+      const tomorrow = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDay() + 1,
+      );
+
+      const tomorrowEvents = initialList
+        .slice()
+        .filter(event => sameDay(tomorrow, event.properties.starts));
+
       setSearchDate(tomorrow);
-      setResults(
-        { ...results, filtered: tomorrowEvents },
-      );
+      setResults({ ...results, filtered: tomorrowEvents });
     } else if (tagName === 'Near you') {
-      const nearYouEvents = results.byDistance.slice().filter((event) => {
-        return event.distance <= 250;
-      });
-      setResults(
-        { ...results, filtered: nearYouEvents },
-      );
+      const { byDistance } = results;
+      const tooFar = byDistance.findIndex(({ distance }) => distance > nearYouDistance);
+      const nearYouEvents = tooFar === -1 ? byDistance.slice() : byDistance.slice(0, tooFar);
+      setResults({ ...results, filtered: nearYouEvents });
     } else {
       const bySearchTerm = results.byDistance.slice().filter(
         ({ properties: { name, buskerName, tags } }) => {
           const lowerName = name.toLowerCase();
           const lowerBuskerName = buskerName.toLowerCase();
           const searchedTerm = tagName.toLowerCase();
-          const filteredEvents = lowerName
-            .includes(searchedTerm)
-            || lowerBuskerName.toLowerCase().includes(searchedTerm)
+          const filteredEvents = lowerName.includes(searchedTerm)
+            || lowerBuskerName.includes(searchedTerm)
             || tags.indexOf(searchedTerm) !== -1;
           return filteredEvents;
         },

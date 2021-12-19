@@ -1,5 +1,6 @@
 import db from '.';
 import getLocations from './getLocations';
+import { loadDates } from '../interface';
 
 const sqlLocation = function sqlLocation({ lng, lat }) {
   return `SRID=4326;POINT(${lng} ${lat})`;
@@ -59,9 +60,6 @@ const create = async function create(buskerId, {
     [sqlLocation({ lng, lat }), name, description, starts, ends, buskerId],
   );
   const promises = [];
-  if (!Array.isArray(photos)) {
-    photos = [photos];
-  }
   for (let i = 0; i < photos.length; i += 1) {
     promises.push(insertPhoto(id, photos[i], i));
   }
@@ -82,6 +80,7 @@ const findConflicts = async function findConflicts({
   const query = `
     SELECT
       location <-> $1 AS distance,
+      busker.id,
       busker.email
     FROM event
     JOIN busker ON busker.id = event.busker_id
@@ -135,6 +134,7 @@ const get = async function get(id) {
   `;
   const { rows } = await db.query(query, args);
   const [event] = rows;
+  loadDates(event);
   if (event !== undefined) {
     await getLocations(rows);
   }
@@ -248,6 +248,10 @@ const getAll = async function getAll({
 
   if (getLocation) {
     await getLocations(rows);
+  }
+
+  for (const event of rows) {
+    loadDates(event);
   }
 
   return {

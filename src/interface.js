@@ -4,6 +4,11 @@ import axios from 'axios';
 
 const client = axios.create({ baseURL: `${process.env.NEXT_PUBLIC_DOMAIN}/api/` });
 
+export const loadDates = function loadDates({ properties }) {
+  properties.starts = new Date(properties.starts);
+  properties.ends = new Date(properties.ends);
+};
+
 /**
  * @param {Object} data
  * @param {string} data.name
@@ -50,6 +55,7 @@ export const geolocate = async function geolocate(address) {
  */
 export const getEvent = async function getEvent(id) {
   const { data } = await client.get(`/event/${id}`);
+  loadDates(data);
   return data;
 };
 
@@ -71,6 +77,9 @@ export const getEvents = async function getEvents(params) {
     params.features = params.features.join(',');
   }
   const { data } = await client.get('events', { params });
+  for (const event of data.features) {
+    loadDates(event);
+  }
   return data;
 };
 
@@ -80,6 +89,9 @@ export const getEvents = async function getEvents(params) {
  */
 export const getProfile = async function getProfile(id) {
   const { data } = await client.get(`/profile/${id}`);
+  for (const event of data.events) {
+    loadDates(event);
+  }
   return data;
 };
 

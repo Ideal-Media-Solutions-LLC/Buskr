@@ -1,13 +1,14 @@
 import Link from 'next/link';
 import React from 'react';
-import moment from 'moment-timezone';
 import styles from '../../../styles/resultList.module.css';
+
+const fmtWeekday = new Intl.DateTimeFormat('en-US', { weekday: 'short' });
+const fmtDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric' });
+const fmtTime = new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: 'numeric' });
 
 const EventItem = ({ event: { properties } }) => {
   const { name, id, buskerId, buskerName, photos, starts } = properties;
   const { locality, administrative_area_level_1 } = properties.location;
-  const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const time = moment.tz(starts, zone).format('ddd, MMM D [@] h:mmA z');
   const location = [locality, administrative_area_level_1]
     .filter(string => string)
     .join(', ');
@@ -22,7 +23,7 @@ const EventItem = ({ event: { properties } }) => {
       <div className={styles.eventItemContainerNoPadding}>
         <div className={styles.eventItemInfo}>
           <div className={styles.eventItemTime}>
-            {time.toUpperCase()}
+            {fmtWeekday.format(starts)}, {fmtDate.format(starts)} @ {fmtTime.format(starts)}
           </div>
           <div className={styles.eventItemName}>
             <Link href={`/event/${id}`}>

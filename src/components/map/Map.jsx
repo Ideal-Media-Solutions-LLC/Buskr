@@ -1,8 +1,10 @@
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
-import moment from 'moment-timezone';
 import Link from 'next/link';
 import React, { useCallback, useState, useEffect } from 'react';
 import styles from '../../styles/Map.module.css';
+
+const fmtTime = new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: 'numeric' });
+const fmtDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
 const InfoBox = function InfoBox(props) {
   const { feature } = props;
@@ -12,14 +14,13 @@ const InfoBox = function InfoBox(props) {
   const buskerName = feature.getProperty('buskerName');
   const photos = feature.getProperty('photos');
   const starts = new Date(feature.getProperty('starts'));
-  const time = moment(starts);
   return (
     <article className={styles.infobox}>
       <img className={styles.infoPhoto} src={photos[0]} alt={name}/>
       <div className={styles.infoDetails}>
         <div className={styles.infoboxName}>
           <span className={styles.infoboxTime}>
-            {time.format('h:mm A')}
+            {fmtTime.format(starts)}
           </span>
           <Link href={`/event/${id}`}>
             {name}
@@ -27,7 +28,7 @@ const InfoBox = function InfoBox(props) {
         </div>
         <div className={styles.infoboxBuskerName}>
           <span className={styles.infoboxTime}>
-            {time.format('MMM DDD YYYY')}
+            {fmtDate.format(starts)}
           </span>
           <Link href={`/profile/${buskerId}`}>{buskerName}</Link>
         </div>
