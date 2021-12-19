@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import DatePicker from 'react-datepicker';
 import ImageUploader from './UploadImage';
 import styles from '../../styles/CreateEvent.module.css';
@@ -45,30 +44,58 @@ const CreateEvent1 = ({
   //   return `lat: ${lat}, lng: ${lng}`
   // }
 
+  const warningStyle = (condition) => nextClickAttempted && condition
+    ? styles.validationWarning
+    : styles.validationWarningHidden;
+
   return (
     <div className={styles.createEventContainer}>
-      <div className='master-title'>Create Event</div>
+      <div className='master-title'>
+        Create Event
+      </div>
       <form className={styles.formContainer}>
-        <div className={nextClickAttempted && !date
-          ? styles.validationWarning
-          : styles.validationWarningHidden}> Please select a start date and time </div>
-        <DatePicker className={styles.datePicker} selected={startDate} onChange={onDateChange} placeholderText='Select Start Date and Time' showTimeSelect dateFormat="MMMM d, yyyy h:mm aa" />
-        <div className={nextClickAttempted && !endDateAndTime
-          ? styles.validationWarning
-          : styles.validationWarningHidden}> Please select an end date and time</div>
-        <DatePicker className={styles.datePicker} selected={endDate} onChange={onEndDateChange} placeholderText='Select End Date and Time' showTimeSelect dateFormat="MMMM d, yyyy h:mm aa"/>
-        <div className={nextClickAttempted && !loc
-          ? styles.validationWarning
-          : styles.validationWarningHidden}> Please select a location </div>
-        <input onChange={handleLocation}
-       type='search' placeholder='Current Location' className={styles.masterSearchBar}
-       value={coords
-         ? `Lat: ${coords.lat.toFixed(4)}, Lng: ${coords.lng.toFixed(4)}`
-         : ''} ></input>
+        <div className={warningStyle(!date)}>
+          Please select a start date and time
+        </div>
+        <DatePicker
+          className={styles.datePicker}
+          selected={startDate}
+          onChange={onDateChange}
+          placeholderText='Select Start Date and Time'
+          showTimeSelect
+          dateFormat="MMMM d, yyyy h:mm aa"
+        />
+        <div className={warningStyle(!endDateAndTime)}>
+          Please select an end date and time
+        </div>
+        <div className={warningStyle(endDateAndTime < date)}>
+          Must be later than start date and time
+        </div>
+        <DatePicker
+          className={styles.datePicker}
+          selected={endDate}
+          onChange={onEndDateChange}
+          placeholderText='Select End Date and Time'
+          showTimeSelect dateFormat="MMMM d, yyyy h:mm aa"
+        />
+        <div className={warningStyle(!loc)}>
+          Please select a location
+        </div>
+        <input
+          onChange={handleLocation}
+          type='search'
+          placeholder='Current Location'
+          className={styles.masterSearchBar}
+          value={coords ? `Lat: ${coords.lat.toFixed(4)}, Lng: ${coords.lng.toFixed(4)}` : ''}
+        />
       </form>
       <div className={styles.mapContainer}>
-        <Map center={center} onDrop={setEventLoc}
-        containerStyle={mapContainerStyle} withInfoBoxes={false}/>
+        <Map
+          center={center}
+          onDrop={setEventLoc}
+          containerStyle={mapContainerStyle}
+          withInfoBoxes={false}
+        />
       </div>
       <button onClick={handleNext} className='master-button' text='Next'>
         Next
@@ -159,13 +186,13 @@ const CreateEvent3 = ({
 
 const CreateEvent = ({ center, user }) => {
   const [createPage, setCreatePage] = useState(1);
-  const [name, setEventName] = useState();
-  const [description, setEventDescription] = useState();
+  const [name, setEventName] = useState('');
+  const [description, setEventDescription] = useState('');
   const [image, setEventImage] = useState();
   const [date, setEventDate] = useState();
   const [endDateAndTime, setEventEndDate] = useState();
   const [loc, setEventLoc] = useState();
-  const [tags, setEventTags] = useState();
+  const [tags, setEventTags] = useState('');
   const [uploadMode, setUploadMode] = useState(false);
   const [submitAttempted, setSubmitAttempted] = useState(false);
   const [nextClickAttempted, setNextClickAttempted] = useState(false);
@@ -204,27 +231,23 @@ const CreateEvent = ({ center, user }) => {
   };
 
   const handleNext = () => {
-    if (date && endDateAndTime && loc) {
-      findConflicts({
-        lng: loc.lng,
-        lat: loc.lat,
-        from: date,
-        to: endDateAndTime,
-      }).then(conflict => {
-        console.log('results', conflict);
-        if (conflict.length !== 0) {
-          setCreatePage(2);
-        } else {
-          setCreatePage(3);
-        }
-      }).catch(err => { console.log('err: ', err); });
-    }
-    if (!date) {
+    if (!loc || !date || !endDateAndTime || endDateAndTime < date) {
       setNextClickAttempted(true);
+      return;
     }
-    if (!endDateAndTime) {
-      setNextClickAttempted(true);
-    }
+    findConflicts({
+      lng: loc.lng,
+      lat: loc.lat,
+      from: date,
+      to: endDateAndTime,
+    }).then(conflict => {
+      console.log('results', conflict);
+      if (conflict.length !== 0) {
+        setCreatePage(2);
+      } else {
+        setCreatePage(3);
+      }
+    }).catch(console.error);
   };
 
   const handleAddMyEvent = () => {
@@ -238,7 +261,7 @@ const CreateEvent = ({ center, user }) => {
         ends: endDateAndTime,
         lat: loc.lat,
         lng: loc.lng,
-        photos: image,
+        photos: [image],
       };
       createEvent(data).then(id => {
         window.location.href = `/event/${id}`;
