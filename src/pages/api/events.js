@@ -27,7 +27,7 @@ const GET = async function GET(req, res) {
     throw new HttpException(400, `unrecognized sort option ${sort}`, sort);
   }
 
-  const events = await EventController.getAll({
+  const events = await EventController.getMany({
     center,
     dist,
     from,

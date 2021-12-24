@@ -1,5 +1,7 @@
 import db from '.';
 import getLocations from './getLocations';
+import PhotoController from './photo';
+import TagController from './tag';
 import { loadDates } from '../interface';
 
 const generateSearch = (event, user, tags) => [
@@ -11,67 +13,6 @@ const generateSearch = (event, user, tags) => [
 
 const sqlLocation = function sqlLocation({ lng, lat }) {
   return `SRID=4326;POINT(${lng} ${lat})`;
-};
-
-const insertPhotoQuery = `
-  INSERT INTO photo (url) VALUES ($1)
-  RETURNING id
-`;
-const insertEventPhotoQuery = `
-  INSERT INTO event_photo (event_id, photo_id) VALUES ($1, $2)
-`;
-const insertPhoto = async function insertPhoto(eventId, photo) {
-  // const url = await upload(`event-${eventId}-${i}`, photo);
-  const { rows: [{ id: photoId }] } = await db.query({
-    name: 'insertPhoto',
-    text: insertPhotoQuery,
-    values: [photo],
-  });
-  await db.query({
-    name: 'insertEventPhoto',
-    text: insertEventPhotoQuery,
-    values: [eventId, photoId],
-  });
-};
-
-const insertTagQuery = `
-  INSERT INTO tag (name, popularity)
-  VALUES ($1, 1)
-  ON CONFLICT (name) DO UPDATE SET popularity = tag.popularity + 1
-  RETURNING id
-`;
-const selectTagQuery = `
-  SELECT id FROM tag WHERE name = $1
-`;
-const insertEventTagQuery = `
-  INSERT INTO event_tag (event_id, tag_id) VALUES ($1, $2)
-`;
-const insertTag = async function insertTag(eventId, tag) {
-  tag = tag.trim().toLowerCase();
-  if (!tag) {
-    return;
-  }
-  let tagId;
-  const { rows: [result] } = await db.query({
-    name: 'insertTag',
-    text: insertTagQuery,
-    values: [tag],
-  });
-  if (result === undefined) {
-    const { rows: [{ id }] } = await db.query({
-      name: 'selectTag',
-      text: selectTagQuery,
-      values: [tag],
-    });
-    tagId = id;
-  } else {
-    tagId = result.id;
-  }
-  await db.query({
-    name: 'insertEventTag',
-    text: insertEventTagQuery,
-    values: [eventId, tagId],
-  });
 };
 
 const createEventQuery = `
@@ -96,10 +37,10 @@ const create = async function create(user, {
   });
   const promises = [];
   for (let i = 0; i < photos.length; i += 1) {
-    promises.push(insertPhoto(id, photos[i], i));
+    promises.push(PhotoController.create(id, photos[i], i));
   }
   for (const tag of tags) {
-    promises.push(insertTag(id, tag));
+    promises.push(TagController.create(id, tag));
   }
   await Promise.all(promises);
   return id;
@@ -188,7 +129,7 @@ const get = async function get(id) {
   return event;
 };
 
-const getAll = async function getAll({
+const getMany = async function getMany({
   center,
   from,
   to,
@@ -309,6 +250,6 @@ const getSuggestions = async function getSuggestions({ from, to, center, dist })
   return suggestions;
 };
 
-const Event = { create, findConflicts, findDates, get, getAll, getSuggestions };
+const EventController = { create, findConflicts, findDates, get, getMany, getSuggestions };
 
-export default Event;
+export default EventController;

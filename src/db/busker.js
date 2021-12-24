@@ -86,5 +86,5 @@ const get = async function get(id) {
   return profile;
 };
 
-const Profile = { get, update };
-export default Profile;
+const BuskerController = { get, update };
+export default BuskerController;
