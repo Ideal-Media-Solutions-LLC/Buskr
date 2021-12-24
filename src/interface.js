@@ -1,8 +1,15 @@
 // This file describes the interface between front end and back end.
-
 import axios from 'axios';
+import querystring from 'querystring';
 
 const client = axios.create({ baseURL: `${process.env.NEXT_PUBLIC_DOMAIN}/api/` });
+
+const unpackCenter = function unpackCenter(obj) {
+  const { lng, lat } = obj.center;
+  const toReturn = { ...obj, lng, lat };
+  delete toReturn.center;
+  return toReturn;
+};
 
 export const loadDates = function loadDates({ properties }) {
   properties.starts = new Date(properties.starts);
@@ -14,10 +21,9 @@ export const loadDates = function loadDates({ properties }) {
  * @param {string} data.name
  * @param {string} data.description
  * @param {string[]} data.tags
+ * @param {{lng: number, lat: number}} data.center
  * @param {Date} data.starts
  * @param {Date} data.ends
- * @param {number} data.lng
- * @param {number} data.lat
  * @param {string[]} data.photos
  * @returns {Promise<number>} ID of created event
  */
@@ -28,15 +34,14 @@ export const createEvent = async function createEvent(data) {
 
 /**
  * @param {Object} params
- * @param {number} params.lng
- * @param {number} params.lat
+ * @param {{lng: number, lat: number}} params.center
  * @param {Date} params.from
  * @param {Date} params.to
  * @param {number=} params.dist
- * @returns {Promise<string[]>} emails of buskers with conflicting events
+ * @returns {Promise<string[]>} - emails of buskers with conflicting events
  */
 export const findConflicts = async function findConflicts(params) {
-  const { data } = await client.get('/conflicts', { params });
+  const { data } = await client.get('/conflicts', { params: unpackCenter(params) });
   return data;
 };
 
@@ -61,8 +66,7 @@ export const getEvent = async function getEvent(id) {
 
 /**
  * @param {Object} params
- * @param {number} params.lng
- * @param {number} params.lat
+ * @param {{ lng: number, lat: number }} params.center
  * @param {string=} params.search
  * @param {Date=} params.from
  * @param {Date=} params.to
@@ -70,11 +74,11 @@ export const getEvent = async function getEvent(id) {
  * @param {number=} params.offset
  * @param {number=} params.dist
  * @param {'distance' | 'time' | undefined} params.sort
- * @returns {Promise<GeoJSON>}
+ * @returns {Promise<Event[]>}
  */
 export const getEvents = async function getEvents(params) {
-  const { data } = await client.get('events', { params });
-  for (const event of data.features) {
+  const { data } = await client.get('events', { params: unpackCenter(params) });
+  for (const event of data) {
     loadDates(event);
   }
   return data;
@@ -114,12 +118,6 @@ export const getProfile = async function getProfile(id) {
  * @property {Date} properties.starts
  * @property {Date} properties.ends
  * @property {LocationData=} properties.location
- */
-
-/**
- * @typedef {Object} GeoJSON
- * @property {'FeatureCollection'} type
- * @property {Event[]} features
  */
 
 /**

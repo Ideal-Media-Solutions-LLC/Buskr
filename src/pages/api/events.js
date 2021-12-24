@@ -2,13 +2,15 @@ import handler, { HttpException } from '../handler';
 import EventController from '../../db/event';
 import { getUser } from '../../auth';
 
+const defaultDist = Number(process.env.NEXT_PUBLIC_VISIBLE_METERS);
+
 /**
  * @param {import('http').IncomingMessage} req
  * @param {import('http').ServerResponse} res
  */
 const GET = async function GET(req, res) {
-  const lat = req.numParam('lat');
-  const lng = req.numParam('lng');
+  const center = { lng: req.numParam('lng'), lat: req.numParam('lat') };
+  const dist = req.intParam('dist', defaultDist);
   const from = req.dateParam('from', null);
   const to = req.dateParam('to', null);
   const limit = req.intParam('limit', null);
@@ -26,8 +28,8 @@ const GET = async function GET(req, res) {
   }
 
   const events = await EventController.getAll({
-    lng,
-    lat,
+    center,
+    dist,
     from,
     to,
     limit,

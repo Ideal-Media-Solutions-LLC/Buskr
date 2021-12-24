@@ -8,13 +8,12 @@ const defaultDist = Number(process.env.NEXT_PUBLIC_CONFLICT_METERS);
  * @param {import('http').ServerResponse} res
  */
 const GET = async function GET(req, res) {
-  const lat = req.numParam('lat');
-  const lng = req.numParam('lng');
+  const center = { lng: req.numParam('lng'), lat: req.numParam('lat') };
   const from = req.dateParam('from', null);
   const to = req.dateParam('to', null);
   const dist = req.intParam('dist', defaultDist);
 
-  const conflicts = await EventController.findConflicts({ lng, lat, from, to, dist });
+  const conflicts = await EventController.findConflicts({ center, from, to, dist });
 
   res.status(200).json(conflicts);
 };

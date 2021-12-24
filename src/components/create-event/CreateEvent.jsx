@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import DatePicker from 'react-datepicker';
 import ImageUploader from './UploadImage';
 import styles from '../../styles/CreateEvent.module.css';
@@ -184,14 +185,15 @@ const CreateEvent3 = ({
   return <ImageUploader handleImage={handleImage} handleGoBack={handleGoBack}/>;
 };
 
-const CreateEvent = ({ center, user }) => {
+const CreateEvent = ({ center: baseCenter, user }) => {
+  const router = useRouter();
   const [createPage, setCreatePage] = useState(1);
   const [name, setEventName] = useState('');
   const [description, setEventDescription] = useState('');
   const [image, setEventImage] = useState();
   const [date, setEventDate] = useState();
   const [endDateAndTime, setEventEndDate] = useState();
-  const [loc, setEventLoc] = useState();
+  const [center, setCenter] = useState();
   const [tags, setEventTags] = useState('');
   const [uploadMode, setUploadMode] = useState(false);
   const [submitAttempted, setSubmitAttempted] = useState(false);
@@ -199,8 +201,8 @@ const CreateEvent = ({ center, user }) => {
   const [isConflict, setIsConflict] = useState(true);
 
   useEffect(() => {
-    setEventLoc(center);
-  }, [center]);
+    setCenter(baseCenter);
+  }, [baseCenter]);
 
   const handleDate = (date) => {
     setEventDate(date);
@@ -212,7 +214,7 @@ const CreateEvent = ({ center, user }) => {
 
   const handleLocation = (e) => {
     e.preventDefault();
-    setEventLoc(e.target.value);
+    setCenter(e.target.value);
   };
 
   const handleName = (e) => {
@@ -231,13 +233,12 @@ const CreateEvent = ({ center, user }) => {
   };
 
   const handleNext = () => {
-    if (!loc || !date || !endDateAndTime || endDateAndTime < date) {
+    if (!center || !date || !endDateAndTime || endDateAndTime < date) {
       setNextClickAttempted(true);
       return;
     }
     findConflicts({
-      lng: loc.lng,
-      lat: loc.lat,
+      center,
       from: date,
       to: endDateAndTime,
     }).then(conflict => {
@@ -252,20 +253,17 @@ const CreateEvent = ({ center, user }) => {
 
   const handleAddMyEvent = () => {
     console.log('ADD MY EVENT CLICKED!');
-    if (name && description && image && date && endDateAndTime && loc) {
+    if (name && description && image && date && endDateAndTime && center) {
       const data = {
         name,
         description,
+        center,
         tags: tags.split(','),
         starts: date,
         ends: endDateAndTime,
-        lat: loc.lat,
-        lng: loc.lng,
         photos: [image],
       };
-      createEvent(data).then(id => {
-        window.location.href = `/event/${id}`;
-      })
+      createEvent(data).then(id => router.push(`/event/${id}`))
         .catch((err) => {
           console.log('Error posting event to database:', err);
         });
@@ -304,10 +302,10 @@ const CreateEvent = ({ center, user }) => {
         handleLocation={handleLocation}
         handleNext={handleNext}
         nextClickAttempted={nextClickAttempted}
-        loc={loc}
+        loc={center}
         date={date}
         endDateAndTime={endDateAndTime}
-        setEventLoc={setEventLoc}
+        setEventLoc={setCenter}
       />
     );
   }

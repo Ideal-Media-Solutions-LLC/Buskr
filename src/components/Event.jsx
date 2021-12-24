@@ -77,7 +77,7 @@ const Event = function Event({ event }) {
         <Map
           containerStyle={mapContainerStyle}
           center={center}
-          events={{ features: [event] }}
+          events={[event]}
         />
       </section>
     </div>

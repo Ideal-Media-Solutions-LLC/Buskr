@@ -50,8 +50,7 @@ const InfoBox = function InfoBox(props) {
 * @param {React.CSSProperties} props.containerStyle
 * @param {google.maps.LatLngLiteral} props.center
 * @param {(position: google.maps.LatLngLiteral) => void} props.onDrop
-* @param {Object} props.events
-* @param {GeoJson[]} props.events.features
+* @param {GeoJson[]} props.events
 */
 const Map = function Map({ containerStyle, center, onDrop, events }) {
   const { isLoaded } = useJsApiLoader({
@@ -111,8 +110,8 @@ const Map = function Map({ containerStyle, center, onDrop, events }) {
     if (map) {
       map.data.forEach(feature => map.data.remove(feature));
       if (events) {
-        for (const feature of events.features) {
-          map.data.addGeoJson(feature);
+        for (const event of events) {
+          map.data.addGeoJson(event);
         }
       }
     }
