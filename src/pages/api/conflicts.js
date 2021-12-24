@@ -1,4 +1,4 @@
-import handler from '../handler';
+import handler from '../../handler';
 import EventController from '../../db/event';
 
 const defaultDist = Number(process.env.NEXT_PUBLIC_CONFLICT_METERS);

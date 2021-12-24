@@ -1,4 +1,4 @@
-import handler, { HttpException } from '../handler';
+import handler, { HttpException } from '../../handler';
 import EventController from '../../db/event';
 import { getUser } from '../../auth';
 

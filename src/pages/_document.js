@@ -4,7 +4,7 @@ import NextDocument, {
   Html, Head, Main, NextScript,
 } from 'next/document';
 
-class Document extends NextDocument {
+export default class Document extends NextDocument {
   // eslint-disable-next-line class-methods-use-this
   render() {
     return (
@@ -22,5 +22,3 @@ class Document extends NextDocument {
     );
   }
 }
-
-export default Document;

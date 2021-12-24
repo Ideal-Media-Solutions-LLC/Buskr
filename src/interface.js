@@ -38,7 +38,7 @@ export const createEvent = async function createEvent(data) {
  * @param {Date} params.from
  * @param {Date} params.to
  * @param {number=} params.dist
- * @returns {Promise<string[]>} - emails of buskers with conflicting events
+ * @returns {Promise<string[]>} - ids of conflicting events
  */
 export const findConflicts = async function findConflicts(params) {
   const { data } = await client.get('/conflicts', { params: unpackCenter(params) });
@@ -102,8 +102,8 @@ export const getSuggestions = async function getSuggestions(params) {
  */
 export const searchLink = function searchLink({ address, center, from, to, search, sort }) {
   const params = {
-    lng: center.lng,
-    lat: center.lat,
+    lng: center?.lng,
+    lat: center?.lat,
     from: from.toISOString(),
     sort,
   };

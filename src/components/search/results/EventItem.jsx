@@ -6,7 +6,7 @@ const fmtWeekday = new Intl.DateTimeFormat('en-US', { weekday: 'short' });
 const fmtDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric' });
 const fmtTime = new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: 'numeric' });
 
-const EventItem = ({ event: { properties } }) => {
+export default function EventItem({ event: { properties } }) {
   const { name, id, buskerId, buskerName, photos, starts } = properties;
   const { locality, administrative_area_level_1 } = properties.location;
   const location = [locality, administrative_area_level_1]
@@ -48,6 +48,4 @@ const EventItem = ({ event: { properties } }) => {
       </div>
     </div>
   );
-};
-
-export default EventItem;
+}

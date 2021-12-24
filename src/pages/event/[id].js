@@ -14,11 +14,11 @@ export const getServerSideProps = async function getServerSideProps(context) {
   return event === undefined ? { notFound: true } : { props: { event, user } };
 };
 
-const EventPage = ({ event, user }) => (
-  <UserContext.Provider value={user}>
-    <Header />
-    <Event event={event} />
-  </UserContext.Provider>
-);
-
-export default EventPage;
+export default function EventPage({ event, user }) {
+  return (
+    <UserContext.Provider value={user}>
+      <Header />
+      <Event event={event} />
+    </UserContext.Provider>
+  );
+}

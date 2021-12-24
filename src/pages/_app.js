@@ -4,8 +4,8 @@ import '../styles/Calendar.css';
 import '../styles/Datepicker.css';
 import { LocationContext } from '../contexts';
 
-const Buskr = function Buskr({ Component, pageProps }) {
-  const [location, setLocation] = useState({});
+export default function Buskr({ Component, pageProps }) {
+  const [location, setLocation] = useState();
   useEffect(() => {
     if (typeof navigator !== 'undefined' && 'geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition(({ coords: { latitude, longitude } }) => {
@@ -20,6 +20,4 @@ const Buskr = function Buskr({ Component, pageProps }) {
         </div>
       </LocationContext.Provider>
   );
-};
-
-export default Buskr;
+}

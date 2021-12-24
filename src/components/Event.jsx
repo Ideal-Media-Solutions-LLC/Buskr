@@ -14,7 +14,7 @@ const fmtWeekday = new Intl.DateTimeFormat('en-US', { weekday: 'long' });
 const fmtDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 const fmtTime = new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: 'numeric' });
 
-const Event = function Event({ event }) {
+export default function Event({ event }) {
   const url = `${process.env.NEXT_PUBLIC_DOMAIN}/event/${event.id}`;
   const {
     starts,
@@ -82,6 +82,4 @@ const Event = function Event({ event }) {
       </section>
     </div>
   );
-};
-
-export default Event;
+}

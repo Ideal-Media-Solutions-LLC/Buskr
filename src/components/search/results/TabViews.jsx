@@ -6,7 +6,7 @@ import styles from '../../../styles/resultList.module.css';
  * @param {string} props.childStyle
  * @param {React.ReactChildren} props.children
  */
-export default function TabView({ childStyle, children }) {
+export default function TabViews({ childStyle, children }) {
   const [page, setPage] = useState(0);
   useEffect(() => setPage(0), [children]);
   const tabs = children.map(({ props }, i) => (

@@ -51,6 +51,6 @@ export const getServerSideProps = async function getServerSideProps(context) {
   }
 };
 
-export default function login() {
+export default function Login() {
   return <div>Logging you in...</div>;
 }

@@ -5,7 +5,7 @@ import EventItem from '../search/results/EventItem';
 import styles from '../../styles/Profile.module.css';
 import { UserContext } from '../../contexts';
 
-const Profile = ({ performer }) => {
+export default function Profile({ performer }) {
   const router = useRouter();
   const user = useContext(UserContext);
   const [qrcodeMode, setQRCodeMode] = useState(false);
@@ -54,6 +54,4 @@ const Profile = ({ performer }) => {
       <button className={styles.backButton} onClick={() => setQRCodeMode(false) }>Back</button>
     </div>
   );
-};
-
-export default Profile;
+}
