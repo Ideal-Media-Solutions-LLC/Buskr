@@ -11,7 +11,7 @@ class Document extends NextDocument {
       <Html>
         <Head>
           <link rel="preconnect" href="https://fonts.googleapis.com"/>
-          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin/>
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
           <link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:ital,wght@0,600;1,600&display=swap" rel="stylesheet"/>
         </Head>
         <body>

@@ -5,6 +5,7 @@ import { getUser } from '../../auth';
 import { UserContext } from '../../contexts';
 import Header from '../../components/Header';
 
+/** @param {import('next').GetServerSidePropsContext} context */
 export const getServerSideProps = async function getServerSideProps(context) {
   const [user, performer] = await Promise.all([
     getUser(context),
@@ -16,7 +17,7 @@ export const getServerSideProps = async function getServerSideProps(context) {
 const ProfilePage = ({ performer, user }) => (
   <UserContext.Provider value={user}>
     <Header />
-    <Profile performer={performer} user={user} />
+    <Profile performer={performer} />
   </UserContext.Provider>
 );
 

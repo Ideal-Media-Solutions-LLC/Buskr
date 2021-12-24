@@ -25,6 +25,7 @@
   width: 290px;
   height: auto;
   margin: auto;
+  margin-top: 21.5px;
   padding: 15px;
   padding-top: 5px;
   line-height: 1.125em;
@@ -46,6 +47,7 @@
   margin: 0;
   border: none;
   outline: none;
+  line-height: 1;
 }
 .react-calendar button:enabled:hover {
   cursor: pointer;
@@ -139,6 +141,14 @@
   align-items: center;
   height: 3em;
   border-radius: 8px;
+}
+
+.react-calendar__month-view__days__day a {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
 }
 
 /*//////// - Event Indicator - ////////*/

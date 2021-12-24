@@ -1,22 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
+import { useRouter } from 'next/router';
 import QRCode from 'qrcode.react';
 import EventItem from '../search/results/EventItem';
 import styles from '../../styles/Profile.module.css';
+import { UserContext } from '../../contexts';
 
-const Profile = ({ performer, user }) => {
+const Profile = ({ performer }) => {
+  const router = useRouter();
+  const user = useContext(UserContext);
   const [qrcodeMode, setQRCodeMode] = useState(false);
   const paypalLink = 'https://paypal.me/';
   const venmoLink = 'https://venmo.com/u/';
   const cashappLink = 'https://cash.app/';
-  const onIconClick = (link, username) => {
-    console.log('click');
-    window.location.href = link + username;
-  };
-  const addEventClick = (e) => {
-    e.preventDefault();
-    console.log('click');
-    window.location.href = '/create';
-  };
+  const onIconClick = (link, username) => router.push(`${link}${username}`);
+  const addEventClick = () => router.push('/create');
 
   if (!qrcodeMode) {
     return (

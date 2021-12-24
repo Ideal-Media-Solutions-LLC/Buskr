@@ -5,6 +5,7 @@ import { getUser } from '../../auth';
 import { UserContext } from '../../contexts';
 import Header from '../../components/Header';
 
+/** @param {import('next').GetServerSidePropsContext} context */
 export const getServerSideProps = async function getServerSideProps(context) {
   const [user, event] = await Promise.all([
     getUser(context),

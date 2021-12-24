@@ -31,7 +31,7 @@ const Event = function Event({ event }) {
   const center = { lng, lat };
   const mapContainerStyle = {
     width: '100%',
-    height: '20vh',
+    height: '100%',
   };
   const hashTags = tags.map((tag) => `#${tag}`).join(' ');
   return (

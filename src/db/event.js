@@ -277,8 +277,41 @@ const getAll = async function getAll({
   return rows;
 };
 
+const getSuggestionsQuery = `
+  WITH strings AS (
+      SELECT
+          event.name AS event_name,
+          busker.name AS busker_name,
+          tag.name AS tag_name
+      FROM event
+      LEFT JOIN busker ON event.busker_id = busker.id
+      LEFT JOIN event_tag ON event_tag.event_id = event.id
+      LEFT JOIN tag ON event_tag.tag_id = tag.id
+      WHERE event.starts >= $1 AND event.ends <= $2 AND event.location <-> $3 < $4
+  ), unioned AS (
+      SELECT trim(BOTH ' ' FROM event_name) FROM strings
+      UNION SELECT trim(BOTH ' ' FROM busker_name) FROM strings WHERE busker_name IS NOT NULL
+      UNION SELECT trim(BOTH ' ' FROM tag_name) FROM strings WHERE tag_name IS NOT NULL
+  ), distinctive AS (
+    SELECT DISTINCT btrim AS suggest
+    FROM unioned
+    ORDER BY btrim ASC
+  )
+  SELECT coalesce(array_agg(suggest), '{}') AS suggestions
+  FROM distinctive
+`;
+const getSuggestions = async function getSuggestions({ from, to, center, dist }) {
+  const { rows: [{ suggestions }] } = await db.query({
+    name: 'getSuggestions',
+    text: getSuggestionsQuery,
+    values: [from, to, sqlLocation(center), dist],
+  });
+  if (suggestions[0] === '') {
+    suggestions.shift();
+  }
+  return suggestions;
 };
 
-const Event = { create, findConflicts, get, getAll };
+const Event = { create, findConflicts, findDates, get, getAll, getSuggestions };
 
 export default Event;

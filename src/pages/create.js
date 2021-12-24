@@ -3,10 +3,23 @@ import CreateEvent from '../components/create-event/CreateEvent';
 import { getUser } from '../auth';
 import { LocationContext, UserContext } from '../contexts';
 import Header from '../components/Header';
+import EventController from '../db/event';
 
+/** @param {import('next').GetServerSidePropsContext} context */
 export const getServerSideProps = async function getServerSideProps(context) {
   const user = await getUser(context);
-  return { props: { user } };
+  if (context.req.method !== 'POST') {
+    return { props: { user } };
+  }
+
+  const id = await EventController.create(user, context.req.body);
+
+  return {
+    redirect: {
+      destination: `/event/${id}`,
+      permanent: false,
+    },
+  };
 };
 
 const CreateEventRenderer = ({ user }) => {
