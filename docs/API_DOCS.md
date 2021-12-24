@@ -14,109 +14,152 @@ npm run migrate
 
 ## Seeding
 
-Random data can be generated and added to the database from the command line. The syntax looks like this:
+Random data can be generated and added to the database from the command line:
 
 ```sh
-npm run seed 100 -90.06911208674771,29.954767355989652 0.02
+npm run seed
 ```
 
-The first argument specifies the number of buskers to add. The second argument specifies longitude and latitude. The third argument specifies the maximum distance of new events, given in the same units as longitude and latitude.
-
 # Endpoints
+## [GET /calendar](https://www.buskr.life/api/calendar?lat=29.954767355989652&lng=-90.06911208674771)
 
-## [GET /event/:id](http://www.buskr.life/api/event/1)
-
-Returns information about a single event.
-
-### Path Parameters
-
-- `id: number` - ID to look up in the event table. Required.
+Returns an array of dates on which events will occur.
 
 ### Query Parameters
 
-- `limit: number` - If specified, no more than `limit` results are returned.
-- `offset: number` - If specified, the first `offset` results are skipped.
-
-## [GET /profile/:id](http://www.buskr.life/api/profile/1)
-
-Returns information about a performer and their upcoming events.
-
-### Path Parameters
-
-- `id: number` - ID to look up in the performer database. Required.
-
-## [GET /events](http://www.buskr.life/api/events?features=coords,location,photos,tags&lat=29.954767355989652&lng=-90.06911208674771)
-
-### Query Parameters
-
-- `lat: number` - Latitude around which to center results. Required.
 - `lng: number` - Longitude around which to center results. Required.
+- `lat: number` - Latitude around which to center results. Required.
+- `offset: number` - Time zone offset from UTC in minutes. Defaults to 0.
+- `dist: number` - If specified, restrict events to a maximum distance from `lng, lat`.
+- `search: string` - If specified, filter events by text search.
+
+### Sample Output
+
+```json
+[
+  "2021-12-30T08:00:00.000Z","2022-01-15T08:00:00.000Z",
+  "2021-12-29T08:00:00.000Z","2022-01-09T08:00:00.000Z"
+]
+```
+
+## [GET /conflicts](https://www.buskr.life/api/conflicts?lat=29.954767355989652&lng=-90.06911208674771)
+
+Returns a list of event IDs that conflict with a prospective new event.
+
+### Query Parameters
+
+- `lng: number` - Longitude around which to center results. Required.
+- `lat: number` - Latitude around which to center results. Required.
+- `from: Date` - Filter out events that started before the parameter. Required.
+- `to: Date` - Filter out events that will end after the parameter. Required.
+- `dist: number` - Restrict events to a maximum distance from `lng, lat`.
+
+### Sample Output
+
+```json
+[
+  3606,
+  893,
+  852,
+  4832,
+  1244,
+  294
+]
+```
+
+## [GET /events](https://www.buskr.life/api/events?lat=29.954767355989652&lng=-90.06911208674771)
+
+Returns an array of events in [GeoJSON](https://geojson.org/) format.
+
+### Query Parameters
+
+- `lng: number` - Longitude around which to center results. Required.
+- `lat: number` - Latitude around which to center results. Required.
 - `from: Date` - If specified, filter out events that started before the parameter.
 - `to: Date` - If specified, filter out events that will end after the parameter.
 - `limit: number` - If specified, no more than `limit` results are returned.
 - `offset: number` - If specified, the first `offset` results are skipped.
 - `sort: string` - If `distance`, sort by distance from center. If `time`, sort by time. Defaults to `distance`.
-- `features: string[]` - Optional string-separated list of one or more of the following:
-  - `coords`
-  - `location`
-  - `photos`
-  - `tags`
+- `dist: number` - If specified, restrict events to a maximum distance from `lng, lat`.
+- `search: string` - If specified, filter events by text search.
 
-### Features
-
-The following pieces of event data are only queried if their feature is included in the `features` query parameter.
-
-#### coords
-
-Retrieves the `geometry` property, which stores the latitude and longitude of the event in GeoJSON format.
+### Sample Output
 
 ```json
-"geometry": {
-   "type": "Point",
-   "coordinates": [
-      -90.06911208674771,
-      29.954767355989652
-   ]
-}
-```
-
-#### location
-
-Retrieves the `properties.location` property, which stores human-readable address data.
-
-```json
-"location": {
-   "neighborhood": "French Quarter",
-   "locality": "New Orleans",
-   "administrative_area_level_2": "Orleans Parish",
-   "administrative_area_level_1": "LA",
-   "country": "US",
-   "postal_code": "70130",
-   "postal_code_suffix": "2204",
-   "address": "201 Bourbon St"
-}
-```
-
-### photos
-
-Retrieves the `properties.photos` property, which store an array of photo URLs.
-
-```json
-"photos": [
-  "http://placeimg.com/640/480/city1",
-  "http://placeimg.com/640/480/city2"
+[
+    {
+        "distance": 0.00963223560190963,
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [
+                -90.06911208674771,
+                29.954767355989652
+            ]
+        },
+        "properties": {
+            "id": 2,
+            "ends": "2022-01-12T07:55:37.880Z",
+            "name": "Event name",
+            "tags": [
+                "acrobatics",
+                "dance",
+                "puppet show"
+            ],
+            "photos": [
+                "https://someurl.com/someimage.jpeg"
+            ],
+            "starts": "2022-01-12T07:21:37.880Z",
+            "buskerId": "628077f5-6f30-4be1-955a-167eaec7062c",
+            "buskerName": "John Smith",
+            "description": "Event description",
+            "location": {
+                "neighborhood": "Seventh Ward",
+                "locality": "New Orleans",
+                "administrative_area_level_2": "Orleans Parish",
+                "administrative_area_level_1": "LA",
+                "country": "US",
+                "postal_code": "70116",
+                "postal_code_suffix": "1741",
+                "address": "1932 Lapeyrouse St"
+            }
+        }
+    }
 ]
 ```
 
-### tags
+## POST /events
 
-Retrieves the `properties.tags` property, which stores an array of string tags.
+Creates an event. Requires authentication.
+
+### Body Parameters
+
+- `name: string` - Event name. Required.
+- `description: string` - Event description. Required.
+- `center: {lng: number, lat: number}` - Event longitude and latitude. Required.
+- `tags: string[]` - Event tags. Defaults to an empty array.
+- `starts: Date` - When the event will begin.
+- `ends: Date` - When the event will end. Must be greater than both `starts` and the current time.
+- `photos: string[]` - Event photo URLs. Defaults to an empty array.
+
+## [GET /suggestions](https://www.buskr.life/suggestions?lng=-90.06911208674771&lat=29.954767355989652&from=2021-12-23T08%3A00%3A00.000Z&to=2022-12-23T08%3A00%3A00.000Z)
+
+Returns an array of autocompletion strings for the search input. Includes tags, event names, and performer names.
+
+### Query Parameters
+
+- `lng: number` - Longitude around which to center results. Required.
+- `lat: number` - Latitude around which to center results. Required.
+- `from: Date` - Filter out events that started before the parameter. Required.
+- `to: Date` - Filter out events that will end after the parameter. Required.
+- `dist: number` - Restrict events to a maximum distance from `lng, lat`.
+
+### Sample Output
 
 ```json
-"tags": [
-  "puppet show",
-  "magic",
-  "juggling",
-  "living statue"
+[
+  "Aaron Lake",
+  "Accordion Solos in the Park",
+  "acrobatics"
 ]
 ```
