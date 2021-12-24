@@ -21,7 +21,7 @@ npm run seed
 ```
 
 # Endpoints
-## [GET /calendar](https://www.buskr.life/api/calendar?lat=29.954767355989652&lng=-90.06911208674771)
+## [GET /api/calendar](https://www.buskr.life/api/calendar?lat=29.954767355989652&lng=-90.06911208674771)
 
 Returns an array of dates on which events will occur.
 
@@ -42,7 +42,7 @@ Returns an array of dates on which events will occur.
 ]
 ```
 
-## [GET /conflicts](https://www.buskr.life/api/conflicts?lat=29.954767355989652&lng=-90.06911208674771)
+## [GET /api/conflicts](https://www.buskr.life/api/conflicts?lat=29.954767355989652&lng=-90.06911208674771)
 
 Returns a list of event IDs that conflict with a prospective new event.
 
@@ -67,7 +67,7 @@ Returns a list of event IDs that conflict with a prospective new event.
 ]
 ```
 
-## [GET /events](https://www.buskr.life/api/events?lat=29.954767355989652&lng=-90.06911208674771)
+## [GET /api/events](https://www.buskr.life/api/events?lat=29.954767355989652&lng=-90.06911208674771)
 
 Returns an array of events in [GeoJSON](https://geojson.org/) format.
 
@@ -128,21 +128,7 @@ Returns an array of events in [GeoJSON](https://geojson.org/) format.
 ]
 ```
 
-## POST /events
-
-Creates an event. Requires authentication.
-
-### Body Parameters
-
-- `name: string` - Event name. Required.
-- `description: string` - Event description. Required.
-- `center: {lng: number, lat: number}` - Event longitude and latitude. Required.
-- `tags: string[]` - Event tags. Defaults to an empty array.
-- `starts: Date` - When the event will begin.
-- `ends: Date` - When the event will end. Must be greater than both `starts` and the current time.
-- `photos: string[]` - Event photo URLs. Defaults to an empty array.
-
-## [GET /suggestions](https://www.buskr.life/suggestions?lng=-90.06911208674771&lat=29.954767355989652&from=2021-12-23T08%3A00%3A00.000Z&to=2022-12-23T08%3A00%3A00.000Z)
+## [GET /api/suggestions](https://www.buskr.life/suggestions?lng=-90.06911208674771&lat=29.954767355989652&from=2021-12-23T08%3A00%3A00.000Z&to=2022-12-23T08%3A00%3A00.000Z)
 
 Returns an array of autocompletion strings for the search input. Includes tags, event names, and performer names.
 
@@ -163,3 +149,17 @@ Returns an array of autocompletion strings for the search input. Includes tags, 
   "acrobatics"
 ]
 ```
+
+## POST /api/events
+
+Creates an event. Requires authentication.
+
+### Body Parameters
+
+- `name: string` - Event name. Required.
+- `description: string` - Event description. Required.
+- `center: {lng: number, lat: number}` - Event longitude and latitude. Required.
+- `tags: string[]` - Event tags. Defaults to an empty array.
+- `starts: Date` - When the event will begin.
+- `ends: Date` - When the event will end. Must be greater than both `starts` and the current time.
+- `photos: string[]` - Event photo URLs. Defaults to an empty array.
