@@ -59,25 +59,6 @@ export const findDates = async function findDates(params) {
 };
 
 /**
- * @param {string} address
- * @returns {Promise<LocationData>}
- */
-export const geolocate = async function geolocate(address) {
-  const { data } = await client.get('/search', { params: { address } });
-  return data;
-};
-
-/**
- * @param {number} id
- * @returns {Promise<Event>}
- */
-export const getEvent = async function getEvent(id) {
-  const { data } = await client.get(`/event/${id}`);
-  loadDates(data);
-  return data;
-};
-
-/**
  * @param {Object} params
  * @param {{ lng: number, lat: number }} params.center
  * @param {string=} params.search
@@ -92,18 +73,6 @@ export const getEvent = async function getEvent(id) {
 export const getEvents = async function getEvents(params) {
   const { data } = await client.get('events', { params: unpackCenter(params) });
   for (const event of data) {
-    loadDates(event);
-  }
-  return data;
-};
-
-/**
- * @param {number} id
- * @returns {Promise<Profile>}
- */
-export const getProfile = async function getProfile(id) {
-  const { data } = await client.get(`/profile/${id}`);
-  for (const event of data.events) {
     loadDates(event);
   }
   return data;
