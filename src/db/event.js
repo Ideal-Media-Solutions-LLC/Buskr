@@ -174,9 +174,9 @@ const getAll = async function getAll({
     wheres.push(`ends <= $${args.length}`);
   }
 
-  if (typeof search === 'string') {
+  if (search) {
     args.push(search);
-    wheres.push(`search @@ $${args.length}::tsquery`);
+    wheres.push(`search @@ websearch_to_tsquery('english', $${args.length})`);
   }
 
   if (typeof limit === 'number') {
