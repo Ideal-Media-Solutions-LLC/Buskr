@@ -20,7 +20,7 @@ export const getServerSideProps = async function getServerSideProps(context) {
   const to = query.to === undefined
     ? new Date(from.getFullYear(), from.getMonth(), from.getDate() + 1)
     : new Date(query.to);
-  const { address, q: search } = query;
+  const { address, q: search, tags: tagString } = query;
 
   if (address) {
     const { data: { results: [result] } } = await axios.get(
@@ -40,7 +40,7 @@ export const getServerSideProps = async function getServerSideProps(context) {
   const sort = query.sort === 'time' ? 'starts' : 'distance';
 
   try {
-    const events = await EventController.getAll({
+    let events = await EventController.getMany({
       center,
       from,
       to,
@@ -50,6 +50,15 @@ export const getServerSideProps = async function getServerSideProps(context) {
       dist,
       orderBy: sort,
     });
+
+    if (tagString) {
+      const tags = tagString.split(',');
+      events = events.filter(event => {
+        const eventTags = new Set(event.properties.tags);
+        return tags.every(tag => eventTags.has(tag));
+      });
+    }
+
     return {
       props: {
         address,

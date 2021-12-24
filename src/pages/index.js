@@ -5,14 +5,18 @@ import { getUser } from '../auth';
 import { LocationContext, UserContext } from '../contexts';
 import Header from '../components/Header';
 import { asyncEffect, findDates, getEvents, getSuggestions } from '../interface';
+import TagController from '../db/tag';
 
 /** @param {import('next').GetServerSidePropsContext} context */
 export const getServerSideProps = async function getServerSideProps(context) {
-  const user = await getUser(context);
-  return { props: { user } };
+  const [user, tags] = await Promise.all([
+    getUser(context),
+    TagController.getMany(7),
+  ]);
+  return { props: { user, tags } };
 };
 
-export default function Home({ user }) {
+export default function Home({ user, tags }) {
   const center = useContext(LocationContext);
 
   const [dates, setDates] = useState(new Set());
@@ -47,7 +51,7 @@ export default function Home({ user }) {
       </datalist>
       <Header />
       <div>
-        <SearchSection />
+        <SearchSection tags={tags} />
         <ResultSection center={center} dates={dates} events={events} />
       </div>
     </UserContext.Provider>

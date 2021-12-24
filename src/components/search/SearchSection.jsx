@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import { FaSearch, FaMapMarkerAlt } from 'react-icons/fa';
 import DatePicker from 'react-datepicker';
@@ -6,12 +6,49 @@ import styles from '../../styles/Search.module.css';
 import { LocationContext } from '../../contexts';
 import { searchLink } from '../../interface';
 
-export default function SearchSection() {
+export default function SearchSection({ tags }) {
   const router = useRouter();
   const center = useContext(LocationContext);
   const [searchTerm, setSearchTerm] = useState('');
   const [address, setAddress] = useState('');
   const [searchDate, setSearchDate] = useState(new Date());
+  const [searchTags, setSearchTags] = useState(() => {
+    const searchTags = {};
+    for (const tag of tags) {
+      searchTags[tag] = false;
+    }
+    return searchTags;
+  });
+
+  const onTagClick = useCallback(ev => {
+    const tag = ev.target.innerText;
+    setSearchTags(searchTags => {
+      const selected = searchTags[tag];
+      return { ...searchTags, [tag]: !selected };
+    });
+  }, [setSearchTags]);
+
+  const tagButtons = useMemo(
+    () => Object.entries(searchTags)
+      .map(([tag, selected]) => (
+        <button
+          key={tag}
+          type="button"
+          className={selected ? `${styles.searchTag} ${styles.selected}` : styles.searchTag}
+          onClick={onTagClick}
+        >
+          {tag}
+        </button>
+      )),
+    [searchTags, onTagClick],
+  );
+
+  const selectedTags = useMemo(
+    () => Object.entries(searchTags)
+      .filter(([, selected]) => selected)
+      .map(([tag]) => tag),
+    [searchTags],
+  );
 
   const submit = function submit(ev) {
     ev.preventDefault();
@@ -21,6 +58,7 @@ export default function SearchSection() {
       search: searchTerm,
       address,
       sort: 'distance',
+      tags: selectedTags,
     }));
   };
 
@@ -33,7 +71,7 @@ export default function SearchSection() {
       <div id={styles.searchForm}>
         <div className={styles.searchBar} id={styles.upperSearchBar}>
           <input
-            type="text"
+            type="search"
             name="search"
             className={styles.searchInput}
             value={searchTerm}
@@ -76,8 +114,18 @@ export default function SearchSection() {
         </div>
       </div>
       <div id={styles.tagContainer}>
+        {tagButtons}
       </div>
-      <input type="hidden" name="sort" value="distance" />
+      <input
+        type="hidden"
+        name="sort"
+        value="distance"
+      />
+      <input
+        type="hidden"
+        name="tags"
+        value={Object.entries(searchTags).filter(([, sel]) => sel).map(([tag]) => tag).join(',')}
+      />
       <button type="submit" id={styles.searchBtn} className="master-button">
         Search
       </button>

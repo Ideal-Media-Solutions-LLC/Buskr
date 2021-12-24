@@ -98,9 +98,10 @@ export const getSuggestions = async function getSuggestions(params) {
  * @param {Date?} params.to
  * @param {string?} params.search
  * @param {string?} params.address
+ * @param {string[]?} params.tags
  * @param {'distance' | 'time'} params.sort
  */
-export const searchLink = function searchLink({ address, center, from, to, search, sort }) {
+export const searchLink = function searchLink({ address, center, from, to, search, sort, tags }) {
   const params = {
     lng: center?.lng,
     lat: center?.lat,
@@ -115,6 +116,9 @@ export const searchLink = function searchLink({ address, center, from, to, searc
   }
   if (to) {
     params.to = to.toISOString();
+  }
+  if (tags) {
+    params.tags = tags.join(',');
   }
   return `/search?${querystring.stringify(params)}`;
 };
