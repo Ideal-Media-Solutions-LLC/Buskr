@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
+import AutoComplete from '../components/search/AutoComplete';
 import SearchSection from '../components/search/SearchSection';
 import ResultSection from '../components/search/results/ResultSection';
 import { getUser } from '../auth';
@@ -46,9 +47,7 @@ export default function Home({ user, tags }) {
 
   return (
     <UserContext.Provider value={user}>
-      <datalist id="suggestions">
-        {suggestions.map(suggestion => <option value={suggestion} key={suggestion} />)}
-      </datalist>
+      <AutoComplete suggestions={suggestions} />
       <Header />
       <div>
         <SearchSection tags={tags} />

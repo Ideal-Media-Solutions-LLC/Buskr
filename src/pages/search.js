@@ -3,6 +3,7 @@ import axios from 'axios';
 import { getUser } from '../auth';
 import { UserContext } from '../contexts';
 import Header from '../components/Header';
+import AutoComplete from '../components/search/AutoComplete';
 import SearchBar from '../components/search/SearchBar';
 import EventController from '../db/event';
 import ResultSection from '../components/search/results/ResultSection';
@@ -105,9 +106,7 @@ export default function SearchPage({ user, address, center, events, search, sort
 
   return (
     <UserContext.Provider value={user}>
-      <datalist id="suggestions">
-        {suggestions.map(suggestion => <option value={suggestion} key={suggestion} />)}
-      </datalist>
+      <AutoComplete suggestions={suggestions} />
       <Header />
       <div>
         <SearchBar
