@@ -109,6 +109,64 @@ export const getProfile = async function getProfile(id) {
   return data;
 };
 
+/**
+ * @param {Object} params
+ * @param {Date} params.from
+ * @param {Date} params.to
+ * @param {{ lng: number, lat: number }} params.center
+ * @param {number=} params.dist
+ * @returns {Promise<string>}
+ */
+export const getSuggestions = async function getSuggestions(params) {
+  const { data } = await client.get('suggestions', { params: unpackCenter(params) });
+  return data;
+};
+
+/**
+ * @param {Object} params
+ * @param {{lng: number, lat: number}} params.center,
+ * @param {Date} params.from
+ * @param {Date?} params.to
+ * @param {string?} params.search
+ * @param {string?} params.address
+ * @param {'distance' | 'time'} params.sort
+ */
+export const searchLink = function searchLink({ address, center, from, to, search, sort }) {
+  const params = {
+    lng: center.lng,
+    lat: center.lat,
+    from: from.toISOString(),
+    sort,
+  };
+  if (address) {
+    params.address = address;
+  }
+  if (search) {
+    params.q = search;
+  }
+  if (to) {
+    params.to = to.toISOString();
+  }
+  return `/search?${querystring.stringify(params)}`;
+};
+
+/**
+ * @template T
+ * @param {() => Promise<T>} promise
+ * @param {T => void} afterResolve
+ */
+export const asyncEffect = function asyncEffect(promise, afterResolve) {
+  let stillMounted = true;
+
+  promise().then(resolved => {
+    if (stillMounted) {
+      afterResolve(resolved);
+    }
+  }).catch(console.error);
+
+  return () => { stillMounted = false; };
+};
+
 // Typedefs
 
 /** @typedef {{[field: string]: string}} LocationData */
