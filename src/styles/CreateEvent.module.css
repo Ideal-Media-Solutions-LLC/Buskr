@@ -99,6 +99,7 @@
 }
 
 .uploadImageButton {
+  cursor: pointer;
   border: none;
   background-color: var(--buskr-orange);
   padding: 15px 15px 15px 15px;

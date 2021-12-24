@@ -60,7 +60,7 @@ const CreateEvent1 = ({
 
   return (
     <div className={styles.createEventContainer}>
-      <div className='master-title'>
+      <div className="master-title">
         Create Event
       </div>
       <form className={styles.formContainer}>
@@ -71,7 +71,7 @@ const CreateEvent1 = ({
           className={styles.datePicker}
           selected={startDate}
           onChange={onDateChange}
-          placeholderText='Select Start Date and Time'
+          placeholderText="Select Start Date and Time"
           showTimeSelect
           dateFormat="MMMM d, yyyy h:mm aa"
           startDate={now}
@@ -85,7 +85,7 @@ const CreateEvent1 = ({
           className={styles.datePicker}
           selected={endDate}
           onChange={onEndDateChange}
-          placeholderText='Select End Date and Time'
+          placeholderText="Select End Date and Time"
           showTimeSelect dateFormat="MMMM d, yyyy h:mm aa"
           startDate={startTime}
           filterDate={date => date >= startDay}
@@ -96,8 +96,8 @@ const CreateEvent1 = ({
         </div>
         <input
           onChange={handleLocation}
-          type='search'
-          placeholder='Current Location'
+          type="text"
+          placeholder="Current Location"
           className={styles.masterSearchBar}
           value={loc ? `Lat: ${loc.lat.toFixed(4)}, Lng: ${loc.lng.toFixed(4)}` : ''}
         />
@@ -110,7 +110,7 @@ const CreateEvent1 = ({
           withInfoBoxes={false}
         />
       </div>
-      <button onClick={handleNext} className='master-button' text='Next'>
+      <button onClick={handleNext} className="master-button">
         Next
       </button>
     </div>
@@ -119,20 +119,26 @@ const CreateEvent1 = ({
 
 const CreateEvent2 = ({ handleModifyConflict }) => (
   <div className={styles.conflictBoxContainer}>
-    <div className='master-title'> Create Event </div>
+    <div className="master-title">
+      Create Event
+    </div>
     <div className={styles.conflictBox}>
-      <div>{'Someone is performing at the same location. Do you still wish to have your event on this day and time?'}</div>
+      <div>
+        Someone is performing at the same location.
+        Do you still wish to have your event on this day and time?
+      </div>
       <div className={styles.conflictButtonContainer}>
         <button
           className={styles.conflictButtonModify}
           onClick={() => handleModifyConflict(1)}>
             Modify
-          </button>
+        </button>
         <button
           className={styles.conflictButtonProceed}
-          onClick={() => handleModifyConflict(3)}>
-            Proceed
-          </button>
+          onClick={() => handleModifyConflict(3)}
+        >
+          Proceed
+        </button>
       </div>
     </div>
   </div>
@@ -158,37 +164,76 @@ const CreateEvent3 = ({
     setUploadView(uploadMode);
   }, [uploadMode]);
 
+  const warningStyle = (condition) => submitAttempted && condition
+    ? styles.validationWarning
+    : styles.validationWarningHidden;
+
   if (!uploadView) {
     return (
       <div className={styles.createEventContainer}>
         <div>
-          <div className='master-title'>Create Event</div>
+          <div className="master-title">
+            Create Event
+          </div>
           <form className={styles.formContainer}>
-            <div className={styles.smallTitle}> Event Name: </div>
-            <div className={submitAttempted && !name
-              ? styles.validationWarning
-              : styles.validationWarningHidden}>
-                Please enter an event name
-              </div>
-              <input onChange={handleName} type='search' className={styles.masterSearchBar} placeholder='Enter Event Name' value={name}></input>
-            <div className={styles.smallTitle}> Description: </div>
-            <div className={submitAttempted && !description
-              ? styles.validationWarning
-              : styles.validationWarningHidden}> Please enter a description </div>
-              <textarea onChange={handleDescription} type='search' className={styles.descriptionField}placeholder='Enter Description' value={description}></textarea>
-            <div className={styles.tagsDescription}>
-              <div className={styles.smallTitle}> Tags </div>
-              <div className={styles.tagSubtext}> (OPTIONAL - Separated By Comma)  </div>
+            <label htmlFor="eventName" className={styles.smallTitle}>
+              Event Name:
+            </label>
+            <div className={warningStyle(!name)}>
+              Please enter an event name
             </div>
-              <input onChange={handleTags} type='search' className={styles.masterSearchBar}placeholder='Add Tags (separated by comma)' value={tags}></input>
+            <input
+              type="text"
+              id="eventName"
+              onChange={handleName}
+              className={styles.masterSearchBar}
+              placeholder="Enter Event Name"
+              value={name}
+            />
+            <label htmlFor="eventDescription" className={styles.smallTitle}>
+              Description:
+            </label>
+            <div className={warningStyle(!description)}>
+              Please enter a description
+            </div>
+            <textarea
+              type="text"
+              id="eventDescription"
+              onChange={handleDescription}
+              className={styles.descriptionField}
+              placeholder="Enter Description" value={description}
+            />
+            <div className={styles.tagsDescription}>
+              <label htmlFor="eventTags" className={styles.smallTitle}>
+                Tags
+              </label>
+              <div className={styles.tagSubtext}>
+                (OPTIONAL - Separated By Comma)
+              </div>
+            </div>
+            <input
+              type="text"
+              id="eventTags"
+              onChange={handleTags}
+              className={styles.masterSearchBar}
+              placeholder='Add Tags (separated by comma)'
+              value={tags}
+            />
           </form>
           {/* if image exists, render image, otherwise render button */}
-          {image
-            ? <img className={styles.uploadedImage} src={image} alt=''/>
-            : <button onClick={handleUploadMode} type='text' className={styles.uploadImageButton}>Upload Image</button>
-          }
+          {image ? (
+            <img className={styles.uploadedImage} src={image} alt="" />
+          ) : (
+            <button
+              type="text"
+              onClick={handleUploadMode}
+              className={styles.uploadImageButton}
+            >
+              Upload Image
+            </button>
+          )}
         </div>
-        <button onClick={handleAddMyEvent} type='text' className='master-button'>
+        <button onClick={handleAddMyEvent} type="text" className="master-button">
           Add My Event
         </button>
       </div>
@@ -197,7 +242,7 @@ const CreateEvent3 = ({
   return <ImageUploader handleImage={handleImage} handleGoBack={handleGoBack}/>;
 };
 
-const CreateEvent = function CreateEvent() {
+export default function CreateEvent() {
   const baseCenter = useContext(LocationContext);
   const router = useRouter();
   const [createPage, setCreatePage] = useState(1);
@@ -251,7 +296,6 @@ const CreateEvent = function CreateEvent() {
       from: date,
       to: endDateAndTime,
     }).then(conflict => {
-      console.log('results', conflict);
       if (conflict.length !== 0) {
         setCreatePage(2);
       } else {
@@ -261,7 +305,6 @@ const CreateEvent = function CreateEvent() {
   };
 
   const handleAddMyEvent = () => {
-    console.log('ADD MY EVENT CLICKED!');
     if (name && description && image && date && endDateAndTime && loc) {
       const data = {
         name,
@@ -273,9 +316,7 @@ const CreateEvent = function CreateEvent() {
         photos: [image],
       };
       createEvent(data).then(id => router.push(`/event/${id}`))
-        .catch((err) => {
-          console.log('Error posting event to database:', err);
-        });
+        .catch(console.error);
     }
     setSubmitAttempted(true);
   };
@@ -290,13 +331,7 @@ const CreateEvent = function CreateEvent() {
   };
 
   const handleUploadMode = () => {
-    console.log('switch upload view!');
     setUploadMode(true);
-  };
-
-  const handleModifyConflict = (page) => {
-    console.log({ page });
-    setCreatePage(page);
   };
 
   if (createPage === 1) {
@@ -317,7 +352,7 @@ const CreateEvent = function CreateEvent() {
   }
   if (createPage === 2) {
     return (
-      <CreateEvent2 handleModifyConflict={handleModifyConflict}/>
+      <CreateEvent2 handleModifyConflict={setCreatePage}/>
     );
   }
   if (createPage === 3) {
@@ -339,7 +374,4 @@ const CreateEvent = function CreateEvent() {
       />
     );
   }
-  return <div/>;
-};
-
-export default CreateEvent;
+}

@@ -30,6 +30,7 @@ export default function SearchBar({ address, center, from, search, sort }) {
       </Link>
       <div className={styles.miniBar} id={styles.miniTermInput}>
         <input
+          type="search"
           className={styles.miniSearchInput}
           placeholder="Search"
           name="q"
