@@ -1,14 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import DatePicker from 'react-datepicker';
-import ImageUploader from './UploadImage';
+import ImageUploader from './ImageUploader';
 import styles from '../../styles/CreateEvent.module.css';
 import Map from '../map/Map';
+import { LocationContext } from '../../contexts';
 import { createEvent, findConflicts } from '../../interface';
 
 const CreateEvent1 = ({
-  center, handleDate, handleLocation, handleNext,
-  handleEndDate, nextClickAttempted, date, endDateAndTime, loc,
+  center,
+  handleDate,
+  handleLocation,
+  handleNext,
+  handleEndDate,
+  nextClickAttempted,
+  date,
+  endDateAndTime,
+  loc,
   setEventLoc,
 }) => {
   const mapContainerStyle = {
@@ -18,15 +26,11 @@ const CreateEvent1 = ({
 
   const [startDate, setStartDate] = useState();
   const [endDate, setEndDate] = useState();
-  const [coords, setCoords] = useState('');
-
-  useEffect(() => {
-    setCoords(loc);
-  }, [loc]);
 
   const onDateChange = (date) => {
     if (date !== null) {
       setStartDate(date);
+      setEndDate(Math.max(date, endDate));
       handleDate(date);
     }
   };
@@ -49,6 +53,11 @@ const CreateEvent1 = ({
     ? styles.validationWarning
     : styles.validationWarningHidden;
 
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const startTime = startDate || now;
+  const startDay = new Date(startTime.getFullYear(), startTime.getMonth(), startTime.getDate());
+
   return (
     <div className={styles.createEventContainer}>
       <div className='master-title'>
@@ -65,12 +74,12 @@ const CreateEvent1 = ({
           placeholderText='Select Start Date and Time'
           showTimeSelect
           dateFormat="MMMM d, yyyy h:mm aa"
+          startDate={now}
+          filterDate={date => date >= today}
+          filterTime={time => time >= now}
         />
         <div className={warningStyle(!endDateAndTime)}>
           Please select an end date and time
-        </div>
-        <div className={warningStyle(endDateAndTime < date)}>
-          Must be later than start date and time
         </div>
         <DatePicker
           className={styles.datePicker}
@@ -78,6 +87,9 @@ const CreateEvent1 = ({
           onChange={onEndDateChange}
           placeholderText='Select End Date and Time'
           showTimeSelect dateFormat="MMMM d, yyyy h:mm aa"
+          startDate={startTime}
+          filterDate={date => date >= startDay}
+          filterTime={time => time >= startTime}
         />
         <div className={warningStyle(!loc)}>
           Please select a location
@@ -87,7 +99,7 @@ const CreateEvent1 = ({
           type='search'
           placeholder='Current Location'
           className={styles.masterSearchBar}
-          value={coords ? `Lat: ${coords.lat.toFixed(4)}, Lng: ${coords.lng.toFixed(4)}` : ''}
+          value={loc ? `Lat: ${loc.lat.toFixed(4)}, Lng: ${loc.lng.toFixed(4)}` : ''}
         />
       </form>
       <div className={styles.mapContainer}>
@@ -185,7 +197,8 @@ const CreateEvent3 = ({
   return <ImageUploader handleImage={handleImage} handleGoBack={handleGoBack}/>;
 };
 
-const CreateEvent = ({ center: baseCenter, user }) => {
+const CreateEvent = function CreateEvent() {
+  const baseCenter = useContext(LocationContext);
   const router = useRouter();
   const [createPage, setCreatePage] = useState(1);
   const [name, setEventName] = useState('');
@@ -193,16 +206,12 @@ const CreateEvent = ({ center: baseCenter, user }) => {
   const [image, setEventImage] = useState();
   const [date, setEventDate] = useState();
   const [endDateAndTime, setEventEndDate] = useState();
-  const [center, setCenter] = useState();
+  const [loc, setLoc] = useState();
   const [tags, setEventTags] = useState('');
   const [uploadMode, setUploadMode] = useState(false);
   const [submitAttempted, setSubmitAttempted] = useState(false);
   const [nextClickAttempted, setNextClickAttempted] = useState(false);
-  const [isConflict, setIsConflict] = useState(true);
-
-  useEffect(() => {
-    setCenter(baseCenter);
-  }, [baseCenter]);
+  const center = loc || baseCenter;
 
   const handleDate = (date) => {
     setEventDate(date);
@@ -214,7 +223,7 @@ const CreateEvent = ({ center: baseCenter, user }) => {
 
   const handleLocation = (e) => {
     e.preventDefault();
-    setCenter(e.target.value);
+    setLoc(e.target.value);
   };
 
   const handleName = (e) => {
@@ -233,7 +242,7 @@ const CreateEvent = ({ center: baseCenter, user }) => {
   };
 
   const handleNext = () => {
-    if (!center || !date || !endDateAndTime || endDateAndTime < date) {
+    if (!loc || !date || !endDateAndTime || endDateAndTime < date) {
       setNextClickAttempted(true);
       return;
     }
@@ -253,11 +262,11 @@ const CreateEvent = ({ center: baseCenter, user }) => {
 
   const handleAddMyEvent = () => {
     console.log('ADD MY EVENT CLICKED!');
-    if (name && description && image && date && endDateAndTime && center) {
+    if (name && description && image && date && endDateAndTime && loc) {
       const data = {
         name,
         description,
-        center,
+        center: loc,
         tags: tags.split(','),
         starts: date,
         ends: endDateAndTime,
@@ -287,9 +296,6 @@ const CreateEvent = ({ center: baseCenter, user }) => {
 
   const handleModifyConflict = (page) => {
     console.log({ page });
-    if (page === 3) {
-      setIsConflict(true);
-    }
     setCreatePage(page);
   };
 
@@ -302,10 +308,10 @@ const CreateEvent = ({ center: baseCenter, user }) => {
         handleLocation={handleLocation}
         handleNext={handleNext}
         nextClickAttempted={nextClickAttempted}
-        loc={center}
+        loc={loc}
         date={date}
         endDateAndTime={endDateAndTime}
-        setEventLoc={setCenter}
+        setEventLoc={setLoc}
       />
     );
   }
@@ -330,11 +336,10 @@ const CreateEvent = ({ center: baseCenter, user }) => {
         name={name}
         description={description}
         tags={tags}
-        user={user}
       />
     );
   }
-  return <div></div>;
+  return <div/>;
 };
 
 export default CreateEvent;

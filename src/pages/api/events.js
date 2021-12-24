@@ -46,8 +46,20 @@ const GET = async function GET(req, res) {
  * @param {import('http').ServerResponse} res
  */
 const POST = async function POST(req, res) {
+  const { body } = req;
+  if (!body.name) {
+    throw new HttpException(400, 'missing name');
+  }
+  if (!body.description) {
+    throw new HttpException(400, 'missing name');
+  }
+  const starts = new Date(req.body.starts);
+  const ends = new Date(req.body.ends);
+  if (ends < starts || starts < new Date()) {
+    throw new HttpException(422, 'out-of-bounds date');
+  }
   const user = await getUser({ req });
-  const eventId = await EventController.create(user, req.body);
+  const eventId = await EventController.create(user, body);
   res.status(201).json({ id: eventId });
 };
 

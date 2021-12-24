@@ -25,17 +25,17 @@ export default function Home({ user }) {
     return [from, to];
   }, []);
 
-  useEffect(() => center.lat !== undefined && asyncEffect(
+  useEffect(() => center && asyncEffect(
     async () => findDates({ center, offset: from.getTimezoneOffset() }),
     dates => setDates(new Set(dates.map(date => date.getTime()))),
   ), [center, from]);
 
-  useEffect(() => center.lat !== undefined && asyncEffect(
+  useEffect(() => center && asyncEffect(
     async () => getEvents({ center, from, to, limit: 10 }),
     setEvents,
   ), [center, from, to]);
 
-  useEffect(() => center.lat !== undefined && asyncEffect(
+  useEffect(() => center && asyncEffect(
     async () => getSuggestions({ center, from, to }),
     setSuggestions,
   ), [center, from, to]);

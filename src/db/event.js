@@ -35,10 +35,10 @@ const insertPhoto = async function insertPhoto(eventId, photo) {
 };
 
 const insertTagQuery = `
-    INSERT INTO tag (name, popularity)
-    VALUES ($1, 1)
-    ON CONFLICT UPDATE popularity = popularity + 1
-    RETURNING id
+  INSERT INTO tag (name, popularity)
+  VALUES ($1, 1)
+  ON CONFLICT (name) DO UPDATE SET popularity = tag.popularity + 1
+  RETURNING id
 `;
 const selectTagQuery = `
   SELECT id FROM tag WHERE name = $1
@@ -76,7 +76,7 @@ const insertTag = async function insertTag(eventId, tag) {
 
 const createEventQuery = `
   INSERT INTO event (location, name, description, starts, ends, busker_id, search)
-  VALUES ($1, $2, $3, $4, $5, $6, to_tsvector('english', $7)
+  VALUES ($1, $2, $3, $4, $5, $6, to_tsvector('english', $7))
   RETURNING id
 `;
 const create = async function create(user, {
@@ -108,23 +108,20 @@ const create = async function create(user, {
 const findConflictsQuery = `
   SELECT
     location <-> $1 AS distance,
-    busker.id,
-    busker.email
+    busker.id as busker,
+    busker.email as email,
+    event.id as event
   FROM event
   JOIN busker ON busker.id = event.busker_id
-  WHERE starts >= $2 AND ends <= $3
+  WHERE starts >= $2 AND ends <= $3 AND location <-> $1 < $4
   ORDER BY distance ASC
 `;
 const findConflicts = async function findConflicts({ center, from, to, dist }) {
   const { rows } = await db.query({
     name: 'findConflicts',
     text: findConflictsQuery,
-    values: [sqlLocation(center), from, to],
+    values: [sqlLocation(center), from, to, dist],
   });
-  const tooFar = rows.findIndex(row => row.distance > dist);
-  if (tooFar !== -1) {
-    rows.length = tooFar;
-  }
   return rows;
 };
 

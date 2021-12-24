@@ -1,6 +1,7 @@
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
 import Link from 'next/link';
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { LocationContext } from '../../contexts';
 import styles from '../../styles/Map.module.css';
 
 const fmtTime = new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: 'numeric' });
@@ -37,6 +38,11 @@ const InfoBox = function InfoBox(props) {
   );
 };
 
+const timesSquare = {
+  lng: -73.9877313,
+  lat: 40.7579787,
+};
+
 /**
  * @typedef {Object} GeoJson
  * @property {'Feature'} type
@@ -44,6 +50,7 @@ const InfoBox = function InfoBox(props) {
  * @property {'Point'} geometry.type
  * @property {[lng: number, lat: number]} geometry.coordinates
  * @property {Object} properties
+*/
 
 /**
 * @param {Object} props
@@ -53,6 +60,7 @@ const InfoBox = function InfoBox(props) {
 * @param {GeoJson[]} props.events
 */
 const Map = function Map({ containerStyle, center, onDrop, events }) {
+  const loc = useContext(LocationContext);
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_KEY,
@@ -65,20 +73,6 @@ const Map = function Map({ containerStyle, center, onDrop, events }) {
     setMap(map);
     map.data.setStyle({
       icon: '/imgs/marker.png',
-    });
-    /* eslint-disable-next-line no-new */
-    new google.maps.Marker({
-      map,
-      position: center,
-      title: 'You are here',
-      icon: {
-        fillColor: '#ff7585',
-        fillOpacity: 1,
-        path: google.maps.SymbolPath.CIRCLE,
-        strokeWeight: 2,
-        strokeColor: 'white',
-        scale: 8,
-      },
     });
     map.addListener('click', ({ latLng: { lng, lat } }) => {
       setInfoFeature(null);
@@ -104,7 +98,30 @@ const Map = function Map({ containerStyle, center, onDrop, events }) {
     map.data.addListener('click', ({ feature }) => {
       setInfoFeature(feature);
     });
-  }, [center, onDrop]);
+  }, [onDrop]);
+
+  useEffect(() => {
+    if (!map || !loc) {
+      return;
+    }
+    if (map.location) {
+      map.location.setPosition(loc);
+    } else {
+      map.location = new google.maps.Marker({
+        map,
+        position: loc,
+        title: 'You are here',
+        icon: {
+          fillColor: '#ff7585',
+          fillOpacity: 1,
+          path: google.maps.SymbolPath.CIRCLE,
+          strokeWeight: 2,
+          strokeColor: 'white',
+          scale: 8,
+        },
+      });
+    }
+  }, [loc, map]);
 
   useEffect(() => {
     if (map) {
@@ -122,7 +139,7 @@ const Map = function Map({ containerStyle, center, onDrop, events }) {
     <div className={styles.mapContainer}>
       <GoogleMap
         mapContainerStyle={containerStyle}
-        center={center}
+        center={center || loc || timesSquare}
         zoom={17}
         onLoad={onLoad}
         options={{ mapId: process.env.NEXT_PUBLIC_MAP_ID }}

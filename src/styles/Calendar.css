@@ -151,6 +151,14 @@
     bottom: 0;
 }
 
+.react-datepicker__day--disabled {
+    color: var(--buskr-gray) !important;
+}
+
+.react-datepicker__time-list-item--disabled {
+    display: none;
+}
+
 /*//////// - Event Indicator - ////////*/
 .notification {
   position: absolute;
