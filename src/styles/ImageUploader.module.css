@@ -45,7 +45,7 @@
 }
 
 .removeImage, .goBack {
-  cursor: pointer,
+  cursor: pointer;
   border: none;
   background-color: var(--buskr-purple);
   padding: 15px 15px 15px 15px;
