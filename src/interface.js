@@ -46,6 +46,19 @@ export const findConflicts = async function findConflicts(params) {
 };
 
 /**
+ * @param {Object} params
+ * @param {{lng: number, lat: number}} params.center
+ * @param {number} params.offset
+ * @param {number=} params.dist
+ * @param {string=} params.search
+ * @returns {Promise<Date[]>} - dates with events
+ */
+export const findDates = async function findDates(params) {
+  const { data } = await client.get('/calendar', { params: unpackCenter(params) });
+  return data.map(date => new Date(date));
+};
+
+/**
  * @param {string} address
  * @returns {Promise<LocationData>}
  */
