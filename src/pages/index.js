@@ -16,7 +16,7 @@ export default function Home({ user }) {
   const center = useContext(LocationContext);
 
   const [dates, setDates] = useState(new Set());
-  const [events, setEvents] = useState([]);
+  const [events, setEvents] = useState(null);
   const [suggestions, setSuggestions] = useState([]);
 
   const [from, to] = useMemo(() => {
