@@ -26,6 +26,10 @@
   background-color: var(--buskr-lightgray);
 }
 
+.tabs {
+    cursor: pointer;
+}
+
 .activeTabs {
   color: white;
   background-color: var(--buskr-pink);

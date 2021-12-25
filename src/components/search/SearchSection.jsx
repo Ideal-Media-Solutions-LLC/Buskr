@@ -72,7 +72,7 @@ export default function SearchSection({ tags }) {
         <div className={styles.searchBar} id={styles.upperSearchBar}>
           <input
             type="search"
-            name="search"
+            name="q"
             className={styles.searchInput}
             value={searchTerm}
             list="suggestions"
