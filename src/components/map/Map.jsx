@@ -1,8 +1,11 @@
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
-import moment from 'moment-timezone';
 import Link from 'next/link';
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { LocationContext } from '../../contexts';
 import styles from '../../styles/Map.module.css';
+
+const fmtTime = new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: 'numeric' });
+const fmtDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
 const InfoBox = function InfoBox(props) {
   const { feature } = props;
@@ -12,14 +15,13 @@ const InfoBox = function InfoBox(props) {
   const buskerName = feature.getProperty('buskerName');
   const photos = feature.getProperty('photos');
   const starts = new Date(feature.getProperty('starts'));
-  const time = moment(starts);
   return (
     <article className={styles.infobox}>
       <img className={styles.infoPhoto} src={photos[0]} alt={name}/>
       <div className={styles.infoDetails}>
         <div className={styles.infoboxName}>
           <span className={styles.infoboxTime}>
-            {time.format('h:mm A')}
+            {fmtTime.format(starts)}
           </span>
           <Link href={`/event/${id}`}>
             {name}
@@ -27,13 +29,18 @@ const InfoBox = function InfoBox(props) {
         </div>
         <div className={styles.infoboxBuskerName}>
           <span className={styles.infoboxTime}>
-            {time.format('MMM DDD YYYY')}
+            {fmtDate.format(starts)}
           </span>
           <Link href={`/profile/${buskerId}`}>{buskerName}</Link>
         </div>
       </div>
     </article>
   );
+};
+
+const timesSquare = {
+  lng: -73.9877313,
+  lat: 40.7579787,
 };
 
 /**
@@ -43,16 +50,17 @@ const InfoBox = function InfoBox(props) {
  * @property {'Point'} geometry.type
  * @property {[lng: number, lat: number]} geometry.coordinates
  * @property {Object} properties
+*/
 
 /**
 * @param {Object} props
 * @param {React.CSSProperties} props.containerStyle
 * @param {google.maps.LatLngLiteral} props.center
 * @param {(position: google.maps.LatLngLiteral) => void} props.onDrop
-* @param {Object} props.events
-* @param {GeoJson[]} props.events.features
+* @param {GeoJson[]} props.events
 */
 const Map = function Map({ containerStyle, center, onDrop, events }) {
+  const loc = useContext(LocationContext);
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_KEY,
@@ -65,20 +73,6 @@ const Map = function Map({ containerStyle, center, onDrop, events }) {
     setMap(map);
     map.data.setStyle({
       icon: '/imgs/marker.png',
-    });
-    /* eslint-disable-next-line no-new */
-    new google.maps.Marker({
-      map,
-      position: center,
-      title: 'You are here',
-      icon: {
-        fillColor: '#ff7585',
-        fillOpacity: 1,
-        path: google.maps.SymbolPath.CIRCLE,
-        strokeWeight: 2,
-        strokeColor: 'white',
-        scale: 8,
-      },
     });
     map.addListener('click', ({ latLng: { lng, lat } }) => {
       setInfoFeature(null);
@@ -104,14 +98,37 @@ const Map = function Map({ containerStyle, center, onDrop, events }) {
     map.data.addListener('click', ({ feature }) => {
       setInfoFeature(feature);
     });
-  }, [center, onDrop]);
+  }, [onDrop]);
+
+  useEffect(() => {
+    if (!map || !loc) {
+      return;
+    }
+    if (map.location) {
+      map.location.setPosition(loc);
+    } else {
+      map.location = new google.maps.Marker({
+        map,
+        position: loc,
+        title: 'You are here',
+        icon: {
+          fillColor: '#ff7585',
+          fillOpacity: 1,
+          path: google.maps.SymbolPath.CIRCLE,
+          strokeWeight: 2,
+          strokeColor: 'white',
+          scale: 8,
+        },
+      });
+    }
+  }, [loc, map]);
 
   useEffect(() => {
     if (map) {
       map.data.forEach(feature => map.data.remove(feature));
       if (events) {
-        for (const feature of events.features) {
-          map.data.addGeoJson(feature);
+        for (const event of events) {
+          map.data.addGeoJson(event);
         }
       }
     }
@@ -122,7 +139,7 @@ const Map = function Map({ containerStyle, center, onDrop, events }) {
     <div className={styles.mapContainer}>
       <GoogleMap
         mapContainerStyle={containerStyle}
-        center={center}
+        center={center || loc || timesSquare}
         zoom={17}
         onLoad={onLoad}
         options={{ mapId: process.env.NEXT_PUBLIC_MAP_ID }}

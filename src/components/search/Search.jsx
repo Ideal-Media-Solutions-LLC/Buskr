@@ -1,33 +1,10 @@
-import React, { useContext, useState } from 'react';
+import React from 'react';
 import SearchSection from './SearchSection';
-import ResultSection from './results/ResultSection';
-import { LocationContext, SearchContext } from '../../contexts';
 
-const Search = () => {
-  const location = useContext(LocationContext);
-  const [results, setResults] = useState({
-    byDistance: [],
-    byTime: [],
-    filtered: [],
-    filterWords: {
-      lat: location.lat,
-      lng: location.lng,
-      starts: new Date(),
-      keywords: '',
-    },
-  });
-  const [isBarView, setBarView] = useState(false);
-  const [calendarDate, setCalendarDate] = useState(new Date());
+export default function Search() {
   return (
-    <div id='searchContainer'>
-      <SearchContext.Provider value={{
-        results, setResults, isBarView, setBarView, calendarDate, setCalendarDate,
-      }}>
+    <div id="searchContainer">
         <SearchSection />
-        <ResultSection />
-      </SearchContext.Provider>
     </div>
   );
-};
-
-export default Search;
+}

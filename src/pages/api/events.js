@@ -1,29 +1,22 @@
-import handler, { HttpException } from '../handler';
+import handler, { HttpException } from '../../handler';
 import EventController from '../../db/event';
 import { getUser } from '../../auth';
 
-const validFeatures = new Set([
-  'coords',
-  'location',
-  'photos',
-  'tags',
-]);
+const defaultDist = Number(process.env.NEXT_PUBLIC_VISIBLE_METERS);
 
 /**
  * @param {import('http').IncomingMessage} req
  * @param {import('http').ServerResponse} res
  */
 const GET = async function GET(req, res) {
-  const lat = req.numParam('lat');
-  const lng = req.numParam('lng');
+  const center = { lng: req.numParam('lng'), lat: req.numParam('lat') };
+  const dist = req.intParam('dist', defaultDist);
   const from = req.dateParam('from', null);
   const to = req.dateParam('to', null);
   const limit = req.intParam('limit', null);
   const offset = req.intParam('offset', null);
 
-  const { features, sort } = req.query;
-
-  const parsedFeatures = features ? features.split(',') : [];
+  const { search, sort } = req.query;
 
   let orderBy;
   if (sort === undefined || sort === 'distance') {
@@ -34,25 +27,17 @@ const GET = async function GET(req, res) {
     throw new HttpException(400, `unrecognized sort option ${sort}`, sort);
   }
 
-  const invalidFeatures = parsedFeatures
-    .filter(feature => !validFeatures.has(feature));
-
-  if (invalidFeatures.length > 0) {
-    throw new HttpException(
-      400,
-      `unrecognized feature: ${invalidFeatures.join(', ')}`,
-      invalidFeatures,
-    );
-  }
-
-  const events = await EventController.getAll(
-    { lat, lng },
-    { from, to },
+  const events = await EventController.getMany({
+    center,
+    dist,
+    from,
+    to,
     limit,
     offset,
-    parsedFeatures,
+    search,
     orderBy,
-  );
+  });
+
   res.status(200).json(events);
 };
 
@@ -61,8 +46,20 @@ const GET = async function GET(req, res) {
  * @param {import('http').ServerResponse} res
  */
 const POST = async function POST(req, res) {
-  const { id: buskerId } = await getUser({ req });
-  const eventId = await EventController.create(buskerId, req.body);
+  const { body } = req;
+  if (!body.name) {
+    throw new HttpException(400, 'missing name');
+  }
+  if (!body.description) {
+    throw new HttpException(400, 'missing name');
+  }
+  const starts = new Date(req.body.starts);
+  const ends = new Date(req.body.ends);
+  if (ends < starts || starts < new Date()) {
+    throw new HttpException(422, 'out-of-bounds date');
+  }
+  const user = await getUser({ req });
+  const eventId = await EventController.create(user, body);
   res.status(201).json({ id: eventId });
 };
 

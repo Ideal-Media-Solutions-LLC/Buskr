@@ -4,10 +4,6 @@ import {
 } from '@aws-sdk/client-cognito-identity-provider';
 import { verifierFactory } from '@southlane/cognito-jwt-verifier';
 
-import React from 'react';
-
-export const UserContext = React.createContext(null);
-
 const {
   NEXT_PUBLIC_AWS_CLIENT: appClientId,
   REGION: region,

@@ -1,14 +1,14 @@
 import axios from 'axios';
 import cache from './cache';
 
-const request = axios.create({
-  baseURL: 'https://maps.googleapis.com/maps/api/geocode',
-  method: 'GET',
-});
-
 const reverseGeocode = async function reverseGeocode([lng, lat]) {
   const { data: { results: [address] } } = await
-  request(`json?key=${process.env.GOOGLE_KEY}&latlng=${lat},${lng}`);
+  axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
+    params: {
+      key: process.env.GOOGLE_KEY,
+      latlng: `${lat},${lng}`,
+    },
+  });
 
   if (address === undefined) {
     return {};

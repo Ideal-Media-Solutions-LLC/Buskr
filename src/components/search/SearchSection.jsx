@@ -1,267 +1,102 @@
-import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
-import { FaSearch, FaMapMarkerAlt, FaRegCalendar, FaLongArrowAltLeft } from 'react-icons/fa';
+import React, { useCallback, useContext, useMemo, useState } from 'react';
+import { useRouter } from 'next/router';
+import { FaSearch, FaMapMarkerAlt } from 'react-icons/fa';
 import DatePicker from 'react-datepicker';
-import AutoComplete from './Autocomplete';
 import styles from '../../styles/Search.module.css';
-import { LocationContext, SearchContext } from '../../contexts';
+import { LocationContext } from '../../contexts';
+import { searchLink } from '../../interface';
 
-const SearchSection = () => {
-  const SearchbarContext = useContext(SearchContext);
-  const { results, setResults } = SearchbarContext;
-  const geoLocation = useContext(LocationContext);
-  const dummyTags = ['Starting soon', 'Tomorrow', 'Near you', 'Dance', 'Magic', 'Clowns'];
+export default function SearchSection({ tags }) {
+  const router = useRouter();
+  const center = useContext(LocationContext);
   const [searchTerm, setSearchTerm] = useState('');
   const [address, setAddress] = useState('');
-  const [searchLocation, setSearchLocation] = useState(geoLocation);
   const [searchDate, setSearchDate] = useState(new Date());
-  const [initialList, setInitialList] = useState([]);
-  const [suggestions, setSuggestions] = useState([]);
-
-  const onSearchSubmit = async () => {
-    // SearchbarContext.setBarView(!SearchbarContext.isBarView);
-    if (address !== '') {
-      await axios.get('/api/search', { params: { address } })
-        .then((res) => {
-          setSearchLocation(res.data);
-        });
+  const [searchTags, setSearchTags] = useState(() => {
+    const searchTags = {};
+    for (const tag of tags) {
+      searchTags[tag] = false;
     }
-    axios.get(`${process.env.NEXT_PUBLIC_DOMAIN}/api/events`, {
-      params: {
-        features: 'coords,location,photos,tags',
-        lat: searchLocation.lat,
-        lng: searchLocation.lng,
-        from: searchDate,
-      },
-    }).then((result) => {
-      setInitialList(result.data.features);
-      const oneDate = result.data.features.slice().filter((event) => {
-        const eventDate = new Date(event.properties.starts);
-        return searchDate.getDate() === eventDate.getDate()
-          && searchDate.getMonth() === eventDate.getMonth()
-          && searchDate.getFullYear() === eventDate.getFullYear();
-      });
-      const byTime = oneDate.slice().sort(
-        (a, b) => new Date(a.properties.starts) - new Date(b.properties.starts),
-      );
-      const byLocation = oneDate.slice().filter(
-        ({ properties }) => {
-          const searchedPlace = address.toLowerCase();
-          if (properties.location.address) {
-            return searchedPlace === properties.location.address.toLowerCase()
-              || searchedPlace === properties.location.locality.toLowerCase()
-              || searchedPlace === properties.location.administrative_area_level_1.toLowerCase();
-          }
-          return null;
-        },
-      );
-      let bySearchTerm = address === '' ? oneDate : byLocation;
-      if (searchTerm) {
-        bySearchTerm = bySearchTerm.slice().filter(
-          (event) => {
-            const searchedTerm = searchTerm.toLowerCase();
-            const filteredEvents = event.properties.name.toLowerCase()
-              .includes(searchedTerm)
-              || event.properties.buskerName.toLowerCase().includes(searchedTerm)
-              || event.properties.tags.indexOf(searchedTerm) !== -1;
-            return filteredEvents;
-          },
-        );
-      }
-      const autoSuggestions = [];
-      bySearchTerm.forEach(
-        (event) => {
-          if (autoSuggestions.indexOf(event.properties.name) === -1) {
-            autoSuggestions.push(event.properties.name);
-          }
-          if (autoSuggestions.indexOf(event.properties.buskerName) === -1) {
-            autoSuggestions.push(event.properties.buskerName);
-          }
-          for (let i = 0; i < event.properties.tags.length; i++) {
-            if (autoSuggestions.indexOf(event.properties.tags[i]) === -1) {
-              autoSuggestions.push(event.properties.tags[i]);
-            }
-          }
-        },
-      );
-      setSuggestions(autoSuggestions);
-      setResults({
-        byDistance: oneDate,
-        byTime,
-        filtered: bySearchTerm,
-        filterWords: {
-          lat: searchLocation.lat,
-          lng: searchLocation.lng,
-          starts: searchDate,
-          keywords: searchTerm,
-        },
-      });
+    return searchTags;
+  });
+
+  const onTagClick = useCallback(ev => {
+    const tag = ev.target.innerText;
+    setSearchTags(searchTags => {
+      const selected = searchTags[tag];
+      return { ...searchTags, [tag]: !selected };
     });
-  };
+  }, [setSearchTags]);
 
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setSearchLocation({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          });
-        },
-      );
-    } else {
-      setSearchLocation(geoLocation);
-    }
-    onSearchSubmit();
-  }, []);
-  useEffect(() => {
-    setSearchDate(SearchbarContext.calendarDate);
-  }, [SearchbarContext.calendarDate]);
-  useEffect(() => {
-    onSearchSubmit();
-  }, [searchDate]);
-
-  const onSearchTermChange = (e) => {
-    if (e.target.value) {
-      setSearchTerm(e.target.value);
-    } else {
-      setSearchTerm(e.target.innerText);
-    }
-  };
-  const onSearchLocationChange = (e) => {
-    setAddress(e.target.value);
-  };
-
-  const onDateChange = (date) => {
-    if (date !== null) {
-      setSearchDate(date);
-    }
-  };
-
-  const onTagClick = (e) => {
-    // filter based on initial list when rendered since it will not be visible after initial search
-    SearchbarContext.setBarView(true);
-    const tagName = e.target.innerText;
-    if (tagName === 'Starting soon') {
-      setSearchDate(new Date());
-      setResults(
-        { ...results, filtered: results.byTime },
-      );
-    } else if (tagName === 'Tomorrow') {
-      const today = new Date();
-      const tomorrow = new Date();
-      tomorrow.setDate(today.getDate() + 1);
-      const tomorrowEvents = initialList.slice().filter((event) => {
-        const eventDate = new Date(event.properties.starts);
-        return tomorrow.getDate() === eventDate.getDate()
-          && tomorrow.getMonth() === eventDate.getMonth()
-          && tomorrow.getFullYear() === eventDate.getFullYear();
-      });
-      setSearchDate(tomorrow);
-      setResults(
-        { ...results, filtered: tomorrowEvents },
-      );
-    } else if (tagName === 'Near you') {
-      const nearYouEvents = results.byDistance.slice().filter((event) => {
-        return event.distance <= 250;
-      });
-      setResults(
-        { ...results, filtered: nearYouEvents },
-      );
-    } else {
-      const bySearchTerm = results.byDistance.slice().filter(
-        ({ properties: { name, buskerName, tags } }) => {
-          const lowerName = name.toLowerCase();
-          const lowerBuskerName = buskerName.toLowerCase();
-          const searchedTerm = tagName.toLowerCase();
-          const filteredEvents = lowerName
-            .includes(searchedTerm)
-            || lowerBuskerName.toLowerCase().includes(searchedTerm)
-            || tags.indexOf(searchedTerm) !== -1;
-          return filteredEvents;
-        },
-      );
-      setResults(
-        { ...results, filtered: bySearchTerm },
-      );
-    }
-  };
-  const handleSearchBtnClick = () => {
-    SearchbarContext.setBarView(true);
-    onSearchSubmit();
-  };
-  const handleBackBtnClick = () => {
-    SearchbarContext.setBarView(false);
-  };
-  if (SearchbarContext.isBarView) {
-    return (
-      <div id={styles.miniForm}>
-        <button id={styles.miniBackBtn}
-          onClick={handleBackBtnClick}
-        ><FaLongArrowAltLeft />
+  const tagButtons = useMemo(
+    () => Object.entries(searchTags)
+      .map(([tag, selected]) => (
+        <button
+          key={tag}
+          type="button"
+          className={selected ? `${styles.searchTag} ${styles.selected}` : styles.searchTag}
+          onClick={onTagClick}
+        >
+          {tag}
         </button>
-        <div className={styles.miniBar} id={styles.miniTermInput}>
-          {/* <AutoComplete
-            isBarView={SearchbarContext.isBarView}
-            suggestions={suggestions}
-            showValue={searchTerm}
-            className={styles.miniSearchInput}
-            onInputChange={onSearchTermChange}
-            placeholder="Search" /> */}
-          <input className={styles.miniSearchInput}
-            onChange={onSearchTermChange}
-            placeholder="Search"
-            value = {searchTerm}
-          />
+      )),
+    [searchTags, onTagClick],
+  );
 
-          <button className={styles.miniInsideBtn}><FaSearch /></button>
-        </div>
-        <div className={styles.miniBar} id={styles.miniLocationInput}>
-          <input className={styles.miniSearchInput}
-            onChange={onSearchLocationChange}
-            placeholder="Location"
-            value={address}
-          />
-          <button className={styles.miniInsideBtn}><FaMapMarkerAlt /></button>
-        </div>
+  const selectedTags = useMemo(
+    () => Object.entries(searchTags)
+      .filter(([, selected]) => selected)
+      .map(([tag]) => tag),
+    [searchTags],
+  );
 
-        {/* <div id={styles.datePicker}>
+  const submit = function submit(ev) {
+    ev.preventDefault();
+    router.push(searchLink({
+      center,
+      from: searchDate,
+      search: searchTerm,
+      address,
+      sort: 'distance',
+      tags: selectedTags,
+    }));
+  };
 
-        <DatePicker wrapperClassName={styles.datePicker} selected={searchDate}
-          onChange={onDateChange}
-          placeholderText='Select Date Here' /></div> */}
-        <button id={styles.miniSearchBtn}
-          onClick={onSearchSubmit}
-        ><FaSearch />
-        </button>
-
-      </div>);
-  }
   return (
-    <div id={styles.searchContainer}>
-      <label id={styles.title}>Find Your Next Performer:</label>
+    <form id={styles.searchContainer} method="get" action="/search" onSubmit={submit}>
+      <label id={styles.title}>
+        Find Your Next Performer:
+      </label>
 
       <div id={styles.searchForm}>
         <div className={styles.searchBar} id={styles.upperSearchBar}>
-          <AutoComplete className={styles.searchInput}
-            showValue={searchTerm}
-            suggestions={suggestions}
-            onInputChange={onSearchTermChange}
-            placeholder="Search name, performer or type of events" />
-          {/* <input className={styles.searchInput}
-            onChange={onSearchTermChange}
-            placeholder="Search by event name"
-          /> */}
-
-          <button className={styles.insideBtn}><FaSearch /></button>
+          <input
+            type="search"
+            name="q"
+            className={styles.searchInput}
+            value={searchTerm}
+            list="suggestions"
+            autoComplete="off"
+            onBlur={ev => setSearchTerm(ev.target.value)}
+            onInput={ev => setSearchTerm(ev.target.value)}
+            placeholder="Search events"
+          />
+          <button className={styles.insideBtn}>
+            <FaSearch />
+          </button>
         </div>
         <div className={styles.searchBar}>
-          <input className={styles.searchInput}
-            onChange={onSearchLocationChange}
+          <input
+            type="text"
+            name="address"
+            className={styles.searchInput}
+            onChange={ev => setAddress(ev.target.value)}
             placeholder="Location"
             value={address}
           />
-          <button className={styles.insideBtn}><FaMapMarkerAlt /></button>
+          <button className={styles.insideBtn}>
+            <FaMapMarkerAlt />
+          </button>
         </div>
         {/* <label>
           <DatePicker
@@ -269,23 +104,31 @@ const SearchSection = () => {
           <button id={styles.dateIcon}><FaRegCalendar /></button>
         </label> */}
         <div id={styles.datePicker}>
-
-          <DatePicker wrapperClassName={styles.datePicker} selected={searchDate}
-            onChange={onDateChange}
-            placeholderText='Select Date Here' /></div>
+          <DatePicker
+            name="from"
+            wrapperClassName={styles.datePicker}
+            selected={searchDate}
+            onChange={setSearchDate}
+            placeholderText="Select Date Here"
+          />
+        </div>
       </div>
       <div id={styles.tagContainer}>
-        {dummyTags.map((tag, index) => {
-          return <button
-            className={styles.searchTag}
-            key={index} onClick={onTagClick}>
-            {tag}
-          </button>;
-        })}
+        {tagButtons}
       </div>
-      <button id={styles.searchBtn} className="master-button" onClick={handleSearchBtnClick}>Search</button>
-    </div>
+      <input
+        type="hidden"
+        name="sort"
+        value="distance"
+      />
+      <input
+        type="hidden"
+        name="tags"
+        value={Object.entries(searchTags).filter(([, sel]) => sel).map(([tag]) => tag).join(',')}
+      />
+      <button type="submit" id={styles.searchBtn} className="master-button">
+        Search
+      </button>
+    </form>
   );
-};
-
-export default SearchSection;
+}

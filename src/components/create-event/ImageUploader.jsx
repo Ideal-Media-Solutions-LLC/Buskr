@@ -2,7 +2,7 @@ import React from 'react';
 import ImageUploading from 'react-images-uploading';
 import styles from '../../styles/ImageUploader.module.css';
 
-const ImageUploader = ({ handleImage, handleGoBack }) => {
+export default function ImageUploader({ handleImage, handleGoBack }) {
   const [images, setImages] = React.useState([]);
   const maxNumber = 10;
   const onChange = (imageList, addUpdateIndex) => {
@@ -67,6 +67,4 @@ const ImageUploader = ({ handleImage, handleGoBack }) => {
       </ImageUploading>
     </div>
   );
-};
-
-export default ImageUploader;
+}

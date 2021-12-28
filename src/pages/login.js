@@ -37,7 +37,8 @@ export const getServerSideProps = async function getServerSideProps(context) {
     return {
       redirect: {
         destination: '/',
-        permanent: false },
+        permanent: false,
+      },
     };
   } catch (error) {
     console.error(error);
@@ -50,6 +51,6 @@ export const getServerSideProps = async function getServerSideProps(context) {
   }
 };
 
-export default function login() {
+export default function Login() {
   return <div>Logging you in...</div>;
 }

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import axios from 'axios';
 import {
   FacebookIcon,
   FacebookShareButton,
@@ -8,11 +7,14 @@ import {
   TwitterShareButton,
 } from 'react-share';
 import { FaClock, FaMapMarkerAlt } from 'react-icons/fa';
-import moment from 'moment';
 import styles from '../styles/Event.module.css';
 import Map from './map/Map';
 
-const Event = function Event({ event }) {
+const fmtWeekday = new Intl.DateTimeFormat('en-US', { weekday: 'long' });
+const fmtDate = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+const fmtTime = new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: 'numeric' });
+
+export default function Event({ event }) {
   const url = `${process.env.NEXT_PUBLIC_DOMAIN}/event/${event.id}`;
   const {
     starts,
@@ -29,14 +31,8 @@ const Event = function Event({ event }) {
   const center = { lng, lat };
   const mapContainerStyle = {
     width: '100%',
-    height: '20vh',
+    height: '100%',
   };
-  const dateFormat = 'dddd, MMM D, YYYY';
-  const timeFormat = 'h:mm a';
-  const endTime = moment(ends).format(timeFormat);
-  const startTime = moment(starts).format(timeFormat);
-  const dateString = moment(starts).format(dateFormat);
-  const timeString = `${startTime} - ${endTime}`;
   const hashTags = tags.map((tag) => `#${tag}`).join(' ');
   return (
     <div className={styles.eventPageContainer}>
@@ -68,8 +64,8 @@ const Event = function Event({ event }) {
         <div className={styles.timeContainer}>
           <FaClock className={styles.icon}/>
           <div className={styles.timeStringContainer}>
-            <div>{dateString}</div>
-            <div>{timeString}</div>
+            <div>{fmtWeekday.format(starts)}, {fmtDate.format(starts)}</div>
+            <div>{fmtTime.format(starts)} - {fmtTime.format(ends)}</div>
           </div>
         </div>
         <div className={styles.locContainer}>
@@ -81,11 +77,9 @@ const Event = function Event({ event }) {
         <Map
           containerStyle={mapContainerStyle}
           center={center}
-          events={{ features: [event] }}
+          events={[event]}
         />
       </section>
     </div>
   );
-};
-
-export default Event;
+}

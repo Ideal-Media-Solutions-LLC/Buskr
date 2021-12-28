@@ -1,9 +1,7 @@
-import { createContext } from 'react';
+import React from 'react';
 
-export const LocationContext = createContext();
+/** @type {React.Context<{ lng: number, lat: number }>} */
+export const LocationContext = React.createContext();
 
-export const SearchContext = createContext();
-
-export const BarViewContext = createContext();
-
-export const UserContext = createContext();
+/** @type {React.Context<{ id: string, email: string, name: string, picture?: string }>} */
+export const UserContext = React.createContext();

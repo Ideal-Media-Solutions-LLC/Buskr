@@ -1,7 +1,7 @@
 import handler from '../../handler';
 import EventController from '../../db/event';
 
-const defaultDist = Number(process.env.NEXT_PUBLIC_CONFLICT_METERS);
+const defaultDist = Number(process.env.NEXT_PUBLIC_VISIBLE_METERS);
 
 /**
  * @param {import('http').IncomingMessage} req
@@ -9,13 +9,12 @@ const defaultDist = Number(process.env.NEXT_PUBLIC_CONFLICT_METERS);
  */
 const GET = async function GET(req, res) {
   const center = { lng: req.numParam('lng'), lat: req.numParam('lat') };
-  const from = req.dateParam('from');
-  const to = req.dateParam('to');
+  const offset = req.numParam('offset', 0);
   const dist = req.intParam('dist', defaultDist);
 
-  const conflicts = await EventController.findConflicts({ center, from, to, dist });
+  const dates = await EventController.findDates({ center, dist, offset, search: req.query.search });
 
-  res.status(200).json(conflicts.map(({ event }) => event));
+  res.status(200).json(dates);
 };
 
 export default handler({ GET });
