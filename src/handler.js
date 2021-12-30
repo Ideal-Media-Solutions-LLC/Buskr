@@ -53,6 +53,18 @@ const intParam = function intParam(key, orElse) {
   });
 };
 
+/**
+ * Drop-in replacement for Next's `.json()` function.
+ *
+ * Fixes Next.js issue [#21749](https://github.com/vercel/next.js/issues/21749).
+ *
+ * @this {import('next').NextApiResponse} - API response object
+ */
+const betterSendJSON = function betterSendJSON(obj) {
+  this.setHeader('Content-Type', 'application/json; charset=utf-8');
+  this.send(JSON.stringify(obj));
+};
+
 // Helper method to wait for a middleware to execute before continuing
 // And to throw an error when an error happens in a middleware
 const runMiddleware = (req, res, fn) => new Promise((resolve, reject) => {
@@ -64,6 +76,7 @@ const corsWare = cors();
 
 /* eslint no-await-in-loop: ["off"] */
 const middleware = async function middleware(req, res) {
+  res.json = betterSendJSON;
   await runMiddleware(req, res, corsWare);
   await runMiddleware(req, res, compressionWare);
   req.dateParam = dateParam;
@@ -71,14 +84,18 @@ const middleware = async function middleware(req, res) {
   req.numParam = numParam;
 };
 
+/**
+ * @param {{[method: string]: BuskrHandler<any>}} routes
+ * @returns {import('next').NextApiHandler}
+ */
 export default function handler(routes) {
   return async function handle(req, res) {
-    await middleware(req, res);
     const route = routes[req.method];
     if (route === undefined) {
       res.status(404).send();
     } else {
       try {
+        await middleware(req, res);
         await route(req, res);
       } catch (error) {
         const { message, status } = error;
@@ -91,3 +108,27 @@ export default function handler(routes) {
     }
   };
 }
+
+// Typedefs
+
+/**
+ * @typedef {Object} BuskrQueryMixins
+ * @property {(key: string, orElse?: Date) => Date} dateParam
+ * @property {(key: string, orElse?: number) => number} numParam
+ * @property {(key: string, orElse?: number) => number} intParam
+ */
+
+/** @typedef {import('next').NextApiRequest & BuskrQueryMixins} BuskrRequest */
+
+/**
+ * @template T
+ * @typedef {import('next').NextApiResponse<T>} BuskrResponse<T>
+ */
+
+/**
+ * @template T
+ * @callback BuskrHandler
+ * @param {BuskrRequest} req
+ * @param {BuskrResponse<T>} res
+ * @returns {Promise<void>}
+ */
