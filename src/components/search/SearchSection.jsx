@@ -1,14 +1,12 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import { FaSearch, FaMapMarkerAlt } from 'react-icons/fa';
 import DatePicker from 'react-datepicker';
 import styles from '../../styles/Search.module.css';
-import { LocationContext } from '../../contexts';
 import { searchLink } from '../../interface';
 
-export default function SearchSection({ tags }) {
+export default function SearchSection({ center, tags }) {
   const router = useRouter();
-  const center = useContext(LocationContext);
   const [searchTerm, setSearchTerm] = useState('');
   const [address, setAddress] = useState('');
   const [searchDate, setSearchDate] = useState(new Date());
