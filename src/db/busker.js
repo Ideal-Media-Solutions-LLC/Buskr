@@ -1,5 +1,5 @@
 import db from '.';
-import getLocations from './getLocations';
+import { reverseGeocode } from './location';
 import { loadDates } from '../interface';
 
 const update = async function update({ sub, name, email, email_verified, picture }) {
@@ -81,7 +81,7 @@ const get = async function get(id) {
     for (const event of profile.events) {
       loadDates(event);
     }
-    await getLocations(profile.events);
+    await reverseGeocode(profile.events);
   }
   return profile;
 };

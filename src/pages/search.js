@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { getUser } from '../auth';
 import { UserContext } from '../contexts';
 import Header from '../components/Header';
 import AutoComplete from '../components/search/AutoComplete';
 import SearchBar from '../components/search/SearchBar';
 import EventController from '../db/event';
+import { geocode } from '../db/location';
 import ResultSection from '../components/search/results/ResultSection';
 import { asyncEffect, findDates, getSuggestions } from '../interface';
 
@@ -16,29 +16,16 @@ export const getServerSideProps = async function getServerSideProps(context) {
   const user = await getUser(context);
 
   const { query } = context;
-  let center = { lng: Number(query.lng), lat: Number(query.lat) };
+  const { address, q: search, tags: tagString } = query;
+  const sort = query.sort === 'time' ? 'starts' : 'distance';
+
+  const center = (address && await geocode(address))
+    || { lng: Number(query.lng), lat: Number(query.lat) };
+
   const from = query.from === undefined ? new Date() : new Date(query.from);
   const to = query.to === undefined
     ? new Date(from.getFullYear(), from.getMonth(), from.getDate() + 1)
     : new Date(query.to);
-  const { address, q: search, tags: tagString } = query;
-
-  if (address) {
-    const { data: { results: [result] } } = await axios.get(
-      'https://maps.googleapis.com/maps/api/geocode/json',
-      {
-        params: {
-          address,
-          key: process.env.GOOGLE_KEY,
-        },
-      },
-    );
-    if (result !== undefined) {
-      center = result.geometry.location;
-    }
-  }
-
-  const sort = query.sort === 'time' ? 'starts' : 'distance';
 
   try {
     let events = await EventController.getMany({
