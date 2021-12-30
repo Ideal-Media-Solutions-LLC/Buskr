@@ -1,12 +1,29 @@
 import axios from 'axios';
 import cache from './cache';
 
+const { EXPIRE_ADDRESS, EXPIRE_IP } = process.env;
+const expireAddress = Number(EXPIRE_ADDRESS) || undefined;
+const expireIP = Number(EXPIRE_IP) || undefined;
+
 const geocodeAPI = axios.create({
   baseURL: 'https://maps.googleapis.com/maps/api/geocode/json',
   params: {
     key: process.env.GOOGLE_KEY,
   },
 });
+
+const ipAPI = axios.create({
+  baseURL: 'https://ipapi.co/',
+});
+
+const lookupIP = async function lookupIP(ip) {
+  const { data: { longitude: lng, latitude: lat } } = await ipAPI.get(`/${ip}/json/`);
+  return typeof lng === 'number' && typeof lat === 'number' ? { lng, lat } : null;
+};
+
+export const locateIP = async function locateIP(ip) {
+  return cache(`ip:${ip}`, async () => lookupIP(ip), expireIP);
+};
 
 const reverseGeocodeOne = async function reverseGeocodeOne([lng, lat]) {
   const latlng = `${lat},${lng}`;
@@ -31,7 +48,7 @@ const reverseGeocodeOne = async function reverseGeocodeOne([lng, lat]) {
 };
 
 const reverseGeocodeCached = function geocache(id, [lng, lat]) {
-  return cache(`loc:${id}`, async () => reverseGeocodeOne([lng, lat]));
+  return cache(`loc:${id}`, async () => reverseGeocodeOne([lng, lat]), expireAddress);
 };
 
 export const reverseGeocode = async function reverseGeocode(rows) {

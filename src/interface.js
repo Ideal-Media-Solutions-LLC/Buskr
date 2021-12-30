@@ -92,6 +92,14 @@ export const getSuggestions = async function getSuggestions(params) {
 };
 
 /**
+ * @returns {Promise<{ lng: number, lat: number }>}
+ */
+export const locateIP = async function locateIP() {
+  const { data } = await client.get('locate');
+  return data;
+};
+
+/**
  * @param {Object} params
  * @param {{lng: number, lat: number}} params.center,
  * @param {Date} params.from
