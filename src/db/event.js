@@ -1,5 +1,5 @@
 import db from '.';
-import getLocations from './getLocations';
+import { reverseGeocode } from './location';
 import PhotoController from './photo';
 import TagController from './tag';
 import { loadDates } from '../interface';
@@ -124,7 +124,7 @@ const get = async function get(id) {
   const [event] = rows;
   loadDates(event);
   if (event !== undefined) {
-    await getLocations(rows);
+    await reverseGeocode(rows);
   }
   return event;
 };
@@ -206,7 +206,7 @@ const getMany = async function getMany({
   `;
   const { rows } = await db.query(query, args);
 
-  await getLocations(rows);
+  await reverseGeocode(rows);
 
   for (const event of rows) {
     loadDates(event);

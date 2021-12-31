@@ -128,6 +128,19 @@ Returns an array of events in [GeoJSON](https://geojson.org/) format.
 ]
 ```
 
+## [GET /api/locate](https://www.buskr.life/locate)
+
+Returns an approximation of the user's location based on their IP address.
+
+### Sample Output
+
+```json
+{
+  "lng":-90.0691,
+  "lat":29.9547
+}
+```
+
 ## [GET /api/suggestions](https://www.buskr.life/suggestions?lng=-90.06911208674771&lat=29.954767355989652&from=2021-12-23T08%3A00%3A00.000Z&to=2022-12-23T08%3A00%3A00.000Z)
 
 Returns an array of autocompletion strings for the search input. Includes tags, event names, and performer names.

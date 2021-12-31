@@ -50,7 +50,7 @@ export default function Home({ user, tags }) {
       <AutoComplete suggestions={suggestions} />
       <Header />
       <div>
-        <SearchSection tags={tags} />
+        <SearchSection center={center} tags={tags} />
         <ResultSection center={center} dates={dates} events={events} />
       </div>
     </UserContext.Provider>
